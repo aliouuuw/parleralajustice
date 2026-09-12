@@ -1,0 +1,27 @@
+{
+	"name": "parleralajustice",
+	"version": "0.0.0",
+	"private": true,
+	"packageManager": "bun@1.4.0",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"cf-typegen": "wrangler types",
+		"cf:login": "wrangler login",
+		"cf:whoami": "wrangler whoami",
+		"db:migrate": "wrangler d1 execute parleralajustice --file=migrations/0001_better_auth.sql",
+		"db:migrate:local": "wrangler d1 execute parleralajustice --local --file=migrations/0001_better_auth.sql"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-plugin": "^1.0.0",
+		"@types/node": "^22.20.2",
+		"typescript": "^5.5.2",
+		"vitest": "~4.1.0",
+		"wrangler": "^4.129.0"
+	},
+	"dependencies": {
+		"better-auth": "^1.7.3"
+	}
+}

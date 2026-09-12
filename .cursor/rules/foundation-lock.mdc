@@ -1,0 +1,27 @@
+---
+description: Protect stable foundation files from unintentional edits
+globs: web/src/auth.ts,web/migrations/*.sql,docs/product.md,research/jokko-ak-yoon-e-justice.md
+alwaysApply: false
+---
+
+# Foundation Lock
+
+These files are **verified and stable**. Do not modify them unless:
+
+1. The **human explicitly asks**, OR
+2. The current task's `files` array in `docs/backlog.json` **explicitly names them**
+
+## Locked files
+
+- `web/src/auth.ts` — Better Auth + email OTP factory
+- `web/migrations/*.sql` — D1 schema (append-only)
+- `docs/product.md` — legal and product constraints
+- `research/jokko-ak-yoon-e-justice.md` — cited public briefing (facts)
+
+## Migrations rule
+
+Never edit an existing migration file. Only add new migration files.
+
+## When these files appear in context but are NOT in the task's `files` array
+
+Do not read them looking for issues. Do not propose improvements. Reference their API surface only when the new feature needs to import from them.

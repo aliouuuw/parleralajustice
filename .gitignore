@@ -1,0 +1,16 @@
+# Parler a la justice
+
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+.cursor/mcp.json
+.vite/
+coverage/
+web/worker-configuration.d.ts

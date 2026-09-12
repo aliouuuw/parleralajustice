@@ -1,0 +1,14 @@
+{
+	"name": "parleralajustice",
+	"private": true,
+	"packageManager": "bun@1.4.0",
+	"scripts": {
+		"dev": "bun run --cwd web dev",
+		"start": "bun run --cwd web start",
+		"test": "bun run --cwd web test",
+		"deploy": "bun run --cwd web deploy",
+		"cf-typegen": "bun run --cwd web cf-typegen",
+		"db:migrate": "bun run --cwd web db:migrate",
+		"db:migrate:local": "bun run --cwd web db:migrate:local"
+	}
+}

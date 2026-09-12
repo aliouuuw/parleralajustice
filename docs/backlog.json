@@ -1,0 +1,71 @@
+{
+  "updated": "2026-09-12",
+  "phases": [
+    {
+      "id": "P0",
+      "title": "Foundation",
+      "tasks": [
+        {
+          "id": "T001",
+          "title": "Better Auth + D1 email OTP spike",
+          "desc": "Confirm native D1 adapter, email OTP, session cookie. OTP stored in spike_otp for tests only.",
+          "status": "done",
+          "deps": [],
+          "files": ["web/src/auth.ts", "web/src/auth-schema.ts", "web/src/index.ts", "web/test/auth.spike.spec.ts"],
+          "verify": "bun run test"
+        },
+        {
+          "id": "T002",
+          "title": "Document, hygiene, git init",
+          "desc": "README, AGENTS.md, product constraints, backlog, tight gitignore, root scripts, first commit.",
+          "status": "done",
+          "deps": ["T001"],
+          "files": ["README.md", "AGENTS.md", "docs/product.md", "docs/backlog.json", ".gitignore"],
+          "verify": "git status"
+        }
+      ]
+    },
+    {
+      "id": "P1",
+      "title": "v0 civic demo",
+      "tasks": [
+        {
+          "id": "T003",
+          "title": "Scaffold citizen v0 UI",
+          "desc": "Replace Hello World. Two doors: Parler vs Obtenir un acte (e-Senegal link). Ministry disclaimer. Anonymous vs login. French UI.",
+          "status": "pending",
+          "deps": ["T002"],
+          "files": ["web/public/", "web/src/index.ts"],
+          "verify": "bun run test"
+        },
+        {
+          "id": "T004",
+          "title": "Case number, timeline, /guichet seed",
+          "desc": "Fake cases only. Clerk view at /guichet. Tracking code for anonymous path.",
+          "status": "pending",
+          "deps": ["T003"],
+          "files": ["web/src/", "web/migrations/"],
+          "verify": "bun run test"
+        },
+        {
+          "id": "T005",
+          "title": "Voice MediaRecorder to R2",
+          "desc": "Browser MediaRecorder. Store audio in AUDIO bucket. No video, no chat, no file-upload fake.",
+          "status": "pending",
+          "deps": ["T003"],
+          "files": ["web/src/", "web/public/"],
+          "verify": "bun run test"
+        },
+        {
+          "id": "T006",
+          "title": "Turnstile and OTP rate limit",
+          "desc": "Turnstile on case create and OTP. Use CASE_RATE_LIMIT binding. Replace spike_otp with Resend or a log-only stub behind a flag.",
+          "status": "pending",
+          "deps": ["T003"],
+          "files": ["web/src/auth.ts", "web/src/index.ts", "web/wrangler.jsonc"],
+          "verify": "bun run test"
+        }
+      ]
+    }
+  ]
+}
