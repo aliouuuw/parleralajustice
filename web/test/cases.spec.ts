@@ -13,6 +13,7 @@ describe("v0 cases", () => {
 				channel: "anonymous",
 				body: "Demonstration. Question fictive sur un delai d'audience.",
 				demoConfirmed: true,
+				turnstileToken: "XXXX.DUMMY.TOKEN.XXXX",
 			}),
 		});
 		expect(create.status).toBe(200);
@@ -45,6 +46,20 @@ describe("v0 cases", () => {
 		expect(create.status).toBe(400);
 	});
 
+	it("rejects a case with a missing turnstile token", async () => {
+		const create = await SELF.fetch(`${ORIGIN}/api/cases`, {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({
+				kind: "information",
+				channel: "anonymous",
+				body: "Demonstration. Sans jeton anti-robot.",
+				demoConfirmed: true,
+			}),
+		});
+		expect(create.status).toBe(400);
+	});
+
 	it("rejects invalid JSON on case create", async () => {
 		const create = await SELF.fetch(`${ORIGIN}/api/cases`, {
 			method: "POST",
@@ -63,6 +78,7 @@ describe("v0 cases", () => {
 				channel: "identified",
 				body: "Demonstration. Dossier identifie sans session.",
 				demoConfirmed: true,
+				turnstileToken: "XXXX.DUMMY.TOKEN.XXXX",
 			}),
 		});
 		expect(create.status).toBe(401);

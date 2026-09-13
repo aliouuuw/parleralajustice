@@ -59,7 +59,7 @@
         {
           "id": "T006a",
           "title": "Turnstile on case create",
-          "desc": "Turnstile challenge on POST /api/cases, public no-auth write endpoint. CASE_RATE_LIMIT (10/60s) is already wired on /api/cases, /api/audio, and /api/demo/otp, no new rate-limit work needed here.",
+          "desc": "Turnstile widget on POST /api/cases, verified server-side against Cloudflare siteverify. CASE_RATE_LIMIT (10/60s) was already wired. Widget name parleralajustice-case-create, managed mode. Code and tests done; production secret + deploy pending user confirmation (wrangler secret put is a blocked auto-mode action).",
           "status": "pending",
           "deps": ["T003"],
           "files": ["web/src/cases.ts", "web/src/index.ts", "web/wrangler.jsonc"],

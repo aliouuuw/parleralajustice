@@ -1,5 +1,7 @@
 const app = document.getElementById("app");
 
+const TURNSTILE_SITE_KEY = "0x4AAAAAAEx8oeIJp9nOIoG0";
+
 const KINDS = [
 	["information", "Demande d'information"],
 	["reclamation", "Reclamation"],
@@ -142,6 +144,7 @@ function parler(user) {
 				<input type="checkbox" name="demo" required />
 				<span>Je confirme : ceci est une démonstration. Je n'envoie pas de vrai dossier judiciaire.</span>
 			</label>
+			<div class="cf-turnstile" data-sitekey="${TURNSTILE_SITE_KEY}"></div>
 			<p class="err" id="form-err" hidden></p>
 			<button type="submit">Déposer le dossier</button>
 		</form>
@@ -312,12 +315,14 @@ async function wireParler(user) {
 		if (!(kind instanceof HTMLSelectElement) || !(bodyField instanceof HTMLTextAreaElement) || !(demo instanceof HTMLInputElement)) {
 			return;
 		}
+		const turnstileToken = new FormData(form).get("cf-turnstile-response") || "";
 		const body = {
 			kind: kind.value,
 			channel: user ? "identified" : "anonymous",
 			body: bodyField.value,
 			demoConfirmed: demo.checked,
 			audioKey,
+			turnstileToken,
 		};
 		const res = await fetch("/api/cases", {
 			method: "POST",
@@ -331,6 +336,7 @@ async function wireParler(user) {
 				err.hidden = false;
 				err.textContent = data.error || "Dépôt impossible.";
 			}
+			window.turnstile?.reset();
 			return;
 		}
 		go(`/d/${data.trackingCode}`);

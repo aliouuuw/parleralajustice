@@ -1,1 +1,4 @@
 BETTER_AUTH_SECRET=replace-with-openssl-rand-base64-32
+# Cloudflare's official "always passes" test secret, safe for local dev.
+# Production uses the real widget secret via `wrangler secret put TURNSTILE_SECRET_KEY`.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA

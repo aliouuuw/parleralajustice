@@ -158,6 +158,18 @@ function isAudioKey(value: string): boolean {
 	return /^demo\/[0-9a-f-]{36}\.webm$/i.test(value);
 }
 
+async function verifyTurnstile(secret: string, token: string, request: Request): Promise<boolean> {
+	if (!token) return false;
+	const body = new URLSearchParams({ secret, response: token, remoteip: clientKey(request) });
+	const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+		method: "POST",
+		headers: { "content-type": "application/x-www-form-urlencoded" },
+		body,
+	});
+	const data = await res.json<{ success: boolean }>().catch(() => ({ success: false }));
+	return data.success === true;
+}
+
 type SessionUser = { email: string; name: string };
 
 export async function handleAppApi(
@@ -216,6 +228,9 @@ export async function handleAppApi(
 		if (payload.demoConfirmed !== true) {
 			return json({ error: "Cochez la case de demonstration." }, 400);
 		}
+		const turnstileToken = asString(payload.turnstileToken) ?? "";
+		const humanCheck = await verifyTurnstile(env.TURNSTILE_SECRET_KEY, turnstileToken, request);
+		if (!humanCheck) return json({ error: "Verification anti-robot echouee." }, 400);
 		const kind = asString(payload.kind);
 		const channel = asString(payload.channel);
 		if (!kind || !KINDS.has(kind)) {
