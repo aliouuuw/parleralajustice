@@ -29,9 +29,11 @@ web/         Cloudflare Worker (Bun, Vite assets later)
 ## Stack
 
 - One Worker + static assets (`web/`)
-- D1 + Better Auth 1.5+ email OTP
-- R2 for audio (not wired yet)
+- D1 + Better Auth 1.7 email OTP
+- R2 for audio (MediaRecorder in the browser)
 - Bun for JavaScript
+
+Routes: `/` two doors, `/parler`, `/acte`, `/suivre`, `/d/PALJ-XXXX`, `/connexion`, `/guichet`.
 
 ## Run
 
@@ -47,6 +49,8 @@ bun run dev
 ```
 
 Open http://localhost:8787
+
+Connexion demo: use an e-mail with a domain (`demo@exemple.sn`). The code prints on screen. Real mail is not wired.
 
 ## Deploy
 
@@ -67,5 +71,7 @@ Remote D1: `bun run db:migrate` from `web/` after a new SQL file.
 ## Docs
 
 - [docs/product.md](docs/product.md) — product constraints
+- [docs/DESIGN.md](docs/DESIGN.md) — visual rules
+- [docs/progress.md](docs/progress.md) — checkpoint
 - [AGENTS.md](AGENTS.md) — agent conventions
 - [docs/backlog.json](docs/backlog.json) — next tasks

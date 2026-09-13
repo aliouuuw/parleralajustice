@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-12",
+  "updated": "2026-09-13",
   "phases": [
     {
       "id": "P0",
@@ -33,7 +33,7 @@
           "id": "T003",
           "title": "Scaffold citizen v0 UI",
           "desc": "Replace Hello World. Two doors: Parler vs Obtenir un acte (e-Senegal link). Ministry disclaimer. Anonymous vs login. French UI.",
-          "status": "pending",
+          "status": "done",
           "deps": ["T002"],
           "files": ["web/public/", "web/src/index.ts"],
           "verify": "bun run test"
@@ -42,7 +42,7 @@
           "id": "T004",
           "title": "Case number, timeline, /guichet seed",
           "desc": "Fake cases only. Clerk view at /guichet. Tracking code for anonymous path.",
-          "status": "pending",
+          "status": "done",
           "deps": ["T003"],
           "files": ["web/src/", "web/migrations/"],
           "verify": "bun run test"
@@ -51,7 +51,7 @@
           "id": "T005",
           "title": "Voice MediaRecorder to R2",
           "desc": "Browser MediaRecorder. Store audio in AUDIO bucket. No video, no chat, no file-upload fake.",
-          "status": "pending",
+          "status": "done",
           "deps": ["T003"],
           "files": ["web/src/", "web/public/"],
           "verify": "bun run test"
@@ -64,6 +64,30 @@
           "deps": ["T003"],
           "files": ["web/src/auth.ts", "web/src/index.ts", "web/wrangler.jsonc"],
           "verify": "bun run test"
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Make the demo shareable",
+      "tasks": [
+        {
+          "id": "T007",
+          "title": "Add GitHub remote",
+          "desc": "v0 is on main (9dd58e6). Create a public repo when asked. No secrets.",
+          "status": "pending",
+          "deps": ["T005"],
+          "files": ["web/", "docs/"],
+          "verify": "git status"
+        },
+        {
+          "id": "T008",
+          "title": "X receipts thread",
+          "desc": "Before/after intake. DNS and WHOIS receipts. Not a sales deck. Wait until Turnstile is on.",
+          "status": "pending",
+          "deps": ["T006", "T007"],
+          "files": [],
+          "verify": "true"
         }
       ]
     }
