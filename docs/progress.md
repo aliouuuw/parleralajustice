@@ -1,12 +1,12 @@
 # Progress
 
-Checked: 13 September 2026, 13:35 UTC.
+Checked: 13 September 2026, 13:45 UTC.
 
 ## Live
 
-https://parleralajustice.aliouuuw.workers.dev — Worker version `6782887f`.
+https://parleralajustice.aliouuuw.workers.dev — Worker version `9fc365ab-4858-4681-9474-800d0ad5b82c`.
 
-Live still serves the pre-hygiene Worker (GET `/api/demo/otp`). Redeploy so connexion matches POST.
+Redeployed. Verified: GET `/api/demo/otp` now 405, POST route live, `/` and `/guichet` 200, tests 9/9 passing.
 
 ## Done
 
@@ -26,8 +26,7 @@ Live still serves the pre-hygiene Worker (GET `/api/demo/otp`). Redeploy so conn
 
 ## Not done
 
-- Redeploy so live matches POST OTP — blocked on prod-deploy confirmation, see below
 - Turnstile on case create (T006a) — rate limits already wired, this is Turnstile only
 - Real email (Resend) + close the `/api/demo/otp` backdoor (T006b) — see docs/product.md
-- Access control on `/guichet`
+- Access control on `/guichet` — confirmed live and unprotected: `GET /api/guichet/cases` returns the case list to anyone, no auth
 - X thread
