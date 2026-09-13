@@ -19,6 +19,8 @@ Indie civic demo of citizen justice intake in Senegal. Not affiliated with the M
 README.md
 AGENTS.md
 docs/product.md
+docs/DESIGN.md
+docs/progress.md
 docs/backlog.json
 research/jokko-ak-yoon-e-justice.md
 web/package.json
@@ -26,8 +28,12 @@ web/wrangler.jsonc
 web/src/index.ts
 web/src/auth.ts
 web/src/auth-schema.ts
+web/src/cases.ts
 web/migrations/0001_better_auth.sql
+web/migrations/0002_cases.sql
 web/public/index.html
+web/public/app.js
+web/public/styles.css
 web/test/
 ```
 
@@ -39,7 +45,8 @@ web/test/
 - **Wrangler**: `bunx wrangler` / `bun run deploy`. Development uses `wrangler dev`, not `wrangler deploy`.
 - **Auth instance**: create per request with `createAuth(env, request)`. Derive `baseURL` from the request origin.
 - **Migrations**: append-only SQL under `web/migrations/`. Apply with `bun run db:migrate` (remote) or `db:migrate:local`.
-- **OTP spike**: `spike_otp` stores plaintext OTP. Replace before any public login flow. Do not log OTP values.
+- **OTP spike**: `spike_otp` stores plaintext OTP. Replace before any public login flow. Do not log OTP values. Demo readout is `POST /api/demo/otp` (never GET).
+- **Audio keys**: only `demo/<uuid>.webm`. Reject `..` and other shapes.
 - **Compatibility date**: `2026-09-10` so local Vitest workerd can boot.
 
 ## What NOT to do
@@ -51,7 +58,7 @@ web/test/
 | Do not treat e-service `/admin` JS routes as an open API | Frontend routes. Not a proven unauthenticated API. |
 | Do not email WHOIS contacts as a pitch | Receipts go on X. Outreach is DDA/LinkedIn if asked. |
 | Do not commit `web/.dev.vars` or secrets | Local and `wrangler secret` only. |
-| Do not edit `web/migrations/0001_better_auth.sql` | Append a new file. |
+| Do not edit `web/migrations/0001_better_auth.sql` or `0002_cases.sql` | Append a new file. |
 | Do not introduce npm/yarn/pnpm or Convex | Stack is frozen: Bun + Worker + D1 + R2. |
 | Do not add video/chat in v0 | Voice is MediaRecorder in browser, later. |
 | Do not auto-commit unless the human asks | Git commits stay human-gated. |

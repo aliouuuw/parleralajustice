@@ -27,7 +27,6 @@ export function createAuth(env: Env, request: Request) {
 					)
 						.bind(email, otp, Date.now())
 						.run();
-					console.log("[spike otp]", email);
 				},
 			}),
 		],

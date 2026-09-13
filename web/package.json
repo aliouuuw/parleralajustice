@@ -11,8 +11,8 @@
 		"cf-typegen": "wrangler types",
 		"cf:login": "wrangler login",
 		"cf:whoami": "wrangler whoami",
-		"db:migrate": "wrangler d1 execute parleralajustice --file=migrations/0001_better_auth.sql",
-		"db:migrate:local": "wrangler d1 execute parleralajustice --local --file=migrations/0001_better_auth.sql"
+		"db:migrate": "wrangler d1 execute parleralajustice --file=migrations/0001_better_auth.sql && wrangler d1 execute parleralajustice --file=migrations/0002_cases.sql",
+		"db:migrate:local": "wrangler d1 execute parleralajustice --local --file=migrations/0001_better_auth.sql && wrangler d1 execute parleralajustice --local --file=migrations/0002_cases.sql"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-plugin": "^1.0.0",
