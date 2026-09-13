@@ -1,6 +1,6 @@
 # Progress
 
-Checked: 13 September 2026, 00:20 UTC.
+Checked: 13 September 2026, 13:35 UTC.
 
 ## Live
 
@@ -20,14 +20,13 @@ Live still serves the pre-hygiene Worker (GET `/api/demo/otp`). Redeploy so conn
 
 ## Git
 
-- Branch: `main` at `9dd58e6` (`feat: ship civic v0 intake with cases, voice, and OTP`)
-- No GitHub remote
-- No pull request
+- Branch: `main` at `e25ff4b`
+- Remote: https://github.com/aliouuuw/parleralajustice (T007 done)
+- No pull request (working directly on `main`)
 
 ## Not done
 
-- Redeploy so live matches POST OTP
-- GitHub remote (T007)
+- Redeploy so live matches POST OTP — blocked on prod-deploy confirmation, see below
 - Turnstile on case create (T006a) — rate limits already wired, this is Turnstile only
 - Real email (Resend) + close the `/api/demo/otp` backdoor (T006b) — see docs/product.md
 - Access control on `/guichet`

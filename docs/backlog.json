@@ -83,8 +83,8 @@
         {
           "id": "T007",
           "title": "Add GitHub remote",
-          "desc": "v0 is on main (9dd58e6). Create a public repo when asked. No secrets.",
-          "status": "pending",
+          "desc": "Public repo at github.com/aliouuuw/parleralajustice, main pushed.",
+          "status": "done",
           "deps": ["T005"],
           "files": ["web/", "docs/"],
           "verify": "git status"
