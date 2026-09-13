@@ -57,12 +57,21 @@
           "verify": "bun run test"
         },
         {
-          "id": "T006",
-          "title": "Turnstile and OTP rate limit",
-          "desc": "Turnstile on case create and OTP. Use CASE_RATE_LIMIT binding. Replace spike_otp with Resend or a log-only stub behind a flag.",
+          "id": "T006a",
+          "title": "Turnstile on case create",
+          "desc": "Turnstile challenge on POST /api/cases, public no-auth write endpoint. CASE_RATE_LIMIT (10/60s) is already wired on /api/cases, /api/audio, and /api/demo/otp, no new rate-limit work needed here.",
           "status": "pending",
           "deps": ["T003"],
-          "files": ["web/src/auth.ts", "web/src/index.ts", "web/wrangler.jsonc"],
+          "files": ["web/src/cases.ts", "web/src/index.ts", "web/wrangler.jsonc"],
+          "verify": "bun run test"
+        },
+        {
+          "id": "T006b",
+          "title": "Real email OTP, close the demo backdoor",
+          "desc": "POST /api/demo/otp returns any email's pending OTP to whoever asks, no ownership check. Its rate limit only slows that read, it does not stop it. Wire Resend so sendVerificationOTP in auth.ts actually emails the code, delete /api/demo/otp (or gate it behind a dev-only env flag), then rate-limit and Turnstile the real send-OTP route.",
+          "status": "pending",
+          "deps": ["T003"],
+          "files": ["web/src/auth.ts", "web/src/cases.ts", "web/src/index.ts", "web/wrangler.jsonc"],
           "verify": "bun run test"
         }
       ]
@@ -85,7 +94,7 @@
           "title": "X receipts thread",
           "desc": "Before/after intake. DNS and WHOIS receipts. Not a sales deck. Wait until Turnstile is on.",
           "status": "pending",
-          "deps": ["T006", "T007"],
+          "deps": ["T006a", "T007"],
           "files": [],
           "verify": "true"
         }

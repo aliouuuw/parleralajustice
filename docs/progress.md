@@ -28,7 +28,7 @@ Live still serves the pre-hygiene Worker (GET `/api/demo/otp`). Redeploy so conn
 
 - Redeploy so live matches POST OTP
 - GitHub remote (T007)
-- Turnstile (T006)
-- Real email (Resend)
+- Turnstile on case create (T006a) — rate limits already wired, this is Turnstile only
+- Real email (Resend) + close the `/api/demo/otp` backdoor (T006b) — see docs/product.md
 - Access control on `/guichet`
 - X thread

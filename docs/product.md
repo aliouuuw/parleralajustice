@@ -54,6 +54,7 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 - Better Auth 1.7.3 accepts `database: env.DB`.
 - Routes: `/api/auth/*`.
 - OTP is stored in D1 table `spike_otp` for tests. Not production mail.
+- `POST /api/demo/otp` reads any email's pending OTP back, no ownership check. This is a demo backdoor to skip real email, not a security boundary. Its 10/60s rate limit only slows how fast that OTP can be read, it does not stop it. Close this before treating the identified path as real auth (T006b).
 - Secret: `BETTER_AUTH_SECRET` via `.dev.vars` locally and `wrangler secret` remotely.
 
 ## Launch on X
