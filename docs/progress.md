@@ -1,12 +1,12 @@
 # Progress
 
-Checked: 13 September 2026, 13:45 UTC.
+Checked: 13 September 2026, 14:05 UTC.
 
 ## Live
 
-https://parleralajustice.aliouuuw.workers.dev — Worker version `9fc365ab-4858-4681-9474-800d0ad5b82c`.
+https://parleralajustice.aliouuuw.workers.dev — Turnstile on case create, production secret set by the user (wrangler secret put), deployed and verified.
 
-Redeployed. Verified: GET `/api/demo/otp` now 405, POST route live, `/` and `/guichet` 200, tests 9/9 passing.
+Verified: GET `/api/demo/otp` 405, POST route live, `/` and `/guichet` 200, root page loads the Turnstile script, POST `/api/cases` rejects with no token and with a bad token (real siteverify round trip), tests 10/10 passing.
 
 ## Done
 
@@ -26,7 +26,6 @@ Redeployed. Verified: GET `/api/demo/otp` now 405, POST route live, `/` and `/gu
 
 ## Not done
 
-- Turnstile on case create (T006a) — rate limits already wired, this is Turnstile only
 - Real email (Resend) + close the `/api/demo/otp` backdoor (T006b) — see docs/product.md
 - Access control on `/guichet` — confirmed live and unprotected: `GET /api/guichet/cases` returns the case list to anyone, no auth
 - X thread

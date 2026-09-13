@@ -59,8 +59,8 @@
         {
           "id": "T006a",
           "title": "Turnstile on case create",
-          "desc": "Turnstile widget on POST /api/cases, verified server-side against Cloudflare siteverify. CASE_RATE_LIMIT (10/60s) was already wired. Widget name parleralajustice-case-create, managed mode. Code and tests done; production secret + deploy pending user confirmation (wrangler secret put is a blocked auto-mode action).",
-          "status": "pending",
+          "desc": "Turnstile widget on POST /api/cases, verified server-side against Cloudflare siteverify. CASE_RATE_LIMIT (10/60s) was already wired. Widget name parleralajustice-case-create, managed mode. Production secret set, deployed and verified live: no-token and bad-token requests both rejected with a real siteverify round trip.",
+          "status": "done",
           "deps": ["T003"],
           "files": ["web/src/cases.ts", "web/src/index.ts", "web/wrangler.jsonc"],
           "verify": "bun run test"
