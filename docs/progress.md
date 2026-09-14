@@ -1,6 +1,6 @@
 # Progress
 
-Checked: 14 September 2026, 05:00 UTC.
+Checked: 14 September 2026, 07:00 UTC.
 
 ## Live
 
@@ -19,19 +19,18 @@ pushed and not deployed. Turnstile on case create is live (T006a).
 
 Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 
-## Next: pass 7 design-system upgrade (not started)
+## Next: pass 8, turn the channels/impact sections back up (not started)
 
-Brief: **`docs/UI-HANDOVER.md` §16**. Evidence:
-`research/cash-app-foundations.md`.
-
-- One system, three layers on every section: Cash App type architecture,
-  HeroUI control shapes, Stripe calibration.
-- Fonts decided 14 Sep: Mona Sans for titles, body and controls (semi-wide
-  titles, weight tokens), Sligoil for data. Karrik removed. Done on `/preview`
-  (uncommitted). Details: handover §6.
-- Order: type tokens, controls, **owner picks one of two compositions**,
-  sections, DESIGN.md, verify.
-- Baseline: 76 one-off font sizes and 13 one-off radii in `preview.css`.
+Brief: **`docs/UI-HANDOVER.md` §17**. Pass 7 (§16) is done and committed:
+type tokens, Mona Sans, controls, and the `pv-channels`/`pv-impact` sections
+all shipped (`105c02c`, `782b882`, `4b032eb`). Owner verdict on the last
+commit: correct content, but those two sections read as a generic card grid
+and dropped the design level the rest of `/preview` holds. Fix with
+`$impeccable` bolder + delight + slight overdrive + colorize, scoped to just
+those two sections. Direction already picked: illustration-led (real hero-
+illustration crops for Écrit/Voix, a compact real-code list for the 4
+announced channels, impact on a full green band). Full spec, locked rules,
+and the reasons the other 2 directions were rejected: handover §17.
 
 ## In progress: T009 visual direction
 
@@ -61,7 +60,9 @@ See `docs/UI-HANDOVER.md`.
 - Turnstile on case create (T006a), live and verified
 - GitHub remote (T007)
 - T009 code: HeroUI v3 and Vite client, preview north star, HeroUI control mapping (local only)
-- Pass 7 brief reviewed and rewritten; Cash App foundations and font coverage researched (14 Sep)
+- **Pass 7 shipped:** type tokens, Mona Sans (Karrik removed), control states,
+  `pv-channels` and `pv-impact` sections. Cash App foundations and font
+  coverage researched first (14 Sep).
 
 ## Tests
 
@@ -70,24 +71,21 @@ checked 14 Sep 2026.
 
 ## Git
 
-- Branch: `main` at `105c02c`, **ahead of `origin/main` by 3**, not pushed
+- Branch: `main` at `4b032eb`, **ahead of `origin/main` by 6**, not pushed
   - `3f0a582` `feat: implement HeroUI v3 with React and Vite for civic intake`
   - `f49a4a0` `feat(preview): add detailed critique and tracking for civic intake`
   - `105c02c` `feat: update design documentation and CSS for HeroUI v3 integration`
+  - `304aaad` `feat: refine design documentation and update font integration for HeroUI v3`
+  - `782b882` `fix(preview): give empty suivi a job, surface clipboard failures`
+  - `4b032eb` `feat(preview): add channel and impact sections from the live platform`
 - `origin/main` is `6fba040` (T006a docs)
-- Uncommitted: the pass 7 brief rewrite (`docs/UI-HANDOVER.md`,
-  `docs/progress.md`, `docs/DESIGN.md`, `docs/backlog.json`,
-  `research/cash-app-foundations.md`, `research/type-specimen-2026-09-14.png`)
-- Uncommitted: Mona Sans type change (`web/src/client/preview/preview.css`,
-  `web/public/fonts/README.md`, two `mona-sans-*.woff2` files added,
-  `karrik-regular.woff2` deleted, title specimens in `research/`)
-- Remote: https://github.com/aliouuuw/parleralajustice
-- No pull request. No GitHub issues. Working directly on `main`. Do not
-  auto-commit. Do not push unless the owner asks.
+- Working tree is clean. No pull request. No GitHub issues. Working directly
+  on `main`. Do not auto-commit. Do not push unless the owner asks.
 
 ## Not done
 
-- **Pass 7** (see above), then visual QA
+- **Pass 8** (see above): turn `pv-channels`/`pv-impact` back up with
+  `$impeccable`. Handover §17.
 - `web/index.html` still loads Public Sans from Google Fonts on every route,
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app

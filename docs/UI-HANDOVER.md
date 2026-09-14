@@ -573,7 +573,7 @@ Baseline on 14 Sep: **76** one-off `font-size` values and **13** one-off
 **Open:** `pv-hero`, `pv-lede`, `pv-type-band`, `pv-types`, `pv-channels`,
 `pv-impact`, `pv-outcome-band`, `pv-slides`, `pv-frise`. `pv-channels` and
 `pv-impact` were added 14 Sep to cover the live platform's channel list and
-"Notre Impact" section (research §J.2, §J.6) — see `docs/DESIGN.md` for the
+"Notre Impact" section (research §J.2, §J.6). See `docs/DESIGN.md` for the
 honesty rules that shaped their content.
 
 **Controls:** `pv-button` (`--primary`, `--secondary`, `--quiet`), `pv-field`,
@@ -649,7 +649,7 @@ Each line is a check someone can run.
   back to text selection.
 - **Already fixed before this handover was written:** the review stage
   (locked reread, type picker, step-rail wording) was live in code by the time
-  §16 first listed it as open — the critique snapshot below predates the
+  §16 first listed it as open. The critique snapshot below predates the
   commit that added it. Verified 14 Sep by driving write → review → confirm →
   receipt in a real browser: the user's own text appears at review, the type
   choice is required there, and step 1/2 labels never disagree with
@@ -668,3 +668,80 @@ Each line is a check someone can run.
 - Browser: the headless shell in §8, or editor browser tools, against
   `http://localhost:5173`.
 - Tests: `bun run test` from the repo root.
+
+## 17. Pass 8: turn the channels and impact sections back up (queued, 14 Sep 2026)
+
+Owner verdict on `pv-channels` and `pv-impact` (shipped in commit `4b032eb`,
+still on `main` unchanged. This pass has **not started**, nothing is
+uncommitted): *"correct and needed but design level was dropped here. We need
+to turn it up again."* Content and honesty rules stay. Only the execution
+changes. Explicit instruction: use `$impeccable`, specifically **bolder,
+delight, slight overdrive, colorize**.
+
+### Why the verdict is right
+
+`pv-channels` is 6 identical cards (icon, heading, one line, a state label).
+`pv-impact` is a stat row plus 2 identical cards. That is exactly the
+`craft-floor.md` refusal: *"Same-size cards of icon plus heading plus text as
+the page structure. Cards are the lazy container."* Everything around these
+two sections earns its composition (the illustrated hero, the yellow band
+that breaks the container, the ink progress rail, the green outcome band).
+These two sections are the one place pass 7 defaulted to the generic
+scaffold. Fix the scaffold, not the copy.
+
+### Chosen direction: illustration-led
+
+Presented 3 directions; owner picked this one over a dark "guichet board"
+readout and a feature-phone demo (rejected as closest to attempt 1's
+"toy-y" failure, §4).
+
+- **Écrit** and **Voix** stop being 1-of-6 cards. They become 2 large tiles
+  using real crops of the existing hero illustrations
+  (`/images/hero/ecrire-1280.webp`, `parler-1280.webp`, already licensed,
+  already in the hero carousel, do not source new art). Each tile is a real
+  control: clicking it calls `beginTask()` and jumps straight into task mode,
+  focused on the matching input (the message textarea for Écrit, the
+  **Enregistrer** button for Voix. Never auto-start recording: the
+  microphone prompt stays the visitor's own choice).
+- The **Voix** tile shows a live-looking waveform at rest, reusing
+  `Waveform.tsx`'s existing `"sim"` source (already built for exactly this:
+  a synthetic speech envelope, no microphone needed). Gate it behind
+  `IntersectionObserver` so it only animates on screen, and behind
+  `prefers-reduced-motion`.
+- The 4 announced channels (Vidéo, SMS, USSD, Téléphone) move into one
+  compact list beside a third illustration crop (`atelier-1280.webp`,
+  currently unused, see §7's asset list), each row carrying the **real
+  code the live platform published** (research §J.2): SMS `3737`, USSD
+  `*711#`, phone's language menu. Real numbers in Sligoil read as evidence,
+  not as a mocked control. Still no button, still not simulated, still
+  captioned "Pas encore ouverts."
+- **Impact** moves onto full flag-green grain (`--color-brand` +
+  `--grain`), matching the outcome band's own treatment, with the 4 numbers
+  set huge in Sligoil, white on green, and a subtle count-up on scroll-into-
+  view (respect `prefers-reduced-motion`). The 2 claim cards sit below on
+  white, unchanged in content.
+- Overdrive, kept slight per the owner's own wording: scroll-driven parallax
+  on the two illustration crops only (`animation-timeline: view()` with a
+  static-position fallback per `craft-floor.md`'s motion rule (one
+  authored moment, not scattered effects).
+
+### Locked, unchanged from pass 7
+
+- Still exactly 2 real channels. The 4 "announced" ones stay non-interactive
+  content, never a button, never simulated (§16's channel honesty rule).
+- Impact numbers stay fictive and stay labelled as such. Moving them onto a
+  bolder green band does not make them more true.
+- The 2 claim cards' copy stays ours (§16: not the live platform's
+  contradictory "Anonymat possible" / "Chiffrement end-to-end").
+- Colour stays the flag system. "Colorize" here means using more of
+  `--color-brand` and `--grain` with intent (a full band, not a tint), not
+  introducing a new hue.
+
+### Before building
+
+Run `$impeccable` bolder + delight + overdrive + colorize scoped to
+`pv-channels` and `pv-impact` only (both commands want scope named up front).
+Load `craft-floor.md` before editing. Verify contrast on every new pairing
+computed, not eyeballed. Pass 7 shipped one accidental miss this way
+(`text-tertiary` on `--color-field`, 4.38:1, since fixed) and the green band
+in this pass introduces several new white/gold-on-brand pairs to check.
