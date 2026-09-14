@@ -4,29 +4,20 @@ import { Header } from "./components/Header";
 import { RouterProvider, useRoute } from "./lib/router";
 import { Acte } from "./pages/Acte";
 import { Connexion } from "./pages/Connexion";
-import { Dossier } from "./pages/Dossier";
 import { Guichet } from "./pages/Guichet";
-import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
-import { Suivre } from "./pages/Suivre";
 import { Preview, PreviewSuivre } from "./preview/Preview";
 
 function Routes() {
 	const { path } = useRoute();
 
-	if (path === "/" || path === "/parler") return <Home />;
 	if (path === "/acte") return <Acte />;
-	if (path === "/suivre") return <Suivre />;
 	if (path === "/connexion") return <Connexion />;
 	if (path === "/guichet") return <Guichet />;
-	if (path.startsWith("/d/")) return <Dossier code={path.slice(3).toUpperCase()} />;
 	return <NotFound />;
 }
 
 function Layout() {
-	const { path } = useRoute();
-	const isHome = path === "/" || path === "/parler";
-
 	return (
 		<div className="app-shell flex min-h-dvh flex-col bg-background">
 			<a
@@ -37,7 +28,7 @@ function Layout() {
 			</a>
 			<DisclaimerBanner />
 			<Header />
-			<main id="app" tabIndex={-1} className={`site-container main-content ${isHome ? "main-intake" : "main-service"}`}>
+			<main id="app" tabIndex={-1} className="site-container main-content main-service">
 				<Routes />
 			</main>
 			<Footer />
@@ -47,8 +38,8 @@ function Layout() {
 
 function Shell() {
 	const { path } = useRoute();
-	if (path === "/preview") return <Preview />;
-	if (path === "/preview/suivre") return <PreviewSuivre />;
+	if (path === "/" || path === "/parler" || path === "/preview") return <Preview />;
+	if (path === "/suivre" || path === "/preview/suivre" || path.startsWith("/d/")) return <PreviewSuivre />;
 	return <Layout />;
 }
 

@@ -4,7 +4,7 @@ Last updated: 14 September 2026.
 
 ## Authority
 
-**`/preview` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. The HeroUI app under `web/src/client/pages/` should converge here after sign-off, not the reverse.
+**`/` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. `/preview` remains an alias. Connexion, guichet, and acte keep the previous HeroUI chrome for now.
 
 ## Direction
 
@@ -16,10 +16,10 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 
 - Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
 - **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). On desktop, notice + header + hero equal `100dvh`. After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
-- Yellow **taxonomy band** educates before the task; **type selection** happens again on step 2 (required).
+- Yellow **taxonomy band** educates before the task; **type selection** is a HeroUI select on step 1 (required).
 - **Channels** (`pv-channels`): owner-selected open composition A, accepted 14 Sep. No repeated hero art, route lines, numbered stops, or nested cards. One centered heading introduces a shared pale-green choice surface with writing and optional voice columns. Familiar pill buttons enter task mode and focus the textarea or Enregistrer; never auto-start recording. A broad Waveform `sim` sits on a pale-green field, explicitly labelled illustrative with the microphone inactive; IntersectionObserver and reduced-motion preference gate animation. Copy states text remains necessary and nothing is transmitted. A secondary strip below lists Vidéo, SMS, USSD, Téléphone with published codes from research §J.2 (`3737`, `*711#`, phone language menu). These channels remain informational and unavailable in the preview. The columns stack on phones.
 - **Impact** (`pv-impact`): fictive stats on a full flag-green `--grain` band (Sligoil, white on brand, subtle count-up on enter; reduced motion keeps final values). Two claim cards stay on white below with the aperçu's own honest claims (research §J.5 #3).
-- **Two-stage intake:** (1) write message + optional voice, (2) review message, choose type, optional lieu, demo confirmation → receipt.
+- **Two-stage intake:** (1) choose type, write message + optional voice, (2) review, optional lieu, demo confirmation, Turnstile → receipt with a stored tracking code.
 - **Tracking:** lookup, dossier card, agent reply loop, status glossary (always open, current status in gold).
 - Footer links: Ministry, e-Services, e-Sénégal, and **Obtenir un acte** (outbound only).
 
@@ -59,8 +59,7 @@ Next: extract Record module.
 - Text required: 12 to 4000 characters trimmed. Voice optional, max 3 minutes, stays on device in this preview (not uploaded).
 - Step 1 **Continuer** validates message only; opens review. Recording blocks continue.
 - Step 2 **Confirmer** requires type, demo checkbox; then shows receipt. **Modifier** returns to step 1 with draft preserved.
-- No Turnstile on `/preview` (static demo). Production app keeps server Turnstile on real create.
-- Receipt: copy reference, print, link to `/preview/suivre`. Non-sequential demo code `PALJ-7K4M-2QX9`.
+- Turnstile on confirm. Receipt: copy reference, print, link to `/suivre`. Codes come from `POST /api/cases`.
 - Reduced motion: no carousel autoplay animation (the pause button was removed; hover and focus pause the fill).
 
 ## Copy and disclosure

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Waveform, type WaveSource } from "./Waveform";
-import { Button, Arrow } from "./Button";
+import { Button } from "./Button";
 import { Field } from "./Field";
 import { ErrorSummary, InlineError } from "./Alert";
 import { ServiceHeader } from "./ServiceHeader";
 import { RequestTypeSelect } from "./RequestTypeSelect";
+import { TurnstileField, type TurnstileHandle } from "../components/TurnstileField";
+import { createCase, getCase, getSession, uploadAudio, type CaseDossier } from "../lib/api";
 import "./preview.css";
 
 const MAX = 4000;
@@ -21,6 +23,21 @@ const TYPES = [
 	["Suggestion ou observation", "Proposer une amélioration"],
 	["Autre", "Une situation qui n'entre dans aucun type"],
 ] as const;
+
+const KIND_FROM_TYPE: Record<(typeof TYPES)[number][0], "information" | "reclamation" | "signalement" | "suggestion"> = {
+	"Demande d'information": "information",
+	"Réclamation": "reclamation",
+	"Difficulté rencontrée": "reclamation",
+	"Signalement": "signalement",
+	"Suggestion ou observation": "suggestion",
+	"Autre": "information",
+};
+
+const STATUS_FROM_CASE: Record<string, string> = {
+	recu: "Reçue",
+	en_cours: "En cours de traitement",
+	repondu: "Résolue",
+};
 
 // Status model of the live platform (research §J.4), worded for citizens.
 export const STATUSES = [
@@ -274,7 +291,7 @@ function Frame({ current, children, taskMode }: { current: "deposer" | "suivre";
 				</div>
 			</div>
 			<ServiceHeader
-				brandHref="/preview"
+				brandHref="/"
 				brandLabel="Parler à la justice"
 				brandSublabel="Démo"
 				brandMark={
@@ -286,8 +303,8 @@ function Frame({ current, children, taskMode }: { current: "deposer" | "suivre";
 					</svg>
 				}
 				nav={[
-					{ href: "/preview", label: "Déposer une demande", current: current === "deposer" },
-					{ href: "/preview/suivre", label: "Suivre un dossier", current: current === "suivre" },
+					{ href: "/", label: "Déposer une demande", current: current === "deposer" },
+					{ href: "/suivre", label: "Suivre un dossier", current: current === "suivre" },
 				]}
 			/>
 			<main id="main-content">{children}</main>
@@ -353,13 +370,13 @@ function HeroSlides() {
 	);
 }
 
-const KEEP_NOTE = "L'enregistrement reste sur cet appareil. Il n'est jamais envoyé.";
+const KEEP_NOTE = "Le vocal est facultatif. Il part avec le dépôt, comme le texte.";
 
-/** Records a voice message in the browser. The clip lives in a blob URL and is never uploaded. */
+/** Records a voice message in the browser. Upload happens at confirm. */
 function useRecorder() {
 	const [source, setSource] = useState<WaveSource>("idle");
 	const [stream, setStream] = useState<MediaStream | null>(null);
-	const [clip, setClip] = useState<{ url: string; seconds: number } | null>(null);
+	const [clip, setClip] = useState<{ url: string; seconds: number; blob: Blob } | null>(null);
 	const [note, setNote] = useState(KEEP_NOTE);
 	const [elapsed, setElapsed] = useState(0);
 	const [pending, setPending] = useState(false);
@@ -405,8 +422,9 @@ function useRecorder() {
 			recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
 			recorder.onstop = () => {
 				if (!mounted.current || !chunks.length) return;
-				setClip({ url: URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType })), seconds: elapsedRef.current });
-				setNote(`Enregistrement prêt. ${KEEP_NOTE}`);
+				const blob = new Blob(chunks, { type: recorder.mimeType });
+				setClip({ url: URL.createObjectURL(blob), seconds: elapsedRef.current, blob });
+				setNote("Enregistrement prêt. Il partira avec le dépôt.");
 			};
 			recorderRef.current = recorder;
 			setClip(null);
@@ -444,12 +462,17 @@ export function Preview() {
 	const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 	const [writeAttempted, setWriteAttempted] = useState(false);
 	const [reviewAttempted, setReviewAttempted] = useState(false);
+	const [identified, setIdentified] = useState(false);
+	const [trackingCode, setTrackingCode] = useState(SAMPLE_CODE);
+	const [submitError, setSubmitError] = useState<string | null>(null);
+	const [submitting, setSubmitting] = useState(false);
 	const summaryRef = useRef<HTMLDivElement>(null);
 	const reviewSummaryRef = useRef<HTMLDivElement>(null);
 	const messageRef = useRef<HTMLTextAreaElement>(null);
 	const recordRef = useRef<HTMLButtonElement>(null);
 	const reviewTitleRef = useRef<HTMLHeadingElement>(null);
 	const codeRef = useRef<HTMLElement>(null);
+	const turnstileRef = useRef<TurnstileHandle>(null);
 	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const count = text.trim().length;
 	const messageReady = count >= MIN && count <= MAX;
@@ -462,6 +485,9 @@ export function Preview() {
 	const tone = count > MAX ? "over" : count > MAX * 0.9 ? "near" : messageReady ? "ok" : undefined;
 
 	useEffect(() => () => clearTimeout(copyTimer.current), []);
+	useEffect(() => {
+		getSession().then((user) => setIdentified(Boolean(user))).catch(() => setIdentified(false));
+	}, []);
 
 	function beginTask(focus: "message" | "record" = "message") {
 		setTaskMode(true);
@@ -491,20 +517,59 @@ export function Preview() {
 		requestAnimationFrame(() => messageRef.current?.focus());
 	}
 
-	function confirmDeposit() {
+	async function confirmDeposit() {
 		setReviewAttempted(true);
-		if (!reviewReady) {
+		setSubmitError(null);
+		if (!reviewReady || !requestType || submitting) {
 			requestAnimationFrame(() => reviewSummaryRef.current?.focus());
 			return;
 		}
-		setStage("done");
-		requestAnimationFrame(() => document.getElementById("receipt")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+		const turnstileToken = turnstileRef.current?.getToken() ?? "";
+		if (!turnstileToken) {
+			setSubmitError("Terminez la vérification anti-robot avant le dépôt.");
+			return;
+		}
+		setSubmitting(true);
+		try {
+			let audioKey: string | null = null;
+			if (recorder.clip) {
+				const uploaded = await uploadAudio(recorder.clip.blob);
+				if (!uploaded.ok) {
+					setSubmitError(uploaded.error);
+					turnstileRef.current?.reset();
+					return;
+				}
+				audioKey = uploaded.key;
+			}
+			const body = place.trim() ? `${text.trim()}\n\nLieu : ${place.trim()}` : text.trim();
+			const result = await createCase({
+				kind: KIND_FROM_TYPE[requestType],
+				channel: identified ? "identified" : "anonymous",
+				body,
+				demoConfirmed: demoOk,
+				audioKey,
+				turnstileToken,
+			});
+			if (!result.ok) {
+				setSubmitError(result.error);
+				turnstileRef.current?.reset();
+				return;
+			}
+			setTrackingCode(result.trackingCode);
+			setStage("done");
+			requestAnimationFrame(() => document.getElementById("receipt")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+		} catch {
+			setSubmitError("Connexion interrompue. Votre message est conservé sur cette page. Réessayez.");
+			turnstileRef.current?.reset();
+		} finally {
+			setSubmitting(false);
+		}
 	}
 
 	async function copyCode() {
 		clearTimeout(copyTimer.current);
 		try {
-			await navigator.clipboard.writeText(SAMPLE_CODE);
+			await navigator.clipboard.writeText(trackingCode);
 			setCopyState("copied");
 			copyTimer.current = setTimeout(() => setCopyState("idle"), 3000);
 		} catch {
@@ -730,9 +795,11 @@ export function Preview() {
 									<input id="demo-confirm" type="checkbox" checked={demoOk} onChange={(event) => setDemoOk(event.target.checked)} />
 									<label htmlFor="demo-confirm">Je comprends qu'aucune demande n'est transmise au Ministère ni à un service judiciaire. Ceci est une démonstration.</label>
 								</div>
+								<TurnstileField ref={turnstileRef} />
+								{submitError && <InlineError id="submit-error">{submitError}</InlineError>}
 								<div className="pv-form__footer">
-									<Button variant="primary" type="button" onClick={confirmDeposit} arrow>Confirmer le dépôt fictif</Button>
-									<Button variant="secondary" type="button" onClick={backToWrite}>Retour</Button>
+									<Button variant="primary" type="button" disabled={submitting} onClick={confirmDeposit} arrow>{submitting ? "Dépôt en cours…" : "Confirmer le dépôt fictif"}</Button>
+									<Button variant="secondary" type="button" disabled={submitting} onClick={backToWrite}>Retour</Button>
 								</div>
 							</>
 						)}
@@ -746,19 +813,19 @@ export function Preview() {
 					<div className="pv-container pv-outcome">
 						<div className="pv-outcome__intro">
 							<h2>Une référence à conserver.<br />Un suivi à retrouver.</h2>
-							<span>Le récépissé rassemble la référence et les étapes du suivi. Cet exemple montre un parcours fictif.</span>
+							<span>Le récépissé rassemble la référence et les étapes du suivi. Conservez-la pour retrouver le dossier.</span>
 						</div>
-						<article className="pv-receipt" aria-label="Exemple de récépissé de dépôt">
+						<article className="pv-receipt" aria-label="Récépissé de dépôt">
 							<header>
 								<div>
-									<p>Exemple de confirmation</p>
-									<time>Aucune demande transmise</time>
+									<p>Confirmation de dépôt</p>
+									<time>Démonstration. Rien n'est transmis au Ministère.</time>
 								</div>
 								<span>Données fictives</span>
 							</header>
 							<div className="pv-receipt__reference">
-								<span>Référence de suivi · Exemple</span>
-								<strong ref={codeRef}>{SAMPLE_CODE}</strong>
+								<span>Référence de suivi</span>
+								<strong ref={codeRef}>{trackingCode}</strong>
 								<p>Ce n'est pas un numéro d'ordre&nbsp;: la référence ne permet pas de deviner d'autres dossiers.</p>
 								{requestType && (
 									<dl className="pv-receipt__meta">
@@ -766,16 +833,16 @@ export function Preview() {
 										{place.trim() && <div><dt>Lieu</dt><dd>{place.trim()}</dd></div>}
 									</dl>
 								)}
-								{recorder.clip && <p>Message vocal joint&nbsp;: {clock(recorder.clip.seconds)}, conservé sur cet appareil.</p>}
+								{recorder.clip && <p>Message vocal joint&nbsp;: {clock(recorder.clip.seconds)}.</p>}
 							</div>
 							<div className="pv-receipt__actions">
-								<Button variant="primary" href={`/preview/suivre?ref=${SAMPLE_CODE}${requestType ? `&type=${encodeURIComponent(requestType)}` : ""}`} arrow>Suivre ce dossier</Button>
+								<Button variant="primary" href={`/suivre?ref=${encodeURIComponent(trackingCode)}`} arrow>Suivre ce dossier</Button>
 								<Button variant="secondary" type="button" onClick={copyCode} aria-describedby={copyState === "error" ? "copy-error" : undefined}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</Button>
 								<Button variant="quiet" type="button" onClick={() => window.print()}>Imprimer</Button>
 								{copyState === "error" && <InlineError id="copy-error" className="pv-receipt__actions-error">Copie automatique impossible. La référence est sélectionnée&nbsp;: copiez-la avec Ctrl+C ou &#8984;C.</InlineError>}
 							</div>
 							<ol className="pv-history" aria-label="Étapes du suivi">
-								<li data-status="complete"><span /><div><strong>Reçue</strong><time>13 sept. 05:42</time></div></li>
+								<li data-status="complete"><span /><div><strong>Reçue</strong><time>À l'instant</time></div></li>
 								<li data-status="active"><span /><div><strong>Assignée à un agent</strong><time>En cours</time></div></li>
 								<li><span /><div><strong>En attente d'informations</strong><time>Si besoin</time></div></li>
 								<li><span /><div><strong>Résolue ou rejetée</strong><time>À venir</time></div></li>
@@ -789,48 +856,62 @@ export function Preview() {
 }
 
 export function PreviewSuivre() {
-	const params = typeof window === "undefined" ? new URLSearchParams() : new URLSearchParams(window.location.search);
-	const initial = params.get("ref") ?? "";
-	const dossierType = params.get("type")?.trim() || "Réclamation";
+	const initial = (() => {
+		if (typeof window === "undefined") return "";
+		const fromQuery = new URLSearchParams(window.location.search).get("ref") ?? "";
+		const path = window.location.pathname.replace(/\/+$/, "");
+		if (path.startsWith("/d/")) return decodeURIComponent(path.slice(3));
+		return fromQuery;
+	})();
 	const [query, setQuery] = useState(initial);
 	const [error, setError] = useState<string | null>(null);
-	const [found, setFound] = useState(() => normalizeReference(initial) === SAMPLE_CODE);
-	const [reply, setReply] = useState("");
-	const [replyError, setReplyError] = useState(false);
-	const [replied, setReplied] = useState(false);
+	const [dossier, setDossier] = useState<CaseDossier | null>(null);
+	const [loading, setLoading] = useState(Boolean(initial.trim()));
 	const inputRef = useRef<HTMLInputElement>(null);
-	const replyRef = useRef<HTMLTextAreaElement>(null);
 
-	function search(event: FormEvent) {
-		event.preventDefault();
-		const code = normalizeReference(query);
-		const problem = !query.trim()
-			? "Saisissez la référence reçue au dépôt."
-			: !REFERENCE.test(code)
-				? "La référence compte 12 caractères, par exemple PALJ-7K4M-2QX9."
-				: code !== SAMPLE_CODE
-					? "Aucun dossier fictif ne correspond. Dans cet aperçu, seul PALJ-7K4M-2QX9 existe."
-					: null;
-		setError(problem);
-		if (problem) {
-			setFound(false);
+	async function lookup(raw: string) {
+		const code = raw.trim().toUpperCase();
+		if (!code) {
+			setError("Saisissez la référence reçue au dépôt.");
+			setDossier(null);
 			inputRef.current?.focus();
 			return;
 		}
-		setQuery(code);
-		setFound(true);
-		requestAnimationFrame(() => document.getElementById("dossier")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+		setLoading(true);
+		setError(null);
+		try {
+			const result = await getCase(code);
+			if (!result) {
+				setDossier(null);
+				setError("Aucun dossier ne correspond à cette référence.");
+				inputRef.current?.focus();
+				return;
+			}
+			setQuery(result.trackingCode);
+			setDossier(result);
+			requestAnimationFrame(() => document.getElementById("dossier")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+		} catch {
+			setDossier(null);
+			setError("Impossible de charger le dossier. Réessayez.");
+		} finally {
+			setLoading(false);
+		}
 	}
 
-	function sendReply() {
-		if (reply.trim().length < MIN) {
-			setReplyError(true);
-			replyRef.current?.focus();
-			return;
-		}
-		setReplyError(false);
-		setReplied(true);
+	useEffect(() => {
+		if (!initial.trim()) return;
+		void lookup(initial);
+	}, []);
+
+	function search(event: FormEvent) {
+		event.preventDefault();
+		void lookup(query);
 	}
+
+	const statusName = dossier ? STATUS_FROM_CASE[dossier.status] ?? dossier.status : "";
+	const typeName = dossier
+		? TYPES.find(([name]) => KIND_FROM_TYPE[name] === dossier.kind)?.[0] ?? dossier.kind
+		: "";
 
 	return (
 		<Frame current="suivre">
@@ -838,7 +919,7 @@ export function PreviewSuivre() {
 				<div className="pv-container pv-track__layout">
 					<div>
 						<h1 id="track-title">Suivre un dossier</h1>
-						<p className="pv-lede">Saisissez la référence reçue au dépôt. Cet aperçu contient un seul dossier fictif.</p>
+						<p className="pv-lede">Saisissez la référence reçue au dépôt. Aucun compte n'est nécessaire.</p>
 						<form className="pv-lookup" onSubmit={search} noValidate>
 							<label htmlFor="reference">Référence de suivi</label>
 							<div className="pv-lookup__row">
@@ -847,17 +928,17 @@ export function PreviewSuivre() {
 									ref={inputRef}
 									value={query}
 									onChange={(event) => setQuery(event.target.value)}
-									placeholder="PALJ-XXXX-XXXX"
+									placeholder="PALJ-XXXX"
 									autoComplete="off"
 									autoCapitalize="characters"
 									spellCheck={false}
 									aria-invalid={error ? true : undefined}
 									aria-describedby={error ? "reference-help reference-error" : "reference-help"}
 								/>
-								<Button variant="primary" type="submit">Rechercher</Button>
+								<Button variant="primary" type="submit">{loading ? "Recherche…" : "Rechercher"}</Button>
 							</div>
 							<p className="pv-lookup__help" id="reference-help">
-								Format&nbsp;: 12 caractères. Essayez <button className="pv-link" type="button" onClick={() => { setQuery(SAMPLE_CODE); setError(null); }}>{SAMPLE_CODE}</button>.
+								La référence commence par PALJ-. Conservez-la après le dépôt.
 							</p>
 							{error && <InlineError id="reference-error">{error}</InlineError>}
 						</form>
@@ -866,64 +947,54 @@ export function PreviewSuivre() {
 				</div>
 			</section>
 
-			{!found && (
+			{!dossier && (
 				<section className="pv-type-band" aria-label="Comment fonctionne le suivi">
 					<div className="pv-container pv-track-help">
-						<div className="pv-track-help__step"><span>1</span><div><strong>Vous recevez une référence</strong><p>À la fin d'un dépôt, une référence à 12 caractères est fournie, par exemple {SAMPLE_CODE}.</p></div></div>
-						<div className="pv-track-help__step"><span>2</span><div><strong>Vous la saisissez ici</strong><p>La référence retrouve votre dossier fictif et son statut actuel. Aucun compte n'est nécessaire.</p></div></div>
-						<div className="pv-track-help__step"><span>3</span><div><strong>Vous répondez si besoin</strong><p>Un agent peut demander une précision. Le dossier avance quand vous répondez.</p></div></div>
+						<div className="pv-track-help__step"><span>1</span><div><strong>Vous recevez une référence</strong><p>À la fin d'un dépôt, une référence commençant par PALJ- est fournie.</p></div></div>
+						<div className="pv-track-help__step"><span>2</span><div><strong>Vous la saisissez ici</strong><p>La référence retrouve votre dossier et son statut actuel. Aucun compte n'est nécessaire.</p></div></div>
+						<div className="pv-track-help__step"><span>3</span><div><strong>Vous suivez le statut</strong><p>Les étapes du dossier s'affichent à mesure qu'un agent les avance.</p></div></div>
 					</div>
 				</section>
 			)}
 
-			{found && (
+			{dossier && (
 				<section className="pv-outcome-band" id="dossier" aria-labelledby="dossier-title">
 					<div className="pv-container pv-dossier">
 						<article className="pv-dossier__card">
 							<header>
 								<div>
-									<p>Dossier fictif</p>
-									<strong className="pv-code">{SAMPLE_CODE}</strong>
+									<p>Dossier de démonstration</p>
+									<strong className="pv-code">{dossier.trackingCode}</strong>
 								</div>
 								<dl className="pv-dossier__meta">
-									<dt>Type</dt><dd>{dossierType}</dd>
-									<dt>Déposé le</dt><dd>13 sept. 2026</dd>
-									<dt>Délai indicatif</dt><dd>15 jours (fictif)</dd>
+									<dt>Type</dt><dd>{typeName}</dd>
+									<dt>Déposé le</dt><dd>{new Date(dossier.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}</dd>
+									<dt>Mode</dt><dd>{dossier.channel === "identified" ? "Compte démo" : "Sans compte"}</dd>
 								</dl>
 							</header>
-							<div className="pv-dossier__status" data-state={replied ? "progress" : "waiting"}>
+							<div className="pv-dossier__status" data-state={dossier.status === "repondu" ? "progress" : "waiting"}>
 								<p>Statut actuel</p>
-								<h2 id="dossier-title">{replied ? "En cours de traitement" : "En attente d'informations"}</h2>
-								{replied ? (
-									<p className="pv-dossier__ask">Précision envoyée. L'agent reprend l'examen du dossier.</p>
-								) : (
-									<>
-										<p className="pv-dossier__ask"><strong>Question de l'agent, 14 sept. 11:25</strong> Indiquez le tribunal concerné et la date approximative des faits.</p>
-										<div className="pv-reply">
-											<label htmlFor="reply">Votre précision</label>
-											<textarea id="reply" ref={replyRef} value={reply} onChange={(event) => setReply(event.target.value)} aria-invalid={replyError || undefined} aria-describedby={replyError ? "reply-error" : undefined} placeholder="Exemple : tribunal d'instance de Pikine, audience prévue en août." />
-											{replyError && <InlineError id="reply-error">Écrivez au moins 12 caractères.</InlineError>}
-											<div className="pv-reply__footer">
-												<Button variant="primary" type="button" onClick={sendReply} arrow>Envoyer la précision</Button>
-												<p>Dans cet aperçu, rien n'est envoyé.</p>
-											</div>
-										</div>
-									</>
-								)}
+								<h2 id="dossier-title">{statusName}</h2>
+								<p className="pv-dossier__ask">{dossier.body}</p>
+								{dossier.audioKey && <audio controls src={`/api/audio?key=${encodeURIComponent(dossier.audioKey)}`} aria-label="Réécouter le message vocal" />}
 							</div>
 							<ol className="pv-history" aria-label="Historique du dossier">
-								<li data-status="complete"><span /><div><strong>Reçue</strong><time>13 sept. 05:42</time></div></li>
-								<li data-status="complete"><span /><div><strong>Assignée à un agent</strong><time>13 sept. 09:10</time></div></li>
-								<li data-status={replied ? "complete" : "active"}><span /><div><strong>En attente d'informations</strong><time>14 sept. 11:25</time></div></li>
-								{replied && <li data-status="active"><span /><div><strong>En cours de traitement</strong><time>À l'instant</time></div></li>}
-								<li><span /><div><strong>Résolue ou rejetée</strong><time>À venir</time></div></li>
+								{dossier.events.map((event, index) => (
+									<li key={event.id} data-status={index === dossier.events.length - 1 ? "active" : "complete"}>
+										<span />
+										<div>
+											<strong>{event.label}</strong>
+											<time>{new Date(event.at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time>
+										</div>
+									</li>
+								))}
 							</ol>
 						</article>
 						<aside className="pv-statuses" aria-labelledby="statuses-title">
 							<h2 id="statuses-title">Statuts</h2>
 							<dl>
 								{STATUSES.map(([name, meaning]) => {
-									const current = name === (replied ? "En cours de traitement" : "En attente d'informations");
+									const current = name === statusName;
 									const kind = name === "Rejetée" ? "stop" : name === "En attente d'informations" ? "wait" : undefined;
 									return (
 										<div key={name} data-current={current || undefined} data-kind={kind}>

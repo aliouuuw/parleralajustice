@@ -624,6 +624,8 @@
 .pv-confirm { display: flex; gap: 12px; align-items: flex-start; margin-top: 24px; padding: 16px 18px; border-radius: var(--radius-panel); background: var(--surface-panel); }
 .pv-confirm input { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--color-brand); }
 .pv-confirm label { font-size: var(--text-label); line-height: 1.5; }
+.pv .verification-field { margin-top: 20px; }
+.pv .verification-field .field-help { margin: 8px 0 0; color: var(--color-text-secondary); font-size: var(--text-meta); }
 
 .pv-outcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px 64px; padding-block: 88px 96px; }
 .pv-outcome__intro h2 { margin: 0; color: var(--color-on-dark); font-family: var(--font-heading); font-size: var(--text-title); font-weight: var(--weight-title); font-stretch: var(--stretch-title); line-height: var(--leading-title); letter-spacing: var(--track-title); }
