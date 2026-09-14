@@ -38,8 +38,8 @@ function Layout() {
 
 function Shell() {
 	const { path } = useRoute();
-	if (path === "/" || path === "/parler" || path === "/preview") return <Preview />;
-	if (path === "/suivre" || path === "/preview/suivre" || path.startsWith("/d/")) return <PreviewSuivre />;
+	if (path === "/" || path === "/parler") return <Preview />;
+	if (path === "/suivre" || path.startsWith("/d/")) return <PreviewSuivre />;
 	return <Layout />;
 }
 

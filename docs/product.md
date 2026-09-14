@@ -54,7 +54,7 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 
 ## Visual identity and intake (approved product direction)
 
-- **`/` is the design authority.** See `docs/DESIGN.md`. `/preview` is an alias. Connexion, guichet, and acte still use the previous chrome.
+- **`/` is the design authority.** See `docs/DESIGN.md`. Connexion, guichet, and acte still use the previous chrome.
 - Intake: write a fictitious message with optional audio, then review, choose request type (live platform categories), optional lieu, demo confirmation, then receipt.
 - The receipt is a structured digital record, not a simulated government document. No seal, star, perforation or Ministry branding.
 - HeroUI routes under `web/src/client/pages/` converge on the preview system after visual approval.

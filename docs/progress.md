@@ -9,15 +9,11 @@ https://parleralajustice.aliouuuw.workers.dev still serves the old vanilla JS UI
 The HeroUI rebuild (T009) and the preview work are committed on `main` but not
 pushed and not deployed. Turnstile on case create is live (T006a).
 
-## Two UIs in this repo
+## One UI in this repo
 
-1. **Product app** (`/`, `/parler`, `/suivre`, and others): React and HeroUI v3.
-   A deploy of `main` would ship it. Do not restyle it in pass 7.
-2. **Visual preview** (`/preview`, `/preview/suivre`): CSS prototype in
-   `web/src/client/preview/`. This is the design authority (`docs/DESIGN.md`).
-   It is **not** on the live Worker.
-
-Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
+**Citizen intake** (`/`, `/parler`, `/suivre`, `/d/:code`): the illustrated
+preview system in `web/src/client/preview/`. Connexion, guichet, and acte still
+use the previous HeroUI chrome. There is no `/preview` route.
 
 ## Next: extract Record module (not started)
 
@@ -114,7 +110,7 @@ checked 14 Sep 2026.
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app
 - Push the eight local commits, then a separate authorized production deploy
-- Promote `/preview` into the product routes (owner decision after sign-off)
+- Promote `/preview` into the product routes (done 14 Sep). `/preview` routes removed.
 - Real email (Resend) and close the `/api/demo/otp` backdoor (T006b)
 - Access control on `/guichet`: live `GET /api/guichet/cases` returns the case list with no auth
 - X thread (T008): wait until a reviewed UI is on the Worker

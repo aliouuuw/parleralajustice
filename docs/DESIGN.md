@@ -4,7 +4,7 @@ Last updated: 14 September 2026.
 
 ## Authority
 
-**`/` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. `/preview` remains an alias. Connexion, guichet, and acte keep the previous HeroUI chrome for now.
+**`/` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. Connexion, guichet, and acte keep the previous HeroUI chrome for now.
 
 ## Direction
 
