@@ -58,7 +58,11 @@ export function SiteChrome({
 			<div className="pv-notice">
 				<div className="pv-container pv-notice__inner">
 					<strong>Prototype indépendant</strong>
-					<span>Ce site ne dépend pas du Ministère de la Justice. Aucune demande n'est transmise.</span>
+					<span className="pv-notice__copy">
+						Ce site ne dépend pas du Ministère de la Justice.
+						{" "}
+						<span>Aucune demande n'est transmise ni sauvegardée.</span>
+					</span>
 				</div>
 			</div>
 			<ServiceHeader

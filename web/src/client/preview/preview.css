@@ -135,6 +135,7 @@
 .pv-notice { font-size: var(--text-meta); }
 .pv-notice__inner { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 12px; padding-block: 8px; text-align: center; }
 .pv-notice strong { color: var(--color-gold); font-weight: var(--weight-strong); }
+.pv-notice__copy span { display: inline; }
 
 /* Service header: sticky civic bar. Bottom edge marks the fixed region. */
 .pv-header {
@@ -930,7 +931,8 @@
 	/* Semi-wide titles need desktop width; phones keep normal width. */
 	.pv-hero h1, .pv-track h1 { max-width: none; }
 	.pv-notice__inner { display: block; padding-block: 7px; text-align: center; }
-	.pv-notice strong, .pv-notice span { display: block; }
+	.pv-notice strong, .pv-notice__copy { display: block; }
+	.pv-notice__copy span { display: block; }
 	.pv-header__inner { min-height: 0; }
 	.pv-brand { padding-bottom: 8px; text-align: center; }
 	.pv-header__tools {
