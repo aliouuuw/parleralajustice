@@ -16,23 +16,25 @@ type TextareaField = FieldBase & {
 
 type InputField = FieldBase & {
 	kind: "input";
+	meta?: never;
+	metaId?: never;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "className">;
 
 export const Field = forwardRef<HTMLTextAreaElement | HTMLInputElement, TextareaField | InputField>(function Field(props, ref) {
-	const { id, label, required, hint, className, ...rest } = props;
+	const { id, label, required, hint, className, kind, meta, metaId, ...rest } = props;
 	const cls = `pv-field${className ? ` ${className}` : ""}`;
 	return (
 		<div className={cls}>
 			<label htmlFor={id}>
 				{label} {required && <span className="pv-optional">(obligatoire)</span>}
 			</label>
-			{props.kind === "textarea" ? (
+			{kind === "textarea" ? (
 				<textarea id={id} ref={ref as React.Ref<HTMLTextAreaElement>} required={required} {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)} />
 			) : (
 				<input id={id} ref={ref as React.Ref<HTMLInputElement>} required={required} {...(rest as InputHTMLAttributes<HTMLInputElement>)} />
 			)}
 			{hint && <p className="pv-field__hint">{hint}</p>}
-			{props.kind === "textarea" && props.meta && <div className="pv-field__meta" id={props.metaId}>{props.meta}</div>}
+			{kind === "textarea" && meta && <div className="pv-field__meta" id={metaId}>{meta}</div>}
 		</div>
 	);
 });

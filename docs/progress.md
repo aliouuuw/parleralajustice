@@ -82,6 +82,8 @@ See `docs/UI-HANDOVER.md`.
 - **ServiceHeader module extracted:** `ServiceHeader.tsx` (brand mark,
   label, sublabel, nav items with current state). Header in `Frame`
   migrated to it (15 Sep).
+- **Field prop leak fixed:** `kind`, `meta`, and `metaId` no longer reach
+  the DOM control; React warning gone (14 Sep).
 
 ## Tests
 
@@ -90,15 +92,15 @@ checked 14 Sep 2026.
 
 ## Git
 
-- Branch: `main` at `300c3eb`, **ahead of `origin/main` by 8**, not pushed
-  - `3f0a582` `feat: implement HeroUI v3 with React and Vite for civic intake`
-  - `f49a4a0` `feat(preview): add detailed critique and tracking for civic intake`
-  - `105c02c` `feat: update design documentation and CSS for HeroUI v3 integration`
-  - `304aaad` `feat: refine design documentation and update font integration for HeroUI v3`
-  - `782b882` `fix(preview): give empty suivi a job, surface clipboard failures`
-  - `4b032eb` `feat(preview): add channel and impact sections from the live platform`
-  - `7891d48` `docs: record pass 8 brief and correct stale pass-7 status`
-  - `300c3eb` `feat(preview): turn channels and impact back up`
+- Branch: `main`, **ahead of `origin/main` by 17**, not pushed
+  - `adf76c2` `feat(preview): redesign citizen channel choices`
+  - `6b12e9e` `feat(preview): add semantic foundation tokens and migrate modules`
+  - `6321b69` `feat(preview): complete semantic token scale and migrate raw values`
+  - `bf9271c` `feat(preview): extract Button as first reusable module`
+  - `5c1a2b8` `feat(preview): extract Field and Alert as reusable modules`
+  - `c7bd423` `feat(preview): extract ServiceHeader as reusable module`
+  - `d2eb23a` `docs: add pass 9 handover section for foundation and component work`
+  - plus `3f0a582`–`300c3eb`: HeroUI rebuild, preview critique, passes 7 and 8
 - `origin/main` is `6fba040` (T006a docs)
 - Working tree is clean. No pull request. No GitHub issues. Working directly
   on `main`. Do not auto-commit. Do not push unless the owner asks.
