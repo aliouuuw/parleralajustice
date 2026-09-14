@@ -35,8 +35,8 @@ const SLIDES = [
 ] as const;
 
 const LIVE_CHANNELS = [
-	["message", "write", "Écrit", "Décrivez votre situation avec vos mots.", "ecrire"],
-	["record", "voice", "Voix", "Un message vocal, jusqu'à 3 minutes.", "parler"],
+	["message", "write", "Écrire votre demande", "Décrivez une situation fictive avec vos mots. Vous pourrez relire votre texte avant de confirmer.", "Commencer à écrire"],
+	["record", "voice", "Ajouter votre voix", "Complétez votre texte par un message vocal de 3 minutes au plus. L’enregistrement reste sur cet appareil.", "Essayer le vocal"],
 ] as const;
 
 // Published codes from the live platform (research §J.2). Content only: never a control.
@@ -99,22 +99,22 @@ function prefersReducedMotion(): boolean {
 	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function LiveChannelTile({
+function LiveChannel({
 	focus,
 	channel,
 	name,
 	description,
-	image,
+	action,
 	onStart,
 }: {
 	focus: "message" | "record";
 	channel: "write" | "voice";
 	name: string;
 	description: string;
-	image: string;
+	action: string;
 	onStart: (focus: "message" | "record") => void;
 }) {
-	const ref = useRef<HTMLButtonElement>(null);
+	const ref = useRef<HTMLElement>(null);
 	const [play, setPlay] = useState(false);
 	const voice = channel === "voice";
 
@@ -123,11 +123,13 @@ function LiveChannelTile({
 		const el = ref.current;
 		if (!el || typeof IntersectionObserver === "undefined") return;
 		const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+		let visible = false;
+		const onMotion = () => setPlay(visible && !motion.matches);
 		const io = new IntersectionObserver(([entry]) => {
-			setPlay(entry.isIntersecting && !motion.matches);
+			visible = entry.isIntersecting;
+			onMotion();
 		}, { threshold: 0.3 });
 		io.observe(el);
-		const onMotion = () => { if (motion.matches) setPlay(false); };
 		motion.addEventListener("change", onMotion);
 		return () => {
 			io.disconnect();
@@ -136,21 +138,26 @@ function LiveChannelTile({
 	}, [voice]);
 
 	return (
-		<button ref={ref} className="pv-channel-tile" data-channel={channel} type="button" onClick={() => onStart(focus)}>
-			<span className="pv-channel-tile__art">
-				<img src={`/images/hero/${image}-1280.webp`} srcSet={`/images/hero/${image}-1280.webp 1280w, /images/hero/${image}-2560.webp 2560w`} sizes="(max-width: 600px) 100vw, (max-width: 1184px) 50vw, 560px" width={2720} height={1536} alt="" decoding="async" />
-				{voice && (
-					<span className="pv-channel-tile__wave">
-						<Waveform source="sim" stream={null} height={48} running={play} />
-					</span>
+		<article ref={ref} className="pv-channel" data-channel={channel} aria-labelledby={`channel-${channel}`}>
+			<h3 id={`channel-${channel}`}>{name}</h3>
+			<p>{description}</p>
+			<div className="pv-channel__visual">
+				{voice ? (
+					<figure className="pv-channel__voice">
+						<Waveform source="sim" stream={null} height={72} running={play} />
+						<figcaption>Animation illustrative, micro inactif.</figcaption>
+					</figure>
+				) : (
+					<div className="pv-channel__text" aria-hidden="true">
+						<span>Exemple</span>
+						<p>Je souhaite comprendre le déroulement d’une audience.</p>
+					</div>
 				)}
-			</span>
-			<span className="pv-channel-tile__body">
-				<span className="pv-channel-tile__name">{name}</span>
-				<span className="pv-channel-tile__desc">{description}</span>
-				<span className="pv-channel-tile__state">Disponible dans cet aperçu <Arrow /></span>
-			</span>
-		</button>
+			</div>
+			<button className={`pv-button pv-button--${voice ? "secondary" : "primary"}`} type="button" aria-describedby="channels-note" onClick={() => onStart(focus)}>
+				{action} <Arrow />
+			</button>
+		</article>
 	);
 }
 
@@ -494,28 +501,28 @@ export function Preview() {
 					<section className="pv-channels" aria-labelledby="channels-title">
 						<div className="pv-container">
 							<div className="pv-channels__head">
-								<h2 id="channels-title">L'écrit et la voix, aujourd'hui</h2>
-								<p>Cet aperçu couvre deux canaux. Les autres reprennent ceux annoncés par le service réel, à titre indicatif&nbsp;: ils ne sont pas simulés ici.</p>
+								<h2 id="channels-title">Votre message, avec vos mots.</h2>
+								<p id="channels-note">Un texte reste nécessaire. La voix le complète. Rien n’est transmis.</p>
 							</div>
 							<div className="pv-channels__live">
-								{LIVE_CHANNELS.map(([focus, channel, name, description, image]) => (
-									<LiveChannelTile key={channel} focus={focus} channel={channel} name={name} description={description} image={image} onStart={beginTask} />
+								{LIVE_CHANNELS.map(([focus, channel, name, description, action]) => (
+									<LiveChannel key={channel} focus={focus} channel={channel} name={name} description={description} action={action} onStart={beginTask} />
 								))}
 							</div>
 							<div className="pv-channels__soon">
-								<img className="pv-channels__soon-art" src="/images/hero/atelier-1280.webp" srcSet="/images/hero/atelier-1280.webp 1280w, /images/hero/atelier-2560.webp 2560w" sizes="(max-width: 900px) 100vw, 520px" width={2720} height={1536} alt="Un homme dans un atelier de couture consulte un téléphone." decoding="async" />
-								<div>
-									<h3>Pas encore ouverts</h3>
-									<ul className="pv-soon">
-										{ANNOUNCED_CHANNELS.map(([name, description, code]) => (
-											<li key={name} data-wide={code.length > 12 || undefined}>
-												<strong>{name}</strong>
-												{code && <span className="pv-soon__code">{code}</span>}
-												<p>{description}</p>
-											</li>
-										))}
-									</ul>
+								<div className="pv-channels__soon-head">
+									<h3>Autres canaux annoncés</h3>
+									<p>Annoncés par le service réel. Non disponibles dans cet aperçu.</p>
 								</div>
+								<ul className="pv-soon">
+									{ANNOUNCED_CHANNELS.map(([name, description, code]) => (
+										<li key={name}>
+											<strong>{name}</strong>
+											{code && <span className="pv-soon__code">{code}</span>}
+											<p>{description}</p>
+										</li>
+									))}
+								</ul>
 							</div>
 						</div>
 					</section>

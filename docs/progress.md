@@ -22,8 +22,12 @@ Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 ## Next: `--text-*` size scale on `/preview` (not started)
 
 Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
-`pv-impact`. Still open from pass 7's original scope: replace one-off
-`clamp()`/px font sizes in `preview.css` with a `--text-*` scale.
+`pv-impact`. The owner rejected the subsequent route-map channels design as
+incoherent and chose A: an open, image-free composition. The local replacement
+uses text and optional voice actions, a broad illustrative waveform, and a
+secondary strip of announced channels. The owner accepted this direction on
+14 Sep. Still open from pass 7: replace one-off `clamp()`/px font sizes with a
+`--text-*` scale.
 
 ## In progress: T009 visual direction
 

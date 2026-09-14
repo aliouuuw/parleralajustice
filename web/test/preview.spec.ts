@@ -19,12 +19,12 @@ describe("preview intake", () => {
 		expect(markup).not.toContain("Simuler le dépôt");
 	});
 
-	it("runs the hero as three scenes with a pause control, first scene shown", () => {
+	it("runs the hero as three scenes without reusing channel illustrations", () => {
 		const markup = html();
-		expect((markup.match(/src="\/images\/hero\/ecrire-1280.webp"/g) || []).length).toBe(2);
-		expect((markup.match(/src="\/images\/hero\/parler-1280.webp"/g) || []).length).toBe(2);
+		expect((markup.match(/src="\/images\/hero\/ecrire-1280.webp"/g) || []).length).toBe(1);
+		expect((markup.match(/src="\/images\/hero\/parler-1280.webp"/g) || []).length).toBe(1);
 		expect((markup.match(/src="\/images\/hero\/noter-1280.webp"/g) || []).length).toBe(1);
-		expect((markup.match(/src="\/images\/hero\/atelier-1280.webp"/g) || []).length).toBe(1);
+		expect(markup).not.toContain("atelier-1280.webp");
 		expect(markup.match(/<img[^>]*data-active="true"/g)).toHaveLength(1);
 		expect(markup).toContain("Noter la référence");
 		expect(markup).not.toContain("Mettre le diaporama en pause");
@@ -33,18 +33,23 @@ describe("preview intake", () => {
 
 	it("offers two live channels and lists the published codes without simulating them", () => {
 		const markup = html();
-		expect((markup.match(/class="pv-channel-tile"/g) || []).length).toBe(2);
-		expect(markup).toContain("Pas encore ouverts");
+		const channels = markup.match(/<section class="pv-channels"[\s\S]*?<\/section>/)?.[0] ?? "";
+		expect(channels.match(/<button /g)).toHaveLength(2);
+		expect(channels).toContain("Commencer à écrire");
+		expect(channels).toContain("Essayer le vocal");
+		expect(channels).toContain("Un texte reste nécessaire. La voix le complète. Rien n’est transmis.");
+		expect(channels).toContain("Animation illustrative, micro inactif.");
+		expect(channels).not.toMatch(/<img|pv-channel-map|pv-channel-tile|envoyer/);
+		expect(markup).toContain("Autres canaux annoncés");
 		expect(markup).toContain("3737");
 		expect(markup).toContain("*711#");
 		expect(markup).toContain("1 Français");
 		expect(markup).toContain("demandes suivies (fictif)");
 		expect(markup).toContain("Sécurité et confidentialité");
 		expect(markup).toContain("Ce que montre cet aperçu");
-		expect(markup).toContain("atelier-1280.webp");
 		expect(markup).not.toContain("Anonymat possible");
 		expect(markup).not.toContain("Chiffrement end-to-end");
-		const soon = markup.slice(markup.indexOf("Pas encore ouverts"), markup.indexOf("Notre impact"));
+		const soon = markup.slice(markup.indexOf("Autres canaux annoncés"), markup.indexOf("Notre impact"));
 		expect(soon).not.toMatch(/<button/);
 	});
 
