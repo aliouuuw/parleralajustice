@@ -26,7 +26,9 @@ Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
 incoherent and chose A: an open, image-free composition. The local replacement
 uses text and optional voice actions, a broad illustrative waveform, and a
 secondary strip of announced channels. The owner accepted this direction on
-14 Sep. Still open from pass 7: replace one-off `clamp()`/px font sizes with a
+14 Sep. Foundation pass started: semantic surface, border, spacing, and text roles now
+exist in `preview.css` and major preview modules consume them. Still open from
+pass 7: migrate the remaining one-off `clamp()`/px font sizes to the full
 `--text-*` scale.
 
 ## In progress: T009 visual direction

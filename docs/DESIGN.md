@@ -31,6 +31,7 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Flag green `#00853F` as fill (`--color-brand`); green text uses `--color-brand-text`. Gold `#FDEF42` for wait surfaces and focus halo. Red for errors and record dot only.
 - Print grain on large colour fields; ink `#14201A` for dark rails.
 - Corners: 16px fields (HeroUI form extra-large), pill buttons, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
+- Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, and initial `--text-*` tokens. New modules must consume semantic roles instead of palette literals.
 
 ## Next pass (queued)
 
