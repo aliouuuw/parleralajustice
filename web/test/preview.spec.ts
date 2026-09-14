@@ -43,10 +43,11 @@ describe("preview intake", () => {
 		expect(markup).toContain("Autres canaux annoncés");
 		expect(markup).toContain("3737");
 		expect(markup).toContain("*711#");
-		expect(markup).toContain("1 Français");
+		expect(markup).toContain("Un agent vous répond");
+		expect(markup).toContain("wolof");
 		expect(markup).toContain("demandes suivies (fictif)");
-		expect(markup).toContain("Sécurité et confidentialité");
-		expect(markup).toContain("Ce que montre cet aperçu");
+		expect(markup).not.toContain("Sécurité et confidentialité");
+		expect(markup).not.toContain("Ce que montre cet aperçu");
 		expect(markup).not.toContain("Anonymat possible");
 		expect(markup).not.toContain("Chiffrement end-to-end");
 		const soon = markup.slice(markup.indexOf("Autres canaux annoncés"), markup.indexOf("Notre impact"));

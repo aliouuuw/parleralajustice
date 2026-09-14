@@ -13,9 +13,19 @@ type ServiceHeaderProps = {
 	brandMark?: ReactNode;
 	nav: NavItem[];
 	navLabel?: string;
+	/** Visible language tag for the civic service bar. Not a switcher yet. */
+	localeLabel?: string;
 };
 
-export function ServiceHeader({ brandHref, brandLabel, brandSublabel, brandMark, nav, navLabel = "Navigation principale" }: ServiceHeaderProps) {
+export function ServiceHeader({
+	brandHref,
+	brandLabel,
+	brandSublabel,
+	brandMark,
+	nav,
+	navLabel = "Navigation principale",
+	localeLabel = "FR",
+}: ServiceHeaderProps) {
 	return (
 		<header className="pv-header">
 			<div className="pv-container pv-header__inner">
@@ -26,11 +36,20 @@ export function ServiceHeader({ brandHref, brandLabel, brandSublabel, brandMark,
 						{brandSublabel && <small>{brandSublabel}</small>}
 					</span>
 				</a>
-				<nav className="pv-nav" aria-label={navLabel}>
-					{nav.map((item) => (
-						<a key={item.href} href={item.href} aria-current={item.current ? "page" : undefined}>{item.label}</a>
-					))}
-				</nav>
+				<div className="pv-header__tools">
+					<nav className="pv-nav" aria-label={navLabel}>
+						{nav.map((item) => (
+							<a key={item.href} href={item.href} aria-current={item.current ? "page" : undefined}>
+								{item.label}
+							</a>
+						))}
+					</nav>
+					{localeLabel && (
+						<span className="pv-header__meta" title="Langue de l’interface">
+							{localeLabel}
+						</span>
+					)}
+				</div>
 			</div>
 		</header>
 	);

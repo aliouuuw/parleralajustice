@@ -4,6 +4,7 @@ import { Button, Arrow } from "./Button";
 import { Field } from "./Field";
 import { ErrorSummary, InlineError } from "./Alert";
 import { ServiceHeader } from "./ServiceHeader";
+import { RequestTypeSelect } from "./RequestTypeSelect";
 import "./preview.css";
 
 const MAX = 4000;
@@ -45,30 +46,30 @@ const LIVE_CHANNELS = [
 
 // Published codes from the live platform (research §J.2). Content only: never a control.
 const ANNOUNCED_CHANNELS = [
-	["Vidéo", "Message filmé avec preuve visuelle.", ""],
-	["SMS", "Envoi depuis un téléphone simple.", "3737"],
-	["USSD", "Menu par code, sans connexion.", "*711#"],
-	["Téléphone", "Ligne d'accompagnement avec un agent.", "1 Français · 2 Wolof · 3 Pulaar · 4 Serer"],
+	["Vidéo", "Message filmé avec preuve visuelle.", "", "video"],
+	["SMS", "Envoi depuis un téléphone simple.", "3737", "sms"],
+	["USSD", "Menu par code, sans connexion.", "*711#", "ussd"],
+	["Téléphone", "Un agent vous répond, en français, wolof, pulaar ou sérère.", "", "phone"],
 ] as const;
+
+function SoonIcon({ kind }: { kind: (typeof ANNOUNCED_CHANNELS)[number][3] }) {
+	const d =
+		kind === "video" ? "M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
+		: kind === "sms" ? "M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
+		: kind === "ussd" ? "M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"
+		: "M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z";
+	return (
+		<svg className="pv-soon__glyph" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+			<path d={d} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+		</svg>
+	);
+}
 
 const IMPACT_STATS = [
 	[128, "", "demandes suivies (fictif)"],
 	[94, "", "citoyens accompagnés (fictif)"],
 	[48, "h", "délai moyen de réponse (fictif)"],
 	[91, "%", "taux de résolution (fictif)"],
-] as const;
-
-const IMPACT_CARDS = [
-	["Sécurité et confidentialité", [
-		"Aucune donnée n'est transmise dans cet aperçu.",
-		"Aucun compte n'est requis pour écrire un message.",
-		"Les références ne sont pas séquentielles : elles ne se devinent pas.",
-	]],
-	["Ce que montre cet aperçu", [
-		"Les six catégories et statuts du service réel.",
-		"Un suivi avec historique et réponse d'agent.",
-		"L'écrit ou la voix, selon ce qui vous convient.",
-	]],
 ] as const;
 
 const REFERENCE = /^[A-Z]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
@@ -83,16 +84,28 @@ function clock(seconds: number): string {
 	return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
-function CheckIcon() {
-	return (
-		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-			<path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-		</svg>
-	);
-}
-
 function prefersReducedMotion(): boolean {
 	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+const CHANNEL_SAMPLE = "Je souhaite comprendre le déroulement d’une audience.";
+
+function ChannelActionIcon({ voice }: { voice: boolean }) {
+	return (
+		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+			<path
+				d={
+					voice
+						? "M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
+						: "M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+				}
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	);
 }
 
 function LiveChannel({
@@ -112,10 +125,10 @@ function LiveChannel({
 }) {
 	const ref = useRef<HTMLElement>(null);
 	const [play, setPlay] = useState(false);
+	const [typed, setTyped] = useState(CHANNEL_SAMPLE);
 	const voice = channel === "voice";
 
 	useEffect(() => {
-		if (!voice) return;
 		const el = ref.current;
 		if (!el || typeof IntersectionObserver === "undefined") return;
 		const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -131,7 +144,38 @@ function LiveChannel({
 			io.disconnect();
 			motion.removeEventListener("change", onMotion);
 		};
-	}, [voice]);
+	}, []);
+
+	useEffect(() => {
+		if (voice) return;
+		if (!play) {
+			setTyped(CHANNEL_SAMPLE);
+			return;
+		}
+		let i = 0;
+		let hold = false;
+		let id = 0;
+		const step = () => {
+			if (i < CHANNEL_SAMPLE.length) {
+				i += 1;
+				setTyped(CHANNEL_SAMPLE.slice(0, i));
+				id = window.setTimeout(step, CHANNEL_SAMPLE[i - 1] === " " ? 90 : 36);
+				return;
+			}
+			if (!hold) {
+				hold = true;
+				id = window.setTimeout(step, 2200);
+				return;
+			}
+			i = 0;
+			hold = false;
+			setTyped("");
+			id = window.setTimeout(step, 420);
+		};
+		setTyped("");
+		id = window.setTimeout(step, 280);
+		return () => window.clearTimeout(id);
+	}, [play, voice]);
 
 	return (
 		<article ref={ref} className="pv-channel" data-channel={channel} aria-labelledby={`channel-${channel}`}>
@@ -140,17 +184,21 @@ function LiveChannel({
 			<div className="pv-channel__visual">
 				{voice ? (
 					<figure className="pv-channel__voice">
-						<Waveform source="sim" stream={null} height={72} running={play} />
+						<Waveform source="sim" stream={null} height={96} running={play} />
 						<figcaption>Animation illustrative, micro inactif.</figcaption>
 					</figure>
 				) : (
 					<div className="pv-channel__text" aria-hidden="true">
 						<span>Exemple</span>
-						<p>Je souhaite comprendre le déroulement d’une audience.</p>
+						<p>
+							{typed}
+							{play ? <span className="pv-channel__caret" /> : null}
+						</p>
 					</div>
 				)}
 			</div>
-			<Button variant={voice ? "secondary" : "primary"} type="button" aria-describedby="channels-note" onClick={() => onStart(focus)} arrow>
+			<Button variant="primary" type="button" aria-describedby="channels-note" onClick={() => onStart(focus)}>
+				<ChannelActionIcon voice={voice} />
 				{action}
 			</Button>
 		</article>
@@ -228,7 +276,7 @@ function Frame({ current, children, taskMode }: { current: "deposer" | "suivre";
 			<ServiceHeader
 				brandHref="/preview"
 				brandLabel="Parler à la justice"
-				brandSublabel="Service de démonstration"
+				brandSublabel="Démo"
 				brandMark={
 					<svg width="34" height="30" viewBox="0 0 34 30">
 						<defs><clipPath id="pv-mark-bubble"><path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" /></clipPath></defs>
@@ -404,13 +452,14 @@ export function Preview() {
 	const codeRef = useRef<HTMLElement>(null);
 	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const count = text.trim().length;
-	const ready = count >= MIN && count <= MAX;
+	const messageReady = count >= MIN && count <= MAX;
+	const writeReady = messageReady && requestType !== null;
 	const recording = recorder.pending || recorder.source !== "idle";
 	const writeError = count < MIN ? "Écrivez au moins 12 caractères." : "Raccourcissez le message à 4 000 caractères maximum.";
-	const showWriteError = writeAttempted && stage === "write" && !ready;
-	const reviewReady = requestType !== null && demoOk;
+	const showWriteError = writeAttempted && stage === "write" && !writeReady;
+	const reviewReady = demoOk;
 	const showReviewError = reviewAttempted && stage === "review" && !reviewReady;
-	const tone = count > MAX ? "over" : count > MAX * 0.9 ? "near" : ready ? "ok" : undefined;
+	const tone = count > MAX ? "over" : count > MAX * 0.9 ? "near" : messageReady ? "ok" : undefined;
 
 	useEffect(() => () => clearTimeout(copyTimer.current), []);
 
@@ -426,7 +475,7 @@ export function Preview() {
 	function proceedWrite() {
 		if (recording) return;
 		setWriteAttempted(true);
-		if (!ready) {
+		if (!writeReady) {
 			requestAnimationFrame(() => summaryRef.current?.focus());
 			return;
 		}
@@ -476,6 +525,7 @@ export function Preview() {
 			{!taskMode && (
 				<>
 					<section className="pv-hero" aria-labelledby="hero-title">
+						<div className="pv-hero__flag" aria-hidden />
 						<div className="pv-container pv-hero__copy">
 							<h1 id="hero-title">Adressez une demande à la justice</h1>
 							<p className="pv-lede">Essayez le parcours avec une situation fictive&nbsp;: écrivez, relisez, suivez votre demande.</p>
@@ -488,33 +538,43 @@ export function Preview() {
 
 					<section className="pv-type-band" aria-label="Types de demandes">
 						<div className="pv-container pv-types">
-							<ul>
-								{TYPES.map(([name]) => <li key={name}>{name}</li>)}
-							</ul>
+							<div className="pv-types__track">
+								<ul>
+									{TYPES.map(([name]) => <li key={name}>{name}</li>)}
+								</ul>
+								<ul className="pv-types__dup" aria-hidden="true">
+									{TYPES.map(([name]) => <li key={name}>{name}</li>)}
+								</ul>
+							</div>
 						</div>
 					</section>
 
 					<section className="pv-channels" aria-labelledby="channels-title">
+						<div className="pv-channels__band">
+							<div className="pv-container">
+								<div className="pv-channels__head">
+									<h2 id="channels-title">Votre message, avec vos mots.</h2>
+									<p id="channels-note">Un texte reste nécessaire. La voix le complète. Rien n’est transmis.</p>
+								</div>
+								<div className="pv-channels__live">
+									{LIVE_CHANNELS.map(([focus, channel, name, description, action]) => (
+										<LiveChannel key={channel} focus={focus} channel={channel} name={name} description={description} action={action} onStart={beginTask} />
+									))}
+								</div>
+							</div>
+						</div>
 						<div className="pv-container">
-							<div className="pv-channels__head">
-								<h2 id="channels-title">Votre message, avec vos mots.</h2>
-								<p id="channels-note">Un texte reste nécessaire. La voix le complète. Rien n’est transmis.</p>
-							</div>
-							<div className="pv-channels__live">
-								{LIVE_CHANNELS.map(([focus, channel, name, description, action]) => (
-									<LiveChannel key={channel} focus={focus} channel={channel} name={name} description={description} action={action} onStart={beginTask} />
-								))}
-							</div>
 							<div className="pv-channels__soon">
 								<div className="pv-channels__soon-head">
 									<h3>Autres canaux annoncés</h3>
 									<p>Annoncés par le service réel. Non disponibles dans cet aperçu.</p>
 								</div>
 								<ul className="pv-soon">
-									{ANNOUNCED_CHANNELS.map(([name, description, code]) => (
+									{ANNOUNCED_CHANNELS.map(([name, description, code, kind]) => (
 										<li key={name}>
+											<span className="pv-soon__icon"><SoonIcon kind={kind} /></span>
 											<strong>{name}</strong>
-											{code && <span className="pv-soon__code">{code}</span>}
+											{code ? <span className="pv-soon__code">{code}</span> : null}
 											<p>{description}</p>
 										</li>
 									))}
@@ -531,18 +591,6 @@ export function Preview() {
 									<p>Chiffres fictifs, présentés pour montrer comment le service pourrait rendre compte de son activité.</p>
 								</div>
 								<ImpactStats />
-							</div>
-						</div>
-						<div className="pv-container">
-							<div className="pv-impact__cards">
-								{IMPACT_CARDS.map(([title, items]) => (
-									<article key={title} className="pv-impact__card">
-										<h3>{title}</h3>
-										<ul>
-											{items.map((item) => <li key={item}><CheckIcon />{item}</li>)}
-										</ul>
-									</article>
-								))}
 							</div>
 						</div>
 					</section>
@@ -575,13 +623,21 @@ export function Preview() {
 								<div className="pv-form__heading">
 									<p>Étape 1 sur 2</p>
 									<h2 id="form-title">Que souhaitez-vous nous dire ?</h2>
-									<span>Décrivez une situation fictive, avec vos mots.</span>
+									<span>Choisissez le type de demande, puis décrivez une situation fictive.</span>
 								</div>
 								{showWriteError && (
-									<ErrorSummary ref={summaryRef} id="message-errors" title="Corrigez le message avant de continuer" items={[
-										{ href: "#message", label: writeError, onNavigate: (event) => { event.preventDefault(); messageRef.current?.focus(); } },
+									<ErrorSummary ref={summaryRef} id="message-errors" title="Complétez les éléments avant de continuer" items={[
+										...(!requestType ? [{ href: "#type-pick", label: "Choisissez un type de demande.", onNavigate: (event) => { event.preventDefault(); document.getElementById("type-pick")?.focus(); } }] : []),
+										...(!messageReady ? [{ href: "#message", label: writeError, onNavigate: (event) => { event.preventDefault(); messageRef.current?.focus(); } }] : []),
 									]} />
 								)}
+								<RequestTypeSelect
+									id="type-pick"
+									options={TYPES}
+									value={requestType}
+									onChange={setRequestType}
+									invalid={showWriteError && !requestType}
+								/>
 								<Field
 									id="message"
 									kind="textarea"
@@ -634,15 +690,20 @@ export function Preview() {
 								<div className="pv-form__heading">
 									<p>Étape 2 sur 2</p>
 									<h2 id="review-title" ref={reviewTitleRef} tabIndex={-1}>Relisez avant de confirmer</h2>
-									<span>Vérifiez le message, choisissez le type de demande, puis confirmez la démonstration.</span>
+									<span>Vérifiez le message, puis confirmez la démonstration.</span>
 								</div>
 								{showReviewError && (
 									<ErrorSummary ref={reviewSummaryRef} id="review-errors" title="Complétez les éléments manquants" items={[
-										...(!requestType ? [{ href: "#type-pick", label: "Choisissez un type de demande.", onNavigate: (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); document.getElementById("type-pick")?.focus(); } }] : []),
 										...(!demoOk ? [{ href: "#demo-confirm", label: "Cochez la confirmation de démonstration.", onNavigate: (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); document.getElementById("demo-confirm")?.focus(); } }] : []),
 									]} />
 								)}
 								<div className="pv-review-block" aria-labelledby="review-message-label">
+									{requestType && (
+										<>
+											<p className="pv-review-block__label" id="review-type-label">Type de demande</p>
+											<p className="pv-review-block__body pv-review-block__type">{requestType}</p>
+										</>
+									)}
 									<p className="pv-review-block__label" id="review-message-label">Votre message</p>
 									<p className="pv-review-block__body">{text.trim()}</p>
 									{recorder.clip && (
@@ -653,18 +714,6 @@ export function Preview() {
 									)}
 									<Button variant="quiet" type="button" onClick={backToWrite}>Modifier le message</Button>
 								</div>
-								<fieldset className="pv-type-pick" id="type-pick">
-									<legend>Type de demande <span className="pv-optional">(obligatoire)</span></legend>
-									<div className="pv-type-pick__grid">
-										{TYPES.map(([name, description]) => (
-											<label key={name} className="pv-type-pick__option" data-selected={requestType === name || undefined}>
-												<input type="radio" name="request-type" value={name} checked={requestType === name} onChange={() => setRequestType(name)} />
-												<strong>{name}</strong>
-												<span>{description}</span>
-											</label>
-										))}
-									</div>
-								</fieldset>
 								<Field
 									id="place"
 									kind="input"

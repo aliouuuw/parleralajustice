@@ -15,7 +15,7 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 ## Composition
 
 - Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
-- **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
+- **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). On desktop, notice + header + hero equal `100dvh`. After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
 - Yellow **taxonomy band** educates before the task; **type selection** happens again on step 2 (required).
 - **Channels** (`pv-channels`): owner-selected open composition A, accepted 14 Sep. No repeated hero art, route lines, numbered stops, or nested cards. One centered heading introduces a shared pale-green choice surface with writing and optional voice columns. Familiar pill buttons enter task mode and focus the textarea or Enregistrer; never auto-start recording. A broad Waveform `sim` sits on a pale-green field, explicitly labelled illustrative with the microphone inactive; IntersectionObserver and reduced-motion preference gate animation. Copy states text remains necessary and nothing is transmitted. A secondary strip below lists Vidéo, SMS, USSD, Téléphone with published codes from research §J.2 (`3737`, `*711#`, phone language menu). These channels remain informational and unavailable in the preview. The columns stack on phones.
 - **Impact** (`pv-impact`): fictive stats on a full flag-green `--grain` band (Sligoil, white on brand, subtle count-up on enter; reduced motion keeps final values). Two claim cards stay on white below with the aperçu's own honest claims (research §J.5 #3).
@@ -25,13 +25,15 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 
 ## Visual system
 
-- **Mona Sans** (self-hosted variable): one family for titles, body and controls. Tokens: body 450, controls 550, labels 650, large titles 620 at 112.5% width (normal width below 600px).
-- **Sligoil:** codes, clocks, counters, dates. Never paragraphs or labels.
+- **Mona Sans** (self-hosted variable): one family for titles, body and controls. Body 450, controls 550, labels 650, section titles 700 at 112.5% width, display 800 at 118.75% width (normal width below 600px). Display tracking `-0.03em`, title `-0.022em`. Hero and suivi titles use `--text-display` (hero desktop caps at 60px, one line, so copy stays in the illustration sky). Section titles use `--text-title`; column and status titles stay `--text-heading` without stretch.
+- **Sligoil:** codes, clocks, counters, dates. Never paragraphs or labels. Impact numbers and receipt codes use display or title size in Sligoil.
 - Both faces are OFL and include the Wolof letters ŋ and Ŋ (checked 14 Sep, `research/cash-app-foundations.md`). Choice and rejected faces: `docs/UI-HANDOVER.md` §6.
 - Flag green `#00853F` as fill (`--color-brand`); green text uses `--color-brand-text`. Gold `#FDEF42` for wait surfaces and focus halo. Red for errors and record dot only.
 - Print grain on large colour fields; ink `#14201A` for dark rails.
 - Corners: 16px fields (HeroUI form extra-large), pill buttons, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
 - Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, `--border-channel`, `--border-on-dark`, `--radius-control`, `--radius-button`, `--radius-panel`, `--radius-track`, `--radius-tile`, and a full `--text-*` scale (`--text-display`, `--text-title`, `--text-heading`, `--text-heading-sm`, `--text-lede`, `--text-body`, `--text-brand`, `--text-ui`, `--text-label`, `--text-caption`, `--text-meta`, `--text-micro`, `--text-data`, `--text-code`). New modules must consume semantic roles instead of palette literals or raw px values.
+- **Field vs panel:** fields are white (`--surface-field`) with a visible `--border-control`. Panels stay brand-soft (`--surface-panel`) for grouping and guidance. Records and claim blocks use white `--surface-record` with `--border-divider` when they need an edge. Do not paint inputs and cards the same pale green.
+- **Service header:** sticky civic bar with brand lockup, primary nav tabs (current page underline at the bar edge), and a FR locale tag. Structural bottom border only.
 
 ## Next pass (queued)
 
