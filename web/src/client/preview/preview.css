@@ -176,6 +176,37 @@
 .pv-types li { font-family: var(--font-heading); font-size: clamp(15px, 1.25vw, 17px); font-weight: var(--weight-strong); letter-spacing: -0.005em; line-height: 1.25; white-space: nowrap; }
 .pv-types li:not(:last-child)::after { content: ""; display: inline-block; width: 1px; height: 0.8em; margin-inline: 11px 13px; background: var(--color-ink); opacity: 0.22; vertical-align: -0.05em; }
 
+/* Channels: two live today, four shown as indicative so the aperçu does not overstate its scope. */
+.pv-channels { padding-block: 56px 64px; }
+.pv-channels__head { max-width: 640px; margin: 0 auto 32px; text-align: center; }
+.pv-channels__head h2 { margin: 0; font-family: var(--font-heading); font-size: clamp(24px, 2.6vw, 32px); font-weight: var(--weight-title); font-stretch: var(--stretch-title); letter-spacing: -0.012em; }
+.pv-channels__head p { margin: 10px 0 0; color: var(--color-text-secondary); font-size: 15px; line-height: 1.5; }
+.pv-channels__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.pv-channel { padding: 22px; border-radius: var(--radius-panel); background: var(--color-field); }
+.pv-channel[data-state="live"] { background: var(--color-brand-soft); }
+.pv-channel__icon { color: var(--color-text-tertiary); }
+.pv-channel[data-state="live"] .pv-channel__icon { color: var(--color-brand-text); }
+.pv-channel h3 { margin: 14px 0 0; font-size: 15px; font-weight: var(--weight-strong); letter-spacing: -0.005em; }
+.pv-channel p { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: var(--color-text-secondary); }
+.pv-channel__state { display: block; margin-top: 14px; font-size: 12px; font-weight: var(--weight-strong); color: var(--color-brand-text); }
+.pv-channel[data-state="soon"] .pv-channel__state { color: var(--color-text-secondary); font-weight: var(--weight-ui); }
+
+/* Impact: fictional numbers, labelled as such, next to claims that are actually true of this aperçu. */
+.pv-impact { padding-block: 64px 72px; background: var(--color-brand-soft); }
+.pv-impact__head { max-width: 640px; margin: 0 auto; text-align: center; }
+.pv-impact__head h2 { margin: 0; font-family: var(--font-heading); font-size: clamp(24px, 2.6vw, 32px); font-weight: var(--weight-title); font-stretch: var(--stretch-title); letter-spacing: -0.012em; }
+.pv-impact__head p { margin: 10px 0 0; color: var(--color-text-secondary); font-size: 15px; line-height: 1.5; }
+.pv-impact__stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin: 36px 0 0; padding: 0; list-style: none; }
+.pv-impact__stat { text-align: center; }
+.pv-impact__stat strong { display: block; font-family: var(--font-data); font-size: clamp(26px, 3vw, 34px); font-weight: 500; color: var(--color-brand-text); }
+.pv-impact__stat span { display: block; margin-top: 6px; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
+.pv-impact__cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 40px; }
+.pv-impact__card { padding: 26px; border-radius: var(--radius-panel); background: var(--color-surface); }
+.pv-impact__card h3 { margin: 0; font-size: 16px; font-weight: var(--weight-strong); letter-spacing: -0.005em; }
+.pv-impact__card ul { display: grid; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+.pv-impact__card li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--color-text-secondary); }
+.pv-impact__card li svg { flex: 0 0 auto; margin-top: 3px; color: var(--color-brand-text); }
+
 /* Empty /suivre: the yellow band explains the wait instead of leaving a lone field over dead space. */
 .pv-track-help { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; padding-block: 34px; }
 .pv-track-help__step { display: flex; gap: 14px; }
@@ -368,6 +399,9 @@
 	.pv-progress li { min-height: auto; }
 	.pv-progress li:not(:last-child)::after { top: 13px; right: 16px; bottom: auto; left: 36px; width: auto; height: 2px; }
 	.pv-outcome { grid-template-columns: 1fr; gap: 32px; padding-block: 64px 72px; }
+	.pv-channels__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.pv-impact__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+	.pv-impact__cards { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
@@ -413,6 +447,11 @@
 	.pv-footer nav { justify-content: flex-start; }
 	.pv-lookup__row { flex-direction: column; }
 	.pv-dossier { padding-block: 48px 56px; }
+	.pv-channels { padding-block: 40px 48px; }
+	.pv-channels__grid { grid-template-columns: 1fr; }
+	.pv-impact { padding-block: 48px 56px; }
+	.pv-impact__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.pv-impact__cards { grid-template-columns: 1fr; margin-top: 32px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -424,7 +463,7 @@
 }
 
 @media print {
-	.pv-notice, .pv-header, .pv-hero, .pv-type-band, .pv-workspace, .pv-outcome__intro, .pv-track, .pv-footer { display: none; }
+	.pv-notice, .pv-header, .pv-hero, .pv-type-band, .pv-channels, .pv-impact, .pv-workspace, .pv-outcome__intro, .pv-track, .pv-footer { display: none; }
 	.pv-outcome-band { background: none; }
 	.pv-outcome { display: block; padding: 0; }
 	.pv-receipt { border: 1px solid #777; }

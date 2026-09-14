@@ -34,6 +34,37 @@ const SLIDES = [
 	["noter", "Noter la référence", "Vue de dessus, une personne note une référence dans un carnet."],
 ] as const;
 
+// Channels as the live platform announces them (research §J.2). Only écrit and voix exist here;
+// the rest are shown as indicative, not simulated, so the aperçu does not overstate its scope.
+const CHANNELS = [
+	["live", "write", "Écrit", "Décrivez votre situation avec vos mots.", "Disponible dans cet aperçu"],
+	["live", "mic", "Voix", "Un message vocal, jusqu'à 3 minutes.", "Disponible dans cet aperçu"],
+	["soon", "video", "Vidéo", "Message filmé avec preuve visuelle.", "Annoncé par le service réel"],
+	["soon", "sms", "SMS", "Envoi depuis un téléphone simple.", "Annoncé par le service réel"],
+	["soon", "ussd", "USSD", "Menu par code, sans connexion.", "Annoncé par le service réel"],
+	["soon", "phone", "Téléphone", "Ligne d'accompagnement avec un agent.", "Annoncé par le service réel"],
+] as const;
+
+const IMPACT_STATS = [
+	["128", "demandes suivies (fictif)"],
+	["94", "citoyens accompagnés (fictif)"],
+	["48h", "délai moyen de réponse (fictif)"],
+	["91%", "taux de résolution (fictif)"],
+] as const;
+
+const IMPACT_CARDS = [
+	["Sécurité et confidentialité", [
+		"Aucune donnée n'est transmise dans cet aperçu.",
+		"Aucun compte n'est requis pour écrire un message.",
+		"Les références ne sont pas séquentielles : elles ne se devinent pas.",
+	]],
+	["Ce que montre cet aperçu", [
+		"Les six catégories et statuts du service réel.",
+		"Un suivi avec historique et réponse d'agent.",
+		"L'écrit ou la voix, selon ce qui vous convient.",
+	]],
+] as const;
+
 const REFERENCE = /^[A-Z]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
 /** Accepts a reference typed with spaces, dashes or lowercase. */
@@ -50,6 +81,31 @@ function Arrow() {
 	return (
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 			<path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+		</svg>
+	);
+}
+
+const CHANNEL_ICON_PATH: Record<(typeof CHANNELS)[number][1], string> = {
+	write: "M4 17.5 15 6.5l2.5 2.5L6.5 20H4v-2.5ZM13.5 8 16 10.5",
+	mic: "M11 4a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-5 0v-5A2.5 2.5 0 0 1 11 4ZM6.5 11.5a4.5 4.5 0 0 0 9 0M11 16v3.5M8 19.5h6",
+	video: "M4 8.5a2 2 0 0 1 2-2h6.5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7ZM14.5 11l4-2.5v7l-4-2.5",
+	sms: "M4.5 6.5h13a1 1 0 0 1 1 1v7.5a1 1 0 0 1-1 1H10L6.5 19v-3H4.5a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1Z",
+	ussd: "M7 8h.01M12 8h.01M17 8h.01M7 12h.01M12 12h.01M17 12h.01M7 16h.01M12 16h.01M17 16h.01",
+	phone: "M5 5.5c0-.6.4-1 1-1h2.2c.5 0 .9.3 1 .8l.8 3a1 1 0 0 1-.3 1L8 10.7c1 2 2.6 3.6 4.6 4.6l1.4-1.7a1 1 0 0 1 1-.3l3 .8c.5.1.8.5.8 1V17c0 .6-.4 1-1 1h-1C10.6 18 5 12.4 5 5.5Z",
+};
+
+function ChannelIcon({ id }: { id: (typeof CHANNELS)[number][1] }) {
+	return (
+		<svg className="pv-channel__icon" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+			<path d={CHANNEL_ICON_PATH[id]} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+		</svg>
+	);
+}
+
+function CheckIcon() {
+	return (
+		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+			<path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 		</svg>
 	);
 }
@@ -330,6 +386,49 @@ export function Preview() {
 							<ul>
 								{TYPES.map(([name]) => <li key={name}>{name}</li>)}
 							</ul>
+						</div>
+					</section>
+
+					<section className="pv-channels" aria-labelledby="channels-title">
+						<div className="pv-container">
+							<div className="pv-channels__head">
+								<h2 id="channels-title">L'écrit et la voix, aujourd'hui</h2>
+								<p>Cet aperçu couvre deux canaux. Les autres reprennent ceux annoncés par le service réel, à titre indicatif&nbsp;: ils ne sont pas simulés ici.</p>
+							</div>
+							<ul className="pv-channels__grid">
+								{CHANNELS.map(([state, id, name, description, note]) => (
+									<li key={id} className="pv-channel" data-state={state}>
+										<ChannelIcon id={id} />
+										<h3>{name}</h3>
+										<p>{description}</p>
+										<span className="pv-channel__state">{note}</span>
+									</li>
+								))}
+							</ul>
+						</div>
+					</section>
+
+					<section className="pv-impact" aria-labelledby="impact-title">
+						<div className="pv-container">
+							<div className="pv-impact__head">
+								<h2 id="impact-title">Notre impact</h2>
+								<p>Chiffres fictifs, présentés pour montrer comment le service pourrait rendre compte de son activité.</p>
+							</div>
+							<ul className="pv-impact__stats">
+								{IMPACT_STATS.map(([value, label]) => (
+									<li key={label} className="pv-impact__stat"><strong>{value}</strong><span>{label}</span></li>
+								))}
+							</ul>
+							<div className="pv-impact__cards">
+								{IMPACT_CARDS.map(([title, items]) => (
+									<article key={title} className="pv-impact__card">
+										<h3>{title}</h3>
+										<ul>
+											{items.map((item) => <li key={item}><CheckIcon />{item}</li>)}
+										</ul>
+									</article>
+								))}
+							</div>
 						</div>
 					</section>
 				</>

@@ -570,8 +570,11 @@ Baseline on 14 Sep: **76** one-off `font-size` values and **13** one-off
 **Chrome:** `pv-skip`, `pv-notice`, `pv-header`, `pv-brand`, `pv-nav`,
 `pv-footer`.
 
-**Open:** `pv-hero`, `pv-lede`, `pv-type-band`, `pv-types`, `pv-outcome-band`,
-`pv-slides`, `pv-frise`.
+**Open:** `pv-hero`, `pv-lede`, `pv-type-band`, `pv-types`, `pv-channels`,
+`pv-impact`, `pv-outcome-band`, `pv-slides`, `pv-frise`. `pv-channels` and
+`pv-impact` were added 14 Sep to cover the live platform's channel list and
+"Notre Impact" section (research §J.2, §J.6) — see `docs/DESIGN.md` for the
+honesty rules that shaped their content.
 
 **Controls:** `pv-button` (`--primary`, `--secondary`, `--quiet`), `pv-field`,
 `pv-lookup`, `pv-type-pick`, `pv-confirm`, `pv-link`.

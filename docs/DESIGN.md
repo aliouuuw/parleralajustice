@@ -17,6 +17,8 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
 - **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
 - Yellow **taxonomy band** educates before the task; **type selection** happens again on step 2 (required).
+- **Channels** (`pv-channels`): 6 cards from the live platform's own channel list (research §J.2). Écrit and Voix are live and styled green; Vidéo, SMS, USSD, Téléphone are shown quiet and marked "Annoncé par le service réel" — mocked as content, never as a working control, so the aperçu never claims more than 2 channels.
+- **Impact** (`pv-impact`): mirrors the live platform's "Notre Impact" section (research §J.1/J.6), rebuilt honestly — fictive stat row (all 4 numbers labelled "(fictif)"), then 2 cards of claims that are actually true of this aperçu, not the live platform's contradictory security claims (research §J.5 #3).
 - **Two-stage intake:** (1) write message + optional voice, (2) review message, choose type, optional lieu, demo confirmation → receipt.
 - **Tracking:** lookup, dossier card, agent reply loop, status glossary (always open, current status in gold).
 - Footer links: Ministry, e-Services, e-Sénégal, and **Obtenir un acte** (outbound only).
