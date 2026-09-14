@@ -13,7 +13,7 @@ describe("preview intake", () => {
 		expect(markup).toContain("Prototype indépendant");
 		expect(markup).toContain('href="/acte"');
 		expect(markup).toContain("Obtenir un acte");
-		expect(markup).toContain("Connexion démo");
+		expect(markup).toContain("Connexion");
 		expect(markup).not.toContain("Service aux citoyens");
 		expect(markup).not.toContain("Exemple de confirmation");
 		expect(markup).not.toMatch(/PALJ-[A-Z0-9]{4}-[A-Z0-9]{4}/);
@@ -38,7 +38,7 @@ describe("preview intake", () => {
 		expect(channels.match(/<button /g)).toHaveLength(2);
 		expect(channels).toContain("Commencer à écrire");
 		expect(channels).toContain("Essayer le vocal");
-		expect(channels).toContain("Un texte reste nécessaire. La voix le complète. Rien n’est transmis.");
+		expect(channels).toContain("Un texte reste nécessaire. La voix le complète.");
 		expect(channels).toContain("Animation illustrative, micro inactif.");
 		expect(channels).not.toMatch(/<img|pv-channel-map|pv-channel-tile|envoyer/);
 		expect(markup).toContain("Autres canaux annoncés");
@@ -46,7 +46,7 @@ describe("preview intake", () => {
 		expect(markup).toContain("*711#");
 		expect(markup).toContain("Un agent vous répond");
 		expect(markup).toContain("wolof");
-		expect(markup).toContain("demandes suivies (fictif)");
+		expect(markup).toContain("demandes suivies");
 		expect(markup).not.toContain("Sécurité et confidentialité");
 		expect(markup).not.toContain("Ce que montre cet aperçu");
 		expect(markup).not.toContain("Anonymat possible");
@@ -76,7 +76,7 @@ describe("preview intake", () => {
 	it("starts on step 1 without the review or receipt UI", () => {
 		const markup = html();
 		expect(markup).toContain("Relire et confirmer");
-		expect(markup).not.toContain("Confirmer le dépôt fictif");
+		expect(markup).not.toContain("Confirmer le dépôt");
 		expect(markup).not.toContain("Exemple de confirmation");
 	});
 });

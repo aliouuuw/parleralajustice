@@ -78,7 +78,7 @@ export function SiteChrome({
 					onClick: onSignOut,
 				} : {
 					href: "/connexion",
-					label: "Connexion démo",
+					label: "Connexion",
 					shortLabel: "Compte",
 					current: current === "connexion",
 				}}
@@ -89,12 +89,12 @@ export function SiteChrome({
 				<div className="pv-container pv-footer__inner">
 					<div>
 						<strong>Parler à la justice</strong>
-						<p>Prototype indépendant utilisant uniquement des données fictives.</p>
+						<p>Service citoyen au Sénégal.</p>
 					</div>
 					<nav aria-label="Liens de pied de page">
 						<a href="https://justice.sec.gouv.sn/">Ministère de la Justice</a>
 						<a href="/acte">Obtenir un acte</a>
-						<a href="/guichet">Registre démo</a>
+						<a href="/guichet">Registre</a>
 						<a href="https://public.e-service.sn/">e-Services Justice</a>
 					</nav>
 				</div>

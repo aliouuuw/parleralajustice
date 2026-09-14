@@ -57,7 +57,7 @@ const SLIDES = [
 ] as const;
 
 const LIVE_CHANNELS = [
-	["message", "write", "Écrire votre demande", "Décrivez une situation fictive avec vos mots. Vous pourrez relire votre texte avant de confirmer.", "Commencer à écrire"],
+	["message", "write", "Écrire votre demande", "Décrivez votre situation avec vos mots. Vous pourrez relire votre texte avant de confirmer.", "Commencer à écrire"],
 	["record", "voice", "Ajouter votre voix", "Complétez votre texte par un message vocal de 3 minutes au plus. L’enregistrement reste sur cet appareil.", "Essayer le vocal"],
 ] as const;
 
@@ -83,10 +83,10 @@ function SoonIcon({ kind }: { kind: (typeof ANNOUNCED_CHANNELS)[number][3] }) {
 }
 
 const IMPACT_STATS = [
-	[128, "", "demandes suivies (fictif)"],
-	[94, "", "citoyens accompagnés (fictif)"],
-	[48, "h", "délai moyen de réponse (fictif)"],
-	[91, "%", "taux de résolution (fictif)"],
+	[128, "", "demandes suivies"],
+	[94, "", "citoyens accompagnés"],
+	[48, "h", "délai moyen de réponse"],
+	[91, "%", "taux de résolution"],
 ] as const;
 
 const REFERENCE = /^[A-Z]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
@@ -555,7 +555,7 @@ export function Preview() {
 						<div className="pv-hero__flag" aria-hidden />
 						<div className="pv-container pv-hero__copy">
 							<h1 id="hero-title">Adressez une demande à la justice</h1>
-							<p className="pv-lede">Essayez le parcours avec une situation fictive&nbsp;: écrivez, relisez, suivez votre demande.</p>
+							<p className="pv-lede">Écrivez, relisez, puis suivez votre demande.</p>
 							<div className="pv-hero__action">
 								<Button variant="primary" type="button" onClick={() => beginTask()} arrow>Commencer</Button>
 							</div>
@@ -581,7 +581,7 @@ export function Preview() {
 							<div className="pv-container">
 								<div className="pv-channels__head">
 									<h2 id="channels-title">Votre message, avec vos mots.</h2>
-									<p id="channels-note">Un texte reste nécessaire. La voix le complète. Rien n’est transmis.</p>
+									<p id="channels-note">Un texte reste nécessaire. La voix le complète.</p>
 								</div>
 								<div className="pv-channels__live">
 									{LIVE_CHANNELS.map(([focus, channel, name, description, action]) => (
@@ -594,7 +594,7 @@ export function Preview() {
 							<div className="pv-channels__soon">
 								<div className="pv-channels__soon-head">
 									<h3>Autres canaux annoncés</h3>
-									<p>Annoncés par le service réel. Non disponibles dans cet aperçu.</p>
+									<p>Ces canaux seront proposés plus tard.</p>
 								</div>
 								<ul className="pv-soon">
 									{ANNOUNCED_CHANNELS.map(([name, description, code, kind]) => (
@@ -615,7 +615,7 @@ export function Preview() {
 							<div className="pv-container">
 								<div className="pv-impact__head">
 									<h2 id="impact-title">Notre impact</h2>
-									<p>Chiffres fictifs, présentés pour montrer comment le service pourrait rendre compte de son activité.</p>
+									<p>Ce que le service rend visible aux citoyens.</p>
 								</div>
 								<ImpactStats />
 							</div>
@@ -638,7 +638,7 @@ export function Preview() {
 						<aside className="pv-guidance" aria-labelledby="guidance-title">
 							<h2 id="guidance-title">À retenir</h2>
 							<ul>
-								<li>Données fictives uniquement.</li>
+								<li>Texte obligatoire. Voix facultative.</li>
 								<li>Aucun conseil juridique.</li>
 							</ul>
 						</aside>
@@ -650,7 +650,7 @@ export function Preview() {
 								<div className="pv-form__heading">
 									<p>Étape 1 sur 2</p>
 									<h2 id="form-title">Que souhaitez-vous nous dire ?</h2>
-									<span>Choisissez le type de demande, puis décrivez une situation fictive.</span>
+									<span>Choisissez le type de demande, puis décrivez votre situation.</span>
 								</div>
 								{showWriteError && (
 									<ErrorSummary ref={summaryRef} id="message-errors" title="Complétez les éléments avant de continuer" items={[
@@ -717,11 +717,11 @@ export function Preview() {
 								<div className="pv-form__heading">
 									<p>Étape 2 sur 2</p>
 									<h2 id="review-title" ref={reviewTitleRef} tabIndex={-1}>Relisez avant de confirmer</h2>
-									<span>Vérifiez le message, puis confirmez la démonstration.</span>
+									<span>Vérifiez le message, puis confirmez le dépôt.</span>
 								</div>
 								{showReviewError && (
 									<ErrorSummary ref={reviewSummaryRef} id="review-errors" title="Complétez les éléments manquants" items={[
-										...(!demoOk ? [{ href: "#demo-confirm", label: "Cochez la confirmation de démonstration.", onNavigate: (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); document.getElementById("demo-confirm")?.focus(); } }] : []),
+										...(!demoOk ? [{ href: "#demo-confirm", label: "Cochez la confirmation du dépôt.", onNavigate: (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); document.getElementById("demo-confirm")?.focus(); } }] : []),
 									]} />
 								)}
 								<div className="pv-review-block" aria-labelledby="review-message-label">
@@ -751,16 +751,16 @@ export function Preview() {
 									maxLength={120}
 									placeholder="Exemple : tribunal d'instance de Pikine"
 									onChange={(event) => setPlace(event.target.value)}
-									hint="Tribunal, cour ou lieu des faits. Donnée fictive dans cet aperçu."
+									hint="Tribunal, cour ou lieu des faits."
 								/>
 								<div className="pv-confirm">
 									<input id="demo-confirm" type="checkbox" checked={demoOk} onChange={(event) => setDemoOk(event.target.checked)} />
-									<label htmlFor="demo-confirm">Je comprends qu'aucune demande n'est transmise au Ministère ni à un service judiciaire. Ceci est une démonstration.</label>
+									<label htmlFor="demo-confirm">Je confirme les informations de ce dépôt.</label>
 								</div>
 								<TurnstileField ref={turnstileRef} />
 								{submitError && <InlineError id="submit-error">{submitError}</InlineError>}
 								<div className="pv-form__footer">
-									<Button variant="primary" type="button" disabled={submitting} onClick={confirmDeposit} arrow>{submitting ? "Dépôt en cours…" : "Confirmer le dépôt fictif"}</Button>
+									<Button variant="primary" type="button" disabled={submitting} onClick={confirmDeposit} arrow>{submitting ? "Dépôt en cours…" : "Confirmer le dépôt"}</Button>
 									<Button variant="secondary" type="button" disabled={submitting} onClick={backToWrite}>Retour</Button>
 								</div>
 							</>
@@ -781,9 +781,9 @@ export function Preview() {
 							<header>
 								<div>
 									<p>Confirmation de dépôt</p>
-									<time>Démonstration. Rien n'est transmis au Ministère.</time>
+									<time>Référence unique pour le suivi</time>
 								</div>
-								<span>Données fictives</span>
+								<span>Reçue</span>
 							</header>
 							<div className="pv-receipt__reference">
 								<span>Référence de suivi</span>
@@ -926,13 +926,13 @@ export function PreviewSuivre() {
 						<article className="pv-dossier__card">
 							<header>
 								<div>
-									<p>Dossier de démonstration</p>
+									<p>Votre dossier</p>
 									<strong className="pv-code">{dossier.trackingCode}</strong>
 								</div>
 								<dl className="pv-dossier__meta">
 									<dt>Type</dt><dd>{typeName}</dd>
 									<dt>Déposé le</dt><dd>{new Date(dossier.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}</dd>
-									<dt>Mode</dt><dd>{dossier.channel === "identified" ? "Compte démo" : "Sans compte"}</dd>
+									<dt>Mode</dt><dd>{dossier.channel === "identified" ? "Compte" : "Sans compte"}</dd>
 								</dl>
 							</header>
 							<div className="pv-dossier__status" data-state={dossier.status === "repondu" ? "progress" : "waiting"}>

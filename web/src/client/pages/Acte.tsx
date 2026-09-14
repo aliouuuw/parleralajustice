@@ -21,7 +21,7 @@ export function Acte() {
 			<div className="pv-container pv-track__layout">
 				<div className="pv-track__copy">
 					<h1 id="acte-title">Obtenir un acte</h1>
-					<p className="pv-lede">Pour une démarche réelle, utilisez les services officiels. Cette démo ne délivre aucun acte.</p>
+					<p className="pv-lede">Les actes officiels se demandent sur les portails de l'État. Choisissez le service adapté.</p>
 					<div className="pv-acte-exits">
 						{OFFICIAL_EXITS.map((exit) => (
 							<article key={exit.href} className="pv-acte-exit">

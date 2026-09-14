@@ -17,7 +17,7 @@ export function OtpForm() {
 		if (busy) return;
 		setError(null);
 		if (!email.includes("@") || !email.includes(".")) {
-			setError("Utilisez une adresse fictive complète, par exemple demo@exemple.sn.");
+			setError("Saisissez une adresse complète, par exemple demo@exemple.sn.");
 			return;
 		}
 		setSending(true);
@@ -30,9 +30,9 @@ export function OtpForm() {
 			}
 			if (result.otp) {
 				setOtp(result.otp);
-				setHint(`Code de démonstration : ${result.otp}. Aucun e-mail réel n'est envoyé.`);
+				setHint(`Code : ${result.otp}. Il s'affiche ici, sans envoi d'e-mail.`);
 			} else {
-				setHint("Code demandé dans le circuit de démo. Aucun code n'est disponible à afficher ici.");
+				setHint("Code demandé. Aucun code n'est disponible à afficher ici.");
 			}
 		} catch {
 			setError("Impossible d'obtenir le code. Vérifiez votre connexion et réessayez.");
@@ -64,7 +64,7 @@ export function OtpForm() {
 		<form className="pv-lookup pv-lookup--stack" onSubmit={onSubmit} aria-busy={busy} noValidate>
 			<div className="pv-lookup__group">
 				<label htmlFor="demo-email">
-					Adresse e-mail fictive <span className="pv-optional">(obligatoire)</span>
+					Adresse e-mail <span className="pv-optional">(obligatoire)</span>
 				</label>
 				<input
 					id="demo-email"
@@ -78,7 +78,7 @@ export function OtpForm() {
 					spellCheck={false}
 					disabled={busy}
 				/>
-				<p className="pv-lookup__help">Demandez un code pour cette adresse de démonstration.</p>
+				<p className="pv-lookup__help">Demandez un code pour cette adresse.</p>
 			</div>
 			<div className="pv-lookup__group">
 				<label htmlFor="demo-otp">
@@ -96,14 +96,14 @@ export function OtpForm() {
 					placeholder="6 chiffres"
 					disabled={busy}
 				/>
-				<p className="pv-lookup__help">Dans cette démo, le code est affiché ici et prérempli lorsqu'il est disponible.</p>
+				<p className="pv-lookup__help">Le code s'affiche ici et se préremplit lorsqu'il est disponible.</p>
 			</div>
 			{hint && <p className="pv-lookup__hint" role="status">{hint}</p>}
 			{busy && <p className="pv-lookup__help" role="status">{sending ? "Préparation du code…" : "Vérification du code…"}</p>}
 			{error && <InlineError id="otp-error">{error}</InlineError>}
 			<div className="pv-form__footer">
 				<Button variant="secondary" type="button" disabled={busy} onClick={onSend}>
-					{sending ? "Code en préparation…" : "Obtenir le code de démo"}
+					{sending ? "Code en préparation…" : "Obtenir le code"}
 				</Button>
 				<Button variant="primary" type="submit" disabled={busy}>
 					{verifying ? "Connexion en cours…" : "Se connecter"}

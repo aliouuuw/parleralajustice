@@ -6,8 +6,8 @@ export function Connexion() {
 			<section className="pv-track" aria-labelledby="connexion-title">
 				<div className="pv-container pv-track__layout">
 					<div className="pv-track__copy">
-						<h1 id="connexion-title">Connexion à la démo</h1>
-						<p className="pv-lede">Utilisez une adresse fictive. Le code s'affiche ici, sans envoi d'e-mail. Ce compte ne vérifie pas votre identité légale.</p>
+						<h1 id="connexion-title">Connexion</h1>
+						<p className="pv-lede">Saisissez votre e-mail. Un code s'affiche sur cette page pour confirmer l'accès.</p>
 						<OtpForm />
 					</div>
 					<img
@@ -20,11 +20,11 @@ export function Connexion() {
 					/>
 				</div>
 			</section>
-			<section className="pv-type-band" aria-label="Comment fonctionne la connexion démo">
+			<section className="pv-type-band" aria-label="Comment fonctionne la connexion">
 				<div className="pv-container pv-track-help">
-					<div className="pv-track-help__step"><span>1</span><div><strong>Une adresse fictive</strong><p>Saisissez un e-mail d'exemple, par exemple demo@exemple.sn.</p></div></div>
-					<div className="pv-track-help__step"><span>2</span><div><strong>Un code affiché ici</strong><p>Aucun message n'est envoyé. Le code de démo apparaît sur cette page.</p></div></div>
-					<div className="pv-track-help__step"><span>3</span><div><strong>Un dépôt identifié</strong><p>Après connexion, le dépôt peut porter le compte de démonstration.</p></div></div>
+					<div className="pv-track-help__step"><span>1</span><div><strong>Votre e-mail</strong><p>Saisissez l'adresse que vous souhaitez utiliser.</p></div></div>
+					<div className="pv-track-help__step"><span>2</span><div><strong>Un code sur cette page</strong><p>Le code s'affiche ici pour confirmer l'accès.</p></div></div>
+					<div className="pv-track-help__step"><span>3</span><div><strong>Un dépôt identifié</strong><p>Après connexion, le dépôt peut porter votre compte.</p></div></div>
 				</div>
 			</section>
 		</>

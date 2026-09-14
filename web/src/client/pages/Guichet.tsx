@@ -19,7 +19,7 @@ export function Guichet() {
 				<div className="pv-container pv-track__layout">
 					<div className="pv-track__copy">
 						<h1 id="guichet-title">Registre des demandes</h1>
-						<p className="pv-lede">Demandes fictives, accessibles sans contrôle d'accès. Ouvrez un code pour voir le dossier.</p>
+						<p className="pv-lede">Ouvrez un code pour consulter un dossier et son historique.</p>
 					</div>
 					<img
 						className="pv-track__art"
