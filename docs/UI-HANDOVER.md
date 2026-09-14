@@ -3,17 +3,19 @@
 Written 13 September 2026, updated 14 September 2026. For the next agent
 working on the visual design of Parler à la justice.
 
-**Current assignment is §16 (pass 7).** Upgrade the `/preview` design system
-(typography, components, sections) to a mix of HeroUI control language, Cash
-App consumer register, and Stripe professional operate. Do not restart the
-information architecture. Do not restyle the live Worker.
+**Current assignment is §16 (pass 7).** Turn `/preview` into one design system
+(typography, components, sections). Cash App gives the type architecture,
+HeroUI gives the control shapes, Stripe gives the calibration. All three apply
+to every section. Do not restart the information architecture. Do not restyle
+the live Worker.
 
 Read in this order:
 
 1. `research/jokko-ak-yoon-e-justice.md` (product truth, especially §J)
-2. This file §3 (locked), §4 (rejected attempts), §6 (type and colour), §16 (the job)
-3. `docs/DESIGN.md` (current tokens)
-4. `http://localhost:5173/preview` and `/preview/suivre` (`bun run --cwd web dev`)
+2. `research/cash-app-foundations.md` (measured Cash App rules and the font check)
+3. This file §3 (locked), §4 (rejected attempts), §6 (type and colour), §16 (the job)
+4. `docs/DESIGN.md` (current tokens)
+5. `http://localhost:5173/preview` and `/preview/suivre` (`bun run --cwd web dev`)
 
 ---
 
@@ -168,25 +170,42 @@ Role structure that works and should survive any restyle:
 - Green proceeds and completes, gold waits, red refuses.
 - Flag yellow cannot carry text at any size. It is a surface and a mark only.
 
-### Typography
+### Typography (current, 14 Sep 2026)
 
-Three faces, three roles, all SIL Open Font License:
+Two faces, both SIL Open Font License, both self-hosted in `web/public/fonts/`:
 
-- **Karrik** (Velvetyne) for identity and headings. One weight only, so pin
-  `font-weight: 400` or the browser synthesises a fake bold.
-- **Public Sans** for body and controls.
+- **Mona Sans** (variable: weight 200 to 900, width 75% to 125%) for titles,
+  body and controls. One family, like Cash App's Cash Sans plus Cash Sans Wide.
 - **Sligoil** (Velvetyne) for data only: codes, counters, timestamps.
+
+Tokens on `.pv` in `preview.css`:
+
+| Token | Value | Use |
+|---|---|---|
+| `--weight-body` | 450 | Body copy (set on `.pv`) |
+| `--weight-ui` | 550 | Buttons, nav links |
+| `--weight-strong` | 650 | Labels, small headings, brand, status names |
+| `--weight-title` | 620 | Large titles (hero, suivi, form, outcome, dossier status) |
+| `--stretch-title` | 112.5% | Large titles on desktop only |
+
+Rules:
+
+- Semi-wide (112.5%) only on titles of 26px or more. Everything smaller stays at
+  normal width. Cash App: do not mix widths at similar sizes.
+- Below 600px, hero and suivi titles drop to normal width, and the hero is
+  34px. The hero is 2 lines at 390px and 3 lines at 320px, with no overflow.
+- Titles use -0.018em (hero, suivi) or -0.012em (form, outcome) tracking.
+  Tighter values crushed the letters in the specimen.
+- The product app (`/`, `/parler`, ...) still uses Public Sans from Google Fonts.
+  It converges after sign-off.
 
 The licence is a real constraint, not a preference. A design system proposed as
 public infrastructure cannot rest on a typeface it may not redistribute.
-Cabinet Grotesk looked better in the specimen but Fontshare's licence is not
-OFL, so it was rejected.
+Cabinet Grotesk looked better in an early specimen but Fontshare's licence is
+not OFL, so it was rejected.
 
-A live specimen comparing five candidates in the real layout is served at
-`/spec2.html` with the fonts in `web/public/fonts/cand/`. Both are temporary;
-delete them once the face is settled. Note that the Atkinson Hyperlegible panel
-in that specimen failed to load and fell back to a serif. It was never a real
-candidate.
+A temporary specimen from pass 3 is still at `/spec2.html` with fonts in
+`web/public/fonts/cand/`. Delete both.
 
 ### Rejected font directions
 
@@ -195,6 +214,40 @@ decorative. Terminal Grotesque is too techy. General Sans and Figtree read as
 generic startup faces. The owner's HeroUI link specifies Figtree; that is the
 theme playground default, not a considered choice, and it should not be adopted.
 
+### Pass 7 font decisions (14 Sep 2026)
+
+Evidence: `research/cash-app-foundations.md`,
+`research/type-specimen-2026-09-14.png` (body and code faces),
+`research/title-specimen-2026-09-14-a.png` and `-b.png` (title faces).
+
+1. **Body:** the review first recommended keeping Public Sans. The owner tried
+   Mona Sans and kept it. At 400 and 500 it read too light at 13 to 15px, so
+   body is 450 and controls are 550.
+2. **Titles:** the owner said Karrik did not match Mona Sans. Candidates
+   rendered with the real preview titles:
+   - Karrik 400 (previous): quirky forms fight Mona Sans.
+   - Mona Sans Wide 125% at 640: the most Cash App, but too wide for phones.
+   - **Mona Sans Semi-wide 112.5% at 620: chosen.** Same family, confident,
+     no extra font file.
+   - Hubot Sans (GitHub's companion face): heavy, and a second GitHub brand face.
+   - Redaction 400 (serif, made for an art project on the justice system):
+     classy, but a serif-plus-sans pairing and heavy connotations. Fallback if
+     the owner wants an editorial voice.
+3. **Karrik removed.** The file and its `@font-face` are deleted (still in git
+   history).
+
+Rejected on 14 Sep:
+
+- **Cash Sans, Söhne:** commercial Klim licence. Not OFL.
+- **Atkinson Hyperlegible Next and Mono:** no ŋ or Ŋ. Wolof names break.
+- **Apfel Grotezk, Bagnard:** no ŋ or Ŋ.
+- **Geist, Inter, Instrument Sans, Hanken Grotesk:** default or "tasteful
+  default" faces. They read as generated.
+
+Known trade-off: Mona Sans is GitHub's brand face and is on Google Fonts. The
+illustrations, the flag palette and the semi-wide titles carry the identity,
+not the typeface alone.
+
 ## 7. Where the code is
 
 ```
@@ -202,7 +255,7 @@ web/src/client/preview/
   Preview.tsx      the page
   preview.css      the whole design system, tokens at the top
   Waveform.tsx     canvas voice visualiser, reads colours from CSS tokens
-web/public/fonts/  karrik-regular.woff2, sligoil-micromedium.woff2, README with licences
+web/public/fonts/  mona-sans-*.woff2, sligoil-micromedium.woff2, README with licences
 research/jokko-ak-yoon-e-justice.md   the source material
 ```
 
@@ -242,7 +295,7 @@ Two lessons from doing it:
 
 ## 9. Known quality state
 
-Current build passes: 13/13 Vitest, TypeScript, production build, zero console
+State measured on 13 Sep (tests now 20/20 across 4 files, 14 Sep). Build passed: TypeScript, production build, zero console
 errors, no horizontal overflow, no sub-24px targets, nothing below 11px, WCAG AA
 on all twenty-two measured pairs, keyboard focus on every tab stop,
 `prefers-reduced-motion` honoured without killing colour feedback.
@@ -258,13 +311,15 @@ The build is clean. Clean was never the problem.
 2. **The system is still one surface.** `/preview` and `/preview/suivre` share
    `preview.css`. Product routes (`/`, `/parler`, `/suivre`, `/guichet`) still
    use HeroUI app chrome. Do not restyle those until `/preview` is signed off.
-3. **Git.** `main` is at `f49a4a0`, two commits ahead of `origin/main`, not
-   pushed. Uncommitted at the start of pass 7: HeroUI control mapping in
-   `preview.css` and a DESIGN.md radius note. Do not force-push. Do not commit
-   unless the owner asks.
-4. **Temporary files to remove when convenient:** `web/public/spec2.html` and
+3. **Git.** Check `docs/progress.md` §Git for the current state. Do not
+   force-push. Do not commit unless the owner asks.
+4. **The product app loads Public Sans from Google Fonts** (`web/index.html`).
+   `/preview` is self-hosted now. A justice intake should not send citizen IP
+   addresses to Google. Remove the Google link when the product app moves to
+   Mona Sans.
+5. **Temporary files to remove when convenient:** `web/public/spec2.html` and
    `web/public/fonts/cand/`. Not the pass 7 job.
-5. **The audit framing is deliberately private.** The research shows the real
+6. **The audit framing is deliberately private.** The research shows the real
    platform returning 503 and 500 with broken French in its UI. Keep that out of
    public copy. Confirm before changing this.
 
@@ -275,9 +330,10 @@ will tell you when something is wrong. They rejected three passes in one
 session, and each rejection was right.
 
 Do not ship another variation of the current page **without a system**.
-Attempts 1–3 skipped adjectives. Pass 7 already has them: see §16. Build
-that mix. Do not propose three new visual worlds unless the owner rejects
-the mix.
+Attempts 1 to 3 skipped adjectives. Pass 7 has the references (§16), but no
+approved layout. Tokens and components can ship first. Before any section
+layout changes, show the owner two compositions and let them pick one (§16,
+step 3). Four passes were rejected. Do not skip this gate.
 
 ---
 
@@ -319,7 +375,7 @@ rhythm) was restored. Treat the visual direction as **still unsolved**.
 
 ## 13. Working notes for the next agent
 
-Pass 5–6 notes below are historical. **Do pass 7 as specified in §16.**
+Pass 5 and 6 notes below are historical. **Do pass 7 as specified in §16.**
 
 1. **Read the live preview first.** Dev server: `bun run --cwd web dev`.
    Port is usually 5173. Routes: `/preview`, `/preview/suivre`.
@@ -329,9 +385,8 @@ Pass 5–6 notes below are historical. **Do pass 7 as specified in §16.**
 3. **The receipt is conditionally rendered.** It appears after a valid
    **Confirmer** on step 2, not after step-1 **Continuer**. Tests in
    `web/test/preview.spec.ts` pin this.
-4. **Pass 7 adjectives are already locked** in §16 (Cash App / HeroUI /
-   Stripe mix). Do not reopen the “propose three compositions” loop from
-   §11 unless the owner rejects the mix.
+4. **Pass 7 references are set** in §16 (Cash App, HeroUI, Stripe). Section
+   layouts are not. Use the two-composition gate in §11 before step 4.
 5. **The Impeccable skill is the approved polish tool.** Invoke it via
    the `skill` tool with `impeccable`. The ACP plugin version is
    unavailable.
@@ -354,130 +409,144 @@ Pass 5–6 notes below are historical. **Do pass 7 as specified in §16.**
 - Source illustrations and prompts: `design/illustrations/` (PNG originals, `atelier.png` unused). Web copies in `web/public/images/hero/`.
 - Reference product is now the live « Justice Accessible Sénégal » at `jokkooakyoon.sn`. See research §J and `docs/product.md`.
 
-## 15. Pass 6 (14 Sep 2026) — preview is north star
+## 15. Pass 6 (14 Sep 2026): preview is north star
 
 - Owner chose **A**: `docs/DESIGN.md` documents `/preview` as authority; HeroUI app follows later.
 - Two-stage intake is implemented: write → review (type, optional lieu, demo checkbox) → receipt. « Commencer » or step 1 continue enters **task mode** (hero and yellow band hidden).
 - Live-platform content: channel honesty line, footer « Obtenir un acte », suivi délai indicatif fictif, status glossary (always open, current status in gold), type passed to suivi via query string.
 - Slide timing: `--slide-ms: 3.5s`.
-- Tests: `web/test/preview.spec.ts`, 20 passing via `bun run test`. Receipt appears only after **Confirmer**, not after step-1 **Continuer**.
+- Tests: `bun run test` runs 20 tests in 4 files (7 in `web/test/preview.spec.ts`), all passing on 14 Sep. Receipt appears only after **Confirmer**, not after step-1 **Continuer**.
 
-## 16. Pass 7 — design system upgrade (queued, 14 Sep 2026)
+## 16. Pass 7: design system upgrade (queued, 14 Sep 2026)
 
-Owner request: take the `/preview` that now exists and upgrade it into a **design
-system** (typography, components, sections), mixing **HeroUI** surface language
-with **Cash App** (closest to the current preview vibe) and **Stripe** (class
-and professionalism). This is not a new product. This is not a restyle of `/`.
+Owner request: upgrade the current `/preview` into a **design system**
+(typography, components, sections). References: **HeroUI** style, **Cash App**
+(closest to the preview's vibe), **Stripe** (class and professionalism). This is
+not a new product. This is not a restyle of `/`.
 
-The ambition in §2 still holds: the beginning of a Senegalese civic design
-system. Pass 7 is the first time the owner asked to systematise, not to guess
-another page.
+Rewritten 14 Sep after a review found three defects in the first draft: fonts
+were locked against the request, Cash App and Stripe facts came from memory,
+and each reference was given its own zone of the page.
 
-### Thesis
+### Thesis: one system, three layers
 
-Three registers, one product:
+Every reference applies to every section. Sections differ by **density**, not
+by which brand they imitate.
 
-| Register | Source | Where it applies |
+| Layer | Source | What it controls |
 |---|---|---|
-| Consumer first viewport | [Cash App](https://cash.app) | Hero, lede, **Commencer**, yellow type band, illustrated people as identity |
-| Soft controls | [HeroUI theme builder](https://heroui.com/en/themes?formRadius=extra-large&radius=large&fontFamily=figtree&hue=274.697354037878&base=0.0097&chroma=0.07768050719273402&lightness=0.8052782776425559) | Buttons, fields, type-pick, lookup, checkboxes |
-| Professional operate | [Stripe](https://stripe.com) | Task workspace, progress rail, review, receipt, dossier, history, status glossary, footer |
+| Type architecture | Cash App (measured, `research/cash-app-foundations.md`) | Face roles, weight defaults, size contrast, tracking, leading |
+| Control shape | HeroUI theme link (§2) | Radii, pill buttons, filled fields, transition timing |
+| Calibration | Stripe (principles, not measured) | Complete states, one primary per view, one elevation language, record density |
 
-The mix is **not** a blend of three palettes. Colour stays the flag system in
-§6. The mix is **scale and chrome**: Cash App size and confidence, HeroUI
-roundness and fill, Stripe calibration and restraint.
+Colour stays the flag system in §6. None of the three references changes a
+colour.
 
-An agency reviewer should feel: this is a serious public service that a person
-would actually use. Not a Ministry clone. Not a fintech landing page.
+An agency reviewer should feel: a serious public service a person would
+actually use. Not a Ministry clone. Not a fintech landing page.
 
-### Take / skip
+### Density levels
 
-**HeroUI — take**
+| Level | Sections | Type tokens | Spacing |
+|---|---|---|---|
+| Open | Hero, type band, outcome band, empty suivi | display, title, lede | Large |
+| Working | Workspace, review, lookup, reply | heading, body, ui | Medium |
+| Record | Receipt, dossier, history, status glossary, footer | ui, caption, data | Tight rows, hairlines |
 
-- `radius=large` on panels (~16px). `formRadius=extra-large` on fields (~16px).
-- Buttons as pills (`border-radius: 999px`), weight 500, no outline, press
-  scale ~0.97.
-- Filled fields (tinted or white-on-soft), thin or no decorative border, hover
-  darkens the fill.
-- Generous control padding. Soft 150–180ms colour transitions.
+### Layer 1: type (Cash App architecture)
 
-**HeroUI — skip**
+Faces are decided in §6 "Pass 7 font decisions": Mona Sans for titles, body and
+controls, Sligoil for data. Do not reopen unless the owner asks.
 
-- Figtree (§6). It is the playground default, not a choice.
-- Hue 274 pastel lavender. Accent is flag green `#00853F`.
-- `--field-border-width: 0` on a white page. Keep a 1px WCAG 1.4.11 line
-  (`--color-field-line`) or an equivalent 3:1 boundary.
-- 36px-tall buttons. Civic tap target stays ≥44px (today 48px).
-- Rebuilding `/preview` as HeroUI React components. Stay on `preview.css`.
+Rules taken from Cash App:
 
-An earlier owner link used the same radii with green `hue 148.79, chroma 0.132,
-lightness 0.553`. Radii from that link and the purple playground are the same.
-Hue is not.
+1. **Weights:** use the tokens only. Body 450, controls 550, labels and small
+   headings 650, large titles 620 at 112.5% width. No raw weight numbers.
+2. **Size contrast:** large jumps between levels. Cash App uses
+   90 / 48 / 22 / 14 / 10. Adjacent sizes that look alike are a defect.
+3. **Tracking:** -2% to 0% on everything above 20px (tighter crushed Mona Sans). 0 to +4% only on small
+   caption and data text.
+4. **Leading:** 0.95 to 1.05 on display and title. 1.15 to 1.3 on headings and
+   controls. Body copy stays at 1.5 or more: WCAG 1.4.12 wins over Cash App's
+   120% ceiling for long civic text.
+5. **Mono:** Sligoil only on codes, clocks, counters and dates. Never on
+   paragraphs, labels, buttons or headlines other than the reference code.
+6. **Floor:** 12px minimum. `pv-history time` is 11px today; raise it.
 
-**Cash App — take**
+Starting tokens (tune in the browser, keep the contrast):
 
-- Huge display type against white. One short promise. One primary action.
-- People in ordinary rooms as the brand (the three illustrations already do
-  this). Do not add stock photography.
-- Almost no chrome on the first viewport: no card grid, no metric tiles, no
-  eyebrow spam.
-- Numbers and codes as designed objects (Sligoil on `PALJ-7K4M-2QX9`, counters,
-  clocks) the way Cash App treats amounts.
-- Section rhythm: full-bleed colour or full-bleed white, not nested cards.
-- Direct French. Controls name the action.
+| Token | Face | Size | Leading | Tracking |
+|---|---|---|---|---|
+| `--text-display` | Mona Sans 620, 112.5% | `clamp(48px, 7vw, 88px)` | 0.95 | -0.018em |
+| `--text-title` | Mona Sans 620, 112.5% | `clamp(32px, 4vw, 48px)` | 1.0 | -0.012em |
+| `--text-heading` | Mona Sans 650 | 22px | 1.2 | -0.005em |
+| `--text-lede` | Mona Sans 450 | 20px | 1.45 | 0 |
+| `--text-body` | Mona Sans 450 | 16px | 1.55 | 0 |
+| `--text-ui` | Mona Sans 550 | 15px | 1.2 | 0 |
+| `--text-caption` | Mona Sans 550 | 13px | 1.35 | 0.01em |
+| `--text-data` | Sligoil | uses the size of its context | 1.2 | 0.04em |
 
-**Cash App — skip**
+The hero headline must stay on one or two lines at 1440px and at 390px. Display
+and title drop to 100% width below 600px.
 
-- Cash App green `#00D632`, the cash wordmark, the square logo, Cash Sans.
-- Payments, balances, activity feeds, “boost”, dark-mode-first marketing.
-- Bounce and spring as a personality. Keep `--ease-standard`. Honour
-  `prefers-reduced-motion`.
-- Making the récépissé look like a receipt for money.
+### Layer 2: controls (HeroUI shape)
 
-Cash Sans and Stripe’s Sohne are not OFL. Public infrastructure cannot rest on
-them. Keep Karrik, Public Sans, Sligoil.
+Take:
 
-**Stripe — take**
+- `radius=large` panels and `formRadius=extra-large` fields: keep the existing
+  `--radius-panel` and `--radius-control` (16px).
+- Pill buttons (`--radius-button: 999px`), weight 500, press scale 0.97, no
+  hover lift.
+- Filled fields. Hover darkens the fill. Keep the 1px `--color-field-line` for
+  WCAG 1.4.11 (3:1 boundary).
+- Colour transitions of 150ms to 180ms on `--ease-standard`.
 
-- Type that feels inevitable: a real scale, consistent measure, optical
-  alignment, no fake bold on Karrik.
-- Operate density. Task, receipt, and suivi should scan like a product, not
-  like a campaign.
-- Hairlines and second-tone fills for structure. One elevation language (fill
-  **or** a real shadow, not both).
-- Complete control states: default, hover, focus, active, disabled, error,
-  empty.
-- Quiet secondary actions. One loud primary per view.
-- Empty `/preview/suivre` as a job (lookup), not a vacant poster.
+Skip:
 
-**Stripe — skip**
+- Figtree and hue 274 (the playground defaults).
+- 36px buttons. Targets stay 44px or more (48px today).
+- HeroUI React components inside `/preview`. Stay on `preview.css`.
 
-- Stripe purple, Sohne, dashboard tables as the homepage, gradient meshes,
-  “global scale” marketing copy.
-- GOV.UK grey reconstitution (attempt 2 already failed for being inert).
-- Turning the illustrated hero into a docs header.
+### Layer 3: calibration (Stripe principles)
+
+- Every control has default, hover, focus-visible, active, disabled and error
+  styles. Keep the ink outline plus gold halo for focus.
+- One loud primary action per view. Secondary and quiet buttons must look
+  different from each other and from primary.
+- One elevation language: tonal fill, no drop shadows on panels.
+- Record surfaces scan like a product: aligned label and value columns,
+  hairline rows, tabular numbers.
+- Empty `/preview/suivre` is a job (the lookup), not a poster.
+
+Skip: purple, gradient meshes, dashboard tables on the first viewport, docs
+header style over the illustrated hero, GOV.UK grey (attempt 2 failed for being
+inert).
+
+### Also from Cash App
+
+- One point of focus per composition.
+- Flag gold behaves like Cash Green: a surface with ink text, never a text
+  colour.
+- Motion is "unfussy". Text may slide up into place, but content is visible by
+  default and `prefers-reduced-motion` removes the movement.
+- Direct French. Say what happens next, including bad news (« Clôturé »,
+  errors).
+- Skip: Cash Green `#00D632`, the wordmark, payment vocabulary, spring bounce, a
+  récépissé that looks like a money receipt.
 
 ### Locked (do not relitigate)
 
-From §3, plus later passes:
-
-- Two-stage intake: write → review (type, optional lieu, demo checkbox) →
-  receipt. Voice optional, never a substitute for text.
-- Independent-demo disclosure on every screen. No coat of arms, seal, or
+- Two-stage intake: write, then review (type, optional lieu, demo checkbox),
+  then receipt. Voice optional, never a substitute for text.
+- Task mode after **Commencer** (replaces the §3 "form below the fold" line).
+- Independent-demo disclosure on every screen. No coat of arms, seal or
   Ministry branding.
-- French UI. Demo data only.
-- `/preview` is visual north star. Product HeroUI routes converge later.
-- Faces: Karrik 400 headings, Public Sans body/UI, Sligoil data. OFL only.
+- French UI. Demo data only. Live categories and statuses (research §J). No
+  Contestation.
 - Flag roles: green proceeds, gold waits, red signals, ink `#14201A` on dark
-  rails. Grain only on large colour fills.
-- Live categories and statuses (research §J). No Contestation.
-- Sample code `PALJ-7K4M-2QX9`. Non-sequential on purpose.
-- CSS in `preview.css`. Do not re-introduce StyleX unless the owner asks.
-- No Convex. Bun only. `bun run test` after code changes. No auto-commit.
-
-§3 still says “the form begins immediately below the fold.” Pass 5 replaced
-that with a full-viewport hero and **task mode** after **Commencer**. Task mode
-is now locked. Do not put the form back under the hero.
+  rails. Grain only on large colour fields.
+- Sample code `PALJ-7K4M-2QX9`, non-sequential on purpose.
+- CSS in `preview.css`. No StyleX. No Convex. Bun only. No auto-commit.
 
 ### Current tokens (do not throw away)
 
@@ -488,104 +557,97 @@ In `web/src/client/preview/preview.css` on `.pv`:
   `--color-field-line: #7d8c83`.
 - Radius: `--radius-control: 16px`, `--radius-button: 999px`,
   `--radius-panel: 16px`.
-- Type: `--font-heading`, `--font-body`, `--font-data`.
+- Type: `--font-heading` and `--font-body` (both Mona Sans), `--font-data`
+  (Sligoil), `--weight-body`, `--weight-ui`, `--weight-strong`,
+  `--weight-title`, `--stretch-title`. No size tokens yet.
 - Motion: `--slide-ms: 3.5s`, `--ease-standard: cubic-bezier(0.2, 0, 0, 1)`.
-- Focus: ink 3px outline + gold halo (`.pv :focus-visible`). Fields replace
-  that with ink border + 4px gold ring.
 
-There is **no type scale token set**. Sizes are one-off clamps. That is the
-first gap pass 7 must close.
+Baseline on 14 Sep: **76** one-off `font-size` values and **13** one-off
+`border-radius` values in `preview.css`.
 
-### Inventory to upgrade
-
-One stylesheet, one page module. Systematise these; do not add a component
-library package.
+### Inventory
 
 **Chrome:** `pv-skip`, `pv-notice`, `pv-header`, `pv-brand`, `pv-nav`,
 `pv-footer`.
 
-**Type-led sections:** `pv-hero`, `pv-lede`, `pv-type-band` / `pv-types`,
-`pv-form__heading`.
+**Open:** `pv-hero`, `pv-lede`, `pv-type-band`, `pv-types`, `pv-outcome-band`,
+`pv-slides`, `pv-frise`.
 
 **Controls:** `pv-button` (`--primary`, `--secondary`, `--quiet`), `pv-field`,
 `pv-lookup`, `pv-type-pick`, `pv-confirm`, `pv-link`.
 
-**Operate:** `pv-workspace`, `pv-rail`, `pv-progress`, `pv-guidance`, `pv-audio`,
-`pv-review-block`, `pv-error-summary`, `pv-outcome-band`, `pv-receipt`,
-`pv-history`, `pv-track`, `pv-dossier`, `pv-statuses`, `pv-reply`.
+**Working:** `pv-workspace`, `pv-rail`, `pv-progress`, `pv-guidance`,
+`pv-audio`, `pv-form__heading`, `pv-review-block`, `pv-error-summary`,
+`pv-reply`.
 
-**Motion / media:** `pv-slides`, `pv-frise`, `Waveform.tsx` (already reads CSS
-tokens).
+**Record:** `pv-receipt`, `pv-history`, `pv-track`, `pv-dossier`,
+`pv-statuses`, `pv-code`.
+
+`Waveform.tsx` reads colour tokens already.
 
 ### Work order
 
-Stay on `/preview` and `/preview/suivre`. Ship in this order so the page does
-not thrash.
-
-1. **Typeset (Cash App range + Stripe calibration).**
-   Add tokens: display, title, body, ui, data, caption. Keep Karrik at 400.
-   Hero display should feel Cash App (large, short, tracking ≥ -0.04em).
-   Workspace titles should feel Stripe (smaller than the hero, still Karrik).
-   Sligoil only on codes, counters, clocks. Pin a 65–75ch body measure on
-   long copy. Check 320px and 390px wrapping, especially the horizontal
-   progress rail.
-2. **Components (HeroUI feel + Stripe states).**
-   Document each control once in CSS. Primary / secondary / quiet must stay
-   distinct. Fields stay filled. Type-pick stays cards, not chips. Selected
-   type uses brand-soft + brand line. Disabled, error, and focus must be
-   visible without the HeroUI purple ring. Do not drop the gold halo.
-3. **Sections (Cash App on persuade, Stripe on operate).**
-   Hero + type band: more type range, less leftover GOV.UK column habit.
-   Workspace: treat the rail and the form as one product, not a landing plus
-   an admin. Receipt and dossier: structured records (already honest — keep
-   them that way), Stripe density, Sligoil reference as the object.
-   Empty suivi: the lookup is the first-screen job; do not bring back vacant
-   art as the composition.
-4. **Write the system down.**
-   Update `docs/DESIGN.md` with the scale, component rules, and section
-   roles. This handover stays history; DESIGN.md stays the living spec.
-5. **Verify.**
-   `bun run test`. Browser path: write → review → back → confirm → receipt →
-   suivi (sample code). 320px and 390px. Keyboard focus. Reduced motion.
-   Impeccable: `context.mjs --target web/src/client/preview/preview.css`,
-   then `typeset` / `extract` / `polish` as needed. Detector at the end:
-   `detect.mjs --json` on the files you touched.
+1. **Type tokens.** Add the `--text-*` tokens. Replace every one-off
+   `font-size`. Fonts are already self-hosted for `/preview`. No layout
+   changes.
+2. **Controls.** Apply layers 2 and 3 to the control inventory. Replace the
+   one-off radii. No layout changes.
+3. **Owner gate.** Screenshot two compositions for the working and record
+   levels (workspace plus receipt, at 1440px and 390px). Show them to the
+   owner. Wait for a pick. Do not start step 4 without it.
+4. **Sections.** Build the picked composition. Fix the known defects below.
+5. **Write it down.** Update `docs/DESIGN.md`: type table, control states,
+   density levels. DESIGN.md is the living spec. This file is history.
+6. **Verify.** Run the checks in "Definition of done".
 
 ### Definition of done
 
-- A stranger can use `/preview` and `/preview/suivre` without noticing a style
-  break between sections.
-- Tokens, not one-off pixel values, drive type size, radius, and control
-  padding.
-- `docs/DESIGN.md` matches the CSS.
-- 20 existing preview tests still pass, or they are updated for copy you were
-  allowed to change (ask before changing claims).
-- Owner can judge the mix in the browser in under five minutes.
+Each line is a check someone can run.
+
+1. `grep -nE "font-size:\s*(clamp|[0-9])" web/src/client/preview/preview.css`
+   returns only lines inside the `.pv` token block.
+2. `grep -nE "border-radius:\s*[0-9]" web/src/client/preview/preview.css`
+   returns only `50%` circles or lines inside the token block.
+3. `/preview` loads no font from `fonts.googleapis.com`. Today `web/index.html`
+   loads Public Sans for every route. Move that link into the product app, or
+   switch the product app to Mona Sans (owner decision).
+4. `bun run test`: 20 of 20 pass, or new tests replace changed selectors.
+5. Hero headline is one or two lines in screenshots at 1440x900 and 390x844.
+6. No horizontal scroll at 320px. Progress rail labels are not clipped at 390px.
+7. Every control in the inventory has hover, focus-visible, active, disabled
+   and error rules (list them in DESIGN.md).
+8. All text pairs reach 4.5:1. Body copy reaches 7:1 (Cash App AAA target).
+9. Tab through the full path: write, review, back, confirm, receipt, suivi.
+   Focus is visible at every stop.
+10. The owner picked a composition in step 3, and DESIGN.md token values match
+    the CSS.
 
 ### Files
 
 | Touch | Leave alone unless the job requires it |
 |---|---|
 | `web/src/client/preview/preview.css` | `web/src/auth.ts`, migrations |
-| `web/src/client/preview/Preview.tsx` (markup only if a component needs a hook) | `web/src/client/pages/*` (product app) |
-| `docs/DESIGN.md` | Live Worker deploy |
-| `web/test/preview.spec.ts` if selectors or copy change | `docs/product.md` facts, research §J |
+| `web/src/client/preview/Preview.tsx` (markup only when a component needs it) | `web/src/client/pages/*` (product app) |
+| `web/index.html` (font links only) | Live Worker deploy |
+| `web/public/fonts/` | `docs/product.md` facts, research §J |
+| `docs/DESIGN.md` | |
+| `web/test/preview.spec.ts` if selectors or copy change | |
 
-### Known defects to absorb, not to ignore
+### Known defects to fix in step 4
 
-- Mobile progress rail: two steps on a dark pill; labels overflow at ~390px.
+- Mobile progress rail: two steps on a dark pill; labels overflow near 390px.
 - Empty `/preview/suivre` still reads as a marketing split on desktop.
-- `web/src/client/index.css` still leaks `h1, h2, h3 { color: var(--ink) }` and
-  a global focus ring into `/preview`. Explicit colour on every preview
-  heading. Do not “fix” the leak by restyling the product app in this pass.
-- Critique snapshot `2026-09-14T03-04-00Z` scored 24/40 against an earlier
-  preview (Continuer skipped review). That P1 is fixed. Do not reopen it.
-  Remaining compositional P2 (workspace still a 260+720 column) is in scope
-  for step 3 if a stronger operate layout appears. Do not break task mode.
+- Workspace is still a 260px rail beside a 720px column (critique snapshot
+  `2026-09-14T03-04-00Z`, P2). Keep task mode.
+- `web/src/client/index.css` leaks `h1, h2, h3 { color: var(--ink) }` and a
+  global focus ring into `/preview`. Set explicit colour on every preview
+  heading. Do not restyle the product app to fix it.
 
 ### Tools
 
 - Impeccable skill: `/Users/aliouwade/.claude/skills/impeccable/`.
-- Browser: Cursor browser tools against `http://localhost:5173`.
-- Tests: `bun run test` from repo root.
-- Do not impersonate the Ministry. Do not store real complaints.
+  `scripts/context.mjs --target web/src/client/preview/preview.css` before
+  step 1, `scripts/detect.mjs --json` on touched files after step 5.
+- Browser: the headless shell in §8, or editor browser tools, against
+  `http://localhost:5173`.
+- Tests: `bun run test` from the repo root.
