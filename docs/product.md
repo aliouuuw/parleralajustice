@@ -54,7 +54,7 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 
 ## Visual identity and intake (approved product direction)
 
-- **`/preview` is the design authority** until sign-off. See `docs/DESIGN.md` for tokens, typography (Karrik, Public Sans, Sligoil), flag palette, illustrated hero, and two-stage intake.
+- **`/preview` is the design authority** until sign-off. See `docs/DESIGN.md` for tokens, typography (Karrik, Public Sans, Sligoil), flag palette, illustrated hero, and two-stage intake. Pass 7 (queued) upgrades that preview into a system: `docs/UI-HANDOVER.md` §16.
 - Intake: write a fictitious message with optional audio, then review, choose request type (live platform categories), optional lieu, demo confirmation, then receipt.
 - The receipt is a structured digital record, not a simulated government document. No seal, star, perforation or Ministry branding.
 - HeroUI routes under `web/src/client/pages/` converge on the preview system after visual approval.

@@ -77,7 +77,7 @@
         {
           "id": "T009",
           "title": "Rebuild UI on HeroUI v3 with professional civic design",
-          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. Committed locally as 3f0a582 on main; not pushed; not deployed. Live Worker still serves the old vanilla JS UI. Visual exploration continues on /preview (pass 5 uncommitted: illustrated hero, /preview/suivre, in-browser voice, live-platform categories from research §J). Owner has not signed off the visual direction. Do not deploy until that review. Existing case/auth APIs unchanged in this redesign.",
+          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. Local commits 3f0a582 (app) and f49a4a0 (preview north star); not pushed; not deployed. Live Worker still serves the old vanilla JS UI. Next visual work is pass 7 on /preview: systematise typography, components, and sections as HeroUI controls + Cash App first-viewport vibe + Stripe operate class. Brief: docs/UI-HANDOVER.md §16. Do not deploy until visual sign-off. Existing case/auth APIs unchanged.",
           "status": "pending",
           "deps": ["T003", "T005"],
           "files": ["web/src/client/", "web/vite.config.mts", "web/index.html", "web/wrangler.jsonc", "web/tsconfig.client.json"],

@@ -1,38 +1,58 @@
 # Progress
 
-Checked: 14 September 2026, 02:41 UTC.
+Checked: 14 September 2026, 04:30 UTC.
 
 ## Live
 
 https://parleralajustice.aliouuuw.workers.dev — still the old vanilla JS UI.
 
-The HeroUI rebuild (T009) is committed locally as `3f0a582` and is **not pushed** and **not deployed**. Turnstile on case create is live (T006a).
+The HeroUI rebuild (T009) is on `main` as `3f0a582` plus preview work `f49a4a0`.
+Neither commit is pushed. Neither is deployed. Turnstile on case create is live
+(T006a).
 
 ## Two UIs in this repo
 
-1. **Product app** (`/`, `/parler`, `/suivre`, …) — React + HeroUI v3. Focused application look. Rules in `docs/DESIGN.md`. This is what `3f0a582` would ship if deployed.
-2. **Visual preview** (`/preview`, `/preview/suivre`) — separate CSS prototype. Illustrated hero, flag-green palette, live-platform categories. This is the surface under visual review. It is **not** the live Worker.
+1. **Product app** (`/`, `/parler`, `/suivre`, …) — React + HeroUI v3. This is
+   what a deploy of `3f0a582` would ship. Do not restyle it in pass 7.
+2. **Visual preview** (`/preview`, `/preview/suivre`) — CSS prototype in
+   `web/src/client/preview/`. This is the design authority (`docs/DESIGN.md`).
+   It is **not** on the live Worker.
 
 Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 
-## In progress: T009 visual direction + live-platform alignment
+## Next: pass 7 design-system upgrade (not started)
 
-Pass 6 on `/preview` is uncommitted (14 Sep): north star **A**, two-stage intake, task mode.
+Owner asked to upgrade typography, components, and sections into a mix of:
 
-Pass 5 baseline (14 Sep):
+- **HeroUI** — control language (pills, filled fields, extra-large form radius)
+- **Cash App** — consumer vibe closest to the current illustrated preview
+- **Stripe** — class and professionalism on operate surfaces
 
-- Full-screen illustrated hero (3 scenes, pause control)
+Brief for the next agent: **`docs/UI-HANDOVER.md` §16**. Locked constraints:
+§3 and §6. Living tokens: `docs/DESIGN.md`.
+
+Do not restart IA. Do not adopt Figtree, Cash Sans, Sohne, Cash App green, or
+HeroUI hue 274. Stay on `preview.css`.
+
+## In progress: T009 visual direction
+
+Pass 6 is **committed** locally as `f49a4a0` (two-stage intake, task mode,
+north star A, live-platform categories).
+
+Uncommitted (14 Sep, after pass 6): HeroUI control mapping on `/preview`
+(16px fields, pill buttons, filled mint fields). See `preview.css` and a
+radius note in `docs/DESIGN.md`.
+
+Pass 5 baseline (inside `f49a4a0` and earlier):
+
+- Full-screen illustrated hero (3 scenes; pause button removed; hover still
+  pauses the fill; `--slide-ms: 3.5s`)
 - `/preview/suivre` with one fictive dossier `PALJ-7K4M-2QX9`
 - In-browser voice (3 min cap, playback, delete, no upload)
-- Categories and statuses copied from the live site (research §J)
+- Categories and statuses from the live site (research §J)
 
-Live Jokko check (14 Sep, ~00:50 local) is also uncommitted:
-
-- Notes in `research/jokko-ak-yoon-e-justice.md` §J
-- Screenshots in `research/jokko-live-2026-09-14/`
-- Product decisions in `docs/product.md` (categories, statuses, non-guessable refs)
-
-Visual sign-off is still pending. The owner has rejected four earlier visual passes. See `docs/UI-HANDOVER.md`.
+Visual sign-off is still pending. The owner has rejected four earlier visual
+passes, then iterated. See `docs/UI-HANDOVER.md`.
 
 ## Done
 
@@ -44,20 +64,25 @@ Visual sign-off is still pending. The owner has rejected four earlier visual pas
 - Connexion: e-mail must include a domain (`demo@exemple.sn`)
 - Turnstile on case create (T006a), live and verified
 - GitHub remote (T007)
-- T009 code commit: HeroUI v3 + Vite client on `main` at `3f0a582` (local only)
+- T009 code: HeroUI v3 + Vite client (`3f0a582`) and preview north-star work (`f49a4a0`), local only
 
 ## Git
 
-- Branch: `main` at `3f0a582`, **ahead of `origin/main` by 1 commit** (`feat: implement HeroUI v3 with React and Vite for civic intake`)
+- Branch: `main` at `f49a4a0`, **ahead of `origin/main` by 2**
+  - `3f0a582` `feat: implement HeroUI v3 with React and Vite for civic intake`
+  - `f49a4a0` `feat(preview): add detailed critique and tracking for civic intake`
 - `origin/main` is still `6fba040` (T006a docs)
-- Uncommitted: live-platform research + screenshots, product/handover notes, `/preview` pass 5 (tracking page, voice, categories)
+- Uncommitted at last check: `docs/DESIGN.md`, `web/src/client/preview/preview.css`
+  (HeroUI radii / filled fields), plus this progress/handover update
 - Remote: https://github.com/aliouuuw/parleralajustice
-- No pull request. No GitHub issues. Working directly on `main`.
+- No pull request. No GitHub issues. Working directly on `main`. Do not
+  auto-commit. Do not push unless the owner asks.
 
 ## Not done
 
-- T009 visual QA, then push `3f0a582`, then a separate authorized production deploy
-- Promote `/preview` into the product routes, or keep iterating on `/preview` (owner decision)
+- **Pass 7** (typography + components + sections mix). Then visual QA
+- Push the two local commits, then a separate authorized production deploy
+- Promote `/preview` into the product routes (owner decision after sign-off)
 - Real email (Resend) + close the `/api/demo/otp` backdoor (T006b)
 - Access control on `/guichet` — live `GET /api/guichet/cases` returns the case list with no auth
 - X thread (T008) — wait until a reviewed UI is on the Worker

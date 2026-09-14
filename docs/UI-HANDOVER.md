@@ -1,11 +1,19 @@
 # UI handover
 
-Written 13 September 2026, for the next agent working on the visual design of
-Parler à la justice. The information architecture and the interaction flow are
-settled. The visual layer is not: three attempts have been rejected. This
-document exists so you do not repeat them.
+Written 13 September 2026, updated 14 September 2026. For the next agent
+working on the visual design of Parler à la justice.
 
-Read `research/jokko-ak-yoon-e-justice.md` before you read anything else.
+**Current assignment is §16 (pass 7).** Upgrade the `/preview` design system
+(typography, components, sections) to a mix of HeroUI control language, Cash
+App consumer register, and Stripe professional operate. Do not restart the
+information architecture. Do not restyle the live Worker.
+
+Read in this order:
+
+1. `research/jokko-ak-yoon-e-justice.md` (product truth, especially §J)
+2. This file §3 (locked), §4 (rejected attempts), §6 (type and colour), §16 (the job)
+3. `docs/DESIGN.md` (current tokens)
+4. `http://localhost:5173/preview` and `/preview/suivre` (`bun run --cwd web dev`)
 
 ---
 
@@ -243,23 +251,22 @@ The build is clean. Clean was never the problem.
 
 ## 10. Open items
 
-1. **`docs/DESIGN.md` is stale and actively wrong.** It still documents the
-   direction rejected in attempt 1: Public Sans throughout, no hero, accent
-   `#17634E`, rail `#F6F8FA`. Any agent reading it will rebuild the wrong thing.
-   Rewrite it or delete it early.
-2. **The system is one page.** The owner wants a system. `/suivre`, `/d/CODE`,
-   `/connexion` and `/guichet` are untouched and still use the old styling.
-3. **Nothing is committed.** The whole React rebuild, including `/preview`, is
-   uncommitted on `main` alongside a deleted `web/public/`. Task T009 is still
-   `pending` in `docs/backlog.json`. Commit before doing anything destructive.
-4. **Temporary files to remove:** `web/public/spec2.html` and
-   `web/public/fonts/cand/`.
+1. **`docs/DESIGN.md` is authority for the current preview.** It was rewritten
+   14 Sep (owner chose A). Pass 7 must update it as tokens and components
+   change. Do not restore the attempt-1 spec (Public Sans throughout, no hero,
+   accent `#17634E`).
+2. **The system is still one surface.** `/preview` and `/preview/suivre` share
+   `preview.css`. Product routes (`/`, `/parler`, `/suivre`, `/guichet`) still
+   use HeroUI app chrome. Do not restyle those until `/preview` is signed off.
+3. **Git.** `main` is at `f49a4a0`, two commits ahead of `origin/main`, not
+   pushed. Uncommitted at the start of pass 7: HeroUI control mapping in
+   `preview.css` and a DESIGN.md radius note. Do not force-push. Do not commit
+   unless the owner asks.
+4. **Temporary files to remove when convenient:** `web/public/spec2.html` and
+   `web/public/fonts/cand/`. Not the pass 7 job.
 5. **The audit framing is deliberately private.** The research shows the real
-   platform returning 503 and 500 with broken French in its UI. That is the
-   strongest argument for why this demo exists, and it is intentionally kept out
-   of the public copy: a page that names a state platform's failures reads as
-   hostile to the agency the owner wants to work with. Confirm before changing
-   this.
+   platform returning 503 and 500 with broken French in its UI. Keep that out of
+   public copy. Confirm before changing this.
 
 ## 11. Advice
 
@@ -267,9 +274,10 @@ The owner gives sharp, specific, correct feedback and gives it quickly. They
 will tell you when something is wrong. They rejected three passes in one
 session, and each rejection was right.
 
-Do not ship another variation of the current page. Establish the adjectives
-first, propose two or three genuinely different compositions, and get one
-chosen before building. That step was skipped three times.
+Do not ship another variation of the current page **without a system**.
+Attempts 1–3 skipped adjectives. Pass 7 already has them: see §16. Build
+that mix. Do not propose three new visual worlds unless the owner rejects
+the mix.
 
 ---
 
@@ -311,19 +319,19 @@ rhythm) was restored. Treat the visual direction as **still unsolved**.
 
 ## 13. Working notes for the next agent
 
+Pass 5–6 notes below are historical. **Do pass 7 as specified in §16.**
+
 1. **Read the live preview first.** Dev server: `bun run --cwd web dev`.
-   The port drifts (5173, 5174, 5175); read the printed line. Route:
-   `/preview`.
+   Port is usually 5173. Routes: `/preview`, `/preview/suivre`.
 2. **The preview uses CSS, not StyleX.** All styles live in
    `preview.css`. The StyleX packages are installed but unused. Do not
    re-introduce StyleX unless the owner asks.
-3. **The receipt is conditionally rendered.** It only appears after a
-   valid "Continuer." The initial render shows only the form. The test
-   in `web/test/preview.spec.ts` pins this behavior.
-4. **Ask for a sharper critique before pass 5.** "Better not satisfied
-   yet" is not actionable on its own. Propose 2 to 3 compositional
-   directions with adjectives locked first, per section 11, and let the
-   owner pick.
+3. **The receipt is conditionally rendered.** It appears after a valid
+   **Confirmer** on step 2, not after step-1 **Continuer**. Tests in
+   `web/test/preview.spec.ts` pin this.
+4. **Pass 7 adjectives are already locked** in §16 (Cash App / HeroUI /
+   Stripe mix). Do not reopen the “propose three compositions” loop from
+   §11 unless the owner rejects the mix.
 5. **The Impeccable skill is the approved polish tool.** Invoke it via
    the `skill` tool with `impeccable`. The ACP plugin version is
    unavailable.
@@ -340,7 +348,7 @@ rhythm) was restored. Treat the visual direction as **still unsolved**.
 
 ## 14. Pass 5 state (14 Sep 2026)
 
-- `/preview`: full-screen illustrated hero on desktop (3 scenes, soft-focus crossfade, progress line with pause), illustration palette across the page (white, green-black, flag green, flag yellow, red as signal only), print grain on colour fields, yellow focus halo.
+- `/preview`: full-screen illustrated hero on desktop (3 scenes, soft-focus crossfade, progress frise). Pause control was later removed; hover and `:focus-visible` still pause the fill. Illustration palette across the page (white, green-black, flag green, flag yellow, red as signal only), print grain on colour fields, yellow focus halo.
 - `/preview/suivre`: new tracking page in the same system. One fictive dossier `PALJ-7K4M-2QX9` in « En attente d'informations »; the reply form moves it to « En cours de traitement ». Status glossary beside it.
 - Voice: real in-browser recording with playback and delete. Nothing uploaded.
 - Source illustrations and prompts: `design/illustrations/` (PNG originals, `atelier.png` unused). Web copies in `web/public/images/hero/`.
@@ -350,4 +358,234 @@ rhythm) was restored. Treat the visual direction as **still unsolved**.
 
 - Owner chose **A**: `docs/DESIGN.md` documents `/preview` as authority; HeroUI app follows later.
 - Two-stage intake is implemented: write → review (type, optional lieu, demo checkbox) → receipt. « Commencer » or step 1 continue enters **task mode** (hero and yellow band hidden).
-- Live-platform content: channel honesty line, footer « Obtenir un acte », suivi délai indicatif fictif, collapsible status glossary, type passed to suivi via query string.
+- Live-platform content: channel honesty line, footer « Obtenir un acte », suivi délai indicatif fictif, status glossary (always open, current status in gold), type passed to suivi via query string.
+- Slide timing: `--slide-ms: 3.5s`.
+- Tests: `web/test/preview.spec.ts`, 20 passing via `bun run test`. Receipt appears only after **Confirmer**, not after step-1 **Continuer**.
+
+## 16. Pass 7 — design system upgrade (queued, 14 Sep 2026)
+
+Owner request: take the `/preview` that now exists and upgrade it into a **design
+system** (typography, components, sections), mixing **HeroUI** surface language
+with **Cash App** (closest to the current preview vibe) and **Stripe** (class
+and professionalism). This is not a new product. This is not a restyle of `/`.
+
+The ambition in §2 still holds: the beginning of a Senegalese civic design
+system. Pass 7 is the first time the owner asked to systematise, not to guess
+another page.
+
+### Thesis
+
+Three registers, one product:
+
+| Register | Source | Where it applies |
+|---|---|---|
+| Consumer first viewport | [Cash App](https://cash.app) | Hero, lede, **Commencer**, yellow type band, illustrated people as identity |
+| Soft controls | [HeroUI theme builder](https://heroui.com/en/themes?formRadius=extra-large&radius=large&fontFamily=figtree&hue=274.697354037878&base=0.0097&chroma=0.07768050719273402&lightness=0.8052782776425559) | Buttons, fields, type-pick, lookup, checkboxes |
+| Professional operate | [Stripe](https://stripe.com) | Task workspace, progress rail, review, receipt, dossier, history, status glossary, footer |
+
+The mix is **not** a blend of three palettes. Colour stays the flag system in
+§6. The mix is **scale and chrome**: Cash App size and confidence, HeroUI
+roundness and fill, Stripe calibration and restraint.
+
+An agency reviewer should feel: this is a serious public service that a person
+would actually use. Not a Ministry clone. Not a fintech landing page.
+
+### Take / skip
+
+**HeroUI — take**
+
+- `radius=large` on panels (~16px). `formRadius=extra-large` on fields (~16px).
+- Buttons as pills (`border-radius: 999px`), weight 500, no outline, press
+  scale ~0.97.
+- Filled fields (tinted or white-on-soft), thin or no decorative border, hover
+  darkens the fill.
+- Generous control padding. Soft 150–180ms colour transitions.
+
+**HeroUI — skip**
+
+- Figtree (§6). It is the playground default, not a choice.
+- Hue 274 pastel lavender. Accent is flag green `#00853F`.
+- `--field-border-width: 0` on a white page. Keep a 1px WCAG 1.4.11 line
+  (`--color-field-line`) or an equivalent 3:1 boundary.
+- 36px-tall buttons. Civic tap target stays ≥44px (today 48px).
+- Rebuilding `/preview` as HeroUI React components. Stay on `preview.css`.
+
+An earlier owner link used the same radii with green `hue 148.79, chroma 0.132,
+lightness 0.553`. Radii from that link and the purple playground are the same.
+Hue is not.
+
+**Cash App — take**
+
+- Huge display type against white. One short promise. One primary action.
+- People in ordinary rooms as the brand (the three illustrations already do
+  this). Do not add stock photography.
+- Almost no chrome on the first viewport: no card grid, no metric tiles, no
+  eyebrow spam.
+- Numbers and codes as designed objects (Sligoil on `PALJ-7K4M-2QX9`, counters,
+  clocks) the way Cash App treats amounts.
+- Section rhythm: full-bleed colour or full-bleed white, not nested cards.
+- Direct French. Controls name the action.
+
+**Cash App — skip**
+
+- Cash App green `#00D632`, the cash wordmark, the square logo, Cash Sans.
+- Payments, balances, activity feeds, “boost”, dark-mode-first marketing.
+- Bounce and spring as a personality. Keep `--ease-standard`. Honour
+  `prefers-reduced-motion`.
+- Making the récépissé look like a receipt for money.
+
+Cash Sans and Stripe’s Sohne are not OFL. Public infrastructure cannot rest on
+them. Keep Karrik, Public Sans, Sligoil.
+
+**Stripe — take**
+
+- Type that feels inevitable: a real scale, consistent measure, optical
+  alignment, no fake bold on Karrik.
+- Operate density. Task, receipt, and suivi should scan like a product, not
+  like a campaign.
+- Hairlines and second-tone fills for structure. One elevation language (fill
+  **or** a real shadow, not both).
+- Complete control states: default, hover, focus, active, disabled, error,
+  empty.
+- Quiet secondary actions. One loud primary per view.
+- Empty `/preview/suivre` as a job (lookup), not a vacant poster.
+
+**Stripe — skip**
+
+- Stripe purple, Sohne, dashboard tables as the homepage, gradient meshes,
+  “global scale” marketing copy.
+- GOV.UK grey reconstitution (attempt 2 already failed for being inert).
+- Turning the illustrated hero into a docs header.
+
+### Locked (do not relitigate)
+
+From §3, plus later passes:
+
+- Two-stage intake: write → review (type, optional lieu, demo checkbox) →
+  receipt. Voice optional, never a substitute for text.
+- Independent-demo disclosure on every screen. No coat of arms, seal, or
+  Ministry branding.
+- French UI. Demo data only.
+- `/preview` is visual north star. Product HeroUI routes converge later.
+- Faces: Karrik 400 headings, Public Sans body/UI, Sligoil data. OFL only.
+- Flag roles: green proceeds, gold waits, red signals, ink `#14201A` on dark
+  rails. Grain only on large colour fills.
+- Live categories and statuses (research §J). No Contestation.
+- Sample code `PALJ-7K4M-2QX9`. Non-sequential on purpose.
+- CSS in `preview.css`. Do not re-introduce StyleX unless the owner asks.
+- No Convex. Bun only. `bun run test` after code changes. No auto-commit.
+
+§3 still says “the form begins immediately below the fold.” Pass 5 replaced
+that with a full-viewport hero and **task mode** after **Commencer**. Task mode
+is now locked. Do not put the form back under the hero.
+
+### Current tokens (do not throw away)
+
+In `web/src/client/preview/preview.css` on `.pv`:
+
+- Colour: `--color-brand: #00853f`, `--color-brand-text: #00703a`,
+  `--color-gold: #fdef42`, `--color-ink: #14201a`, `--color-field: #eef5f0`,
+  `--color-field-line: #7d8c83`.
+- Radius: `--radius-control: 16px`, `--radius-button: 999px`,
+  `--radius-panel: 16px`.
+- Type: `--font-heading`, `--font-body`, `--font-data`.
+- Motion: `--slide-ms: 3.5s`, `--ease-standard: cubic-bezier(0.2, 0, 0, 1)`.
+- Focus: ink 3px outline + gold halo (`.pv :focus-visible`). Fields replace
+  that with ink border + 4px gold ring.
+
+There is **no type scale token set**. Sizes are one-off clamps. That is the
+first gap pass 7 must close.
+
+### Inventory to upgrade
+
+One stylesheet, one page module. Systematise these; do not add a component
+library package.
+
+**Chrome:** `pv-skip`, `pv-notice`, `pv-header`, `pv-brand`, `pv-nav`,
+`pv-footer`.
+
+**Type-led sections:** `pv-hero`, `pv-lede`, `pv-type-band` / `pv-types`,
+`pv-form__heading`.
+
+**Controls:** `pv-button` (`--primary`, `--secondary`, `--quiet`), `pv-field`,
+`pv-lookup`, `pv-type-pick`, `pv-confirm`, `pv-link`.
+
+**Operate:** `pv-workspace`, `pv-rail`, `pv-progress`, `pv-guidance`, `pv-audio`,
+`pv-review-block`, `pv-error-summary`, `pv-outcome-band`, `pv-receipt`,
+`pv-history`, `pv-track`, `pv-dossier`, `pv-statuses`, `pv-reply`.
+
+**Motion / media:** `pv-slides`, `pv-frise`, `Waveform.tsx` (already reads CSS
+tokens).
+
+### Work order
+
+Stay on `/preview` and `/preview/suivre`. Ship in this order so the page does
+not thrash.
+
+1. **Typeset (Cash App range + Stripe calibration).**
+   Add tokens: display, title, body, ui, data, caption. Keep Karrik at 400.
+   Hero display should feel Cash App (large, short, tracking ≥ -0.04em).
+   Workspace titles should feel Stripe (smaller than the hero, still Karrik).
+   Sligoil only on codes, counters, clocks. Pin a 65–75ch body measure on
+   long copy. Check 320px and 390px wrapping, especially the horizontal
+   progress rail.
+2. **Components (HeroUI feel + Stripe states).**
+   Document each control once in CSS. Primary / secondary / quiet must stay
+   distinct. Fields stay filled. Type-pick stays cards, not chips. Selected
+   type uses brand-soft + brand line. Disabled, error, and focus must be
+   visible without the HeroUI purple ring. Do not drop the gold halo.
+3. **Sections (Cash App on persuade, Stripe on operate).**
+   Hero + type band: more type range, less leftover GOV.UK column habit.
+   Workspace: treat the rail and the form as one product, not a landing plus
+   an admin. Receipt and dossier: structured records (already honest — keep
+   them that way), Stripe density, Sligoil reference as the object.
+   Empty suivi: the lookup is the first-screen job; do not bring back vacant
+   art as the composition.
+4. **Write the system down.**
+   Update `docs/DESIGN.md` with the scale, component rules, and section
+   roles. This handover stays history; DESIGN.md stays the living spec.
+5. **Verify.**
+   `bun run test`. Browser path: write → review → back → confirm → receipt →
+   suivi (sample code). 320px and 390px. Keyboard focus. Reduced motion.
+   Impeccable: `context.mjs --target web/src/client/preview/preview.css`,
+   then `typeset` / `extract` / `polish` as needed. Detector at the end:
+   `detect.mjs --json` on the files you touched.
+
+### Definition of done
+
+- A stranger can use `/preview` and `/preview/suivre` without noticing a style
+  break between sections.
+- Tokens, not one-off pixel values, drive type size, radius, and control
+  padding.
+- `docs/DESIGN.md` matches the CSS.
+- 20 existing preview tests still pass, or they are updated for copy you were
+  allowed to change (ask before changing claims).
+- Owner can judge the mix in the browser in under five minutes.
+
+### Files
+
+| Touch | Leave alone unless the job requires it |
+|---|---|
+| `web/src/client/preview/preview.css` | `web/src/auth.ts`, migrations |
+| `web/src/client/preview/Preview.tsx` (markup only if a component needs a hook) | `web/src/client/pages/*` (product app) |
+| `docs/DESIGN.md` | Live Worker deploy |
+| `web/test/preview.spec.ts` if selectors or copy change | `docs/product.md` facts, research §J |
+
+### Known defects to absorb, not to ignore
+
+- Mobile progress rail: two steps on a dark pill; labels overflow at ~390px.
+- Empty `/preview/suivre` still reads as a marketing split on desktop.
+- `web/src/client/index.css` still leaks `h1, h2, h3 { color: var(--ink) }` and
+  a global focus ring into `/preview`. Explicit colour on every preview
+  heading. Do not “fix” the leak by restyling the product app in this pass.
+- Critique snapshot `2026-09-14T03-04-00Z` scored 24/40 against an earlier
+  preview (Continuer skipped review). That P1 is fixed. Do not reopen it.
+  Remaining compositional P2 (workspace still a 260+720 column) is in scope
+  for step 3 if a stronger operate layout appears. Do not break task mode.
+
+### Tools
+
+- Impeccable skill: `/Users/aliouwade/.claude/skills/impeccable/`.
+- Browser: Cursor browser tools against `http://localhost:5173`.
+- Tests: `bun run test` from repo root.
+- Do not impersonate the Ministry. Do not store real complaints.

@@ -8,14 +8,14 @@ Last updated: 14 September 2026.
 
 ## Direction
 
-A civic intake product with one strong compositional idea: **illustrated scenes set the tone; the task workspace stays flat, legible, and honest.** Not a Ministry homepage. Not startup marketing gradients. References: precision of Tremor-style data surfaces, warmth of rounded controls and illustration-led storytelling.
+A civic intake product with one strong compositional idea: **illustrated scenes set the tone; the task workspace stays flat, legible, and honest.** Not a Ministry homepage. Not startup marketing gradients. Control warmth from HeroUI. First-viewport register from Cash App. Operate class from Stripe. Full mix spec: `docs/UI-HANDOVER.md` §16.
 
 Shadow the live « Justice Accessible Sénégal » platform for **categories and statuses** (research §J). Do not copy its UI chrome, placeholder stats, or contradictory anonymity claims.
 
 ## Composition
 
 - Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
-- **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise with pause). After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
+- **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
 - Yellow **taxonomy band** educates before the task; **type selection** happens again on step 2 (required).
 - **Two-stage intake:** (1) write message + optional voice, (2) review message, choose type, optional lieu, demo confirmation → receipt.
 - **Tracking:** lookup, dossier card, agent reply loop, collapsible status glossary.
@@ -28,7 +28,14 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - **Sligoil** — references, counters, timestamps.
 - Flag green `#00853F` as fill (`--color-brand`); green text uses `--color-brand-text`. Gold `#FDEF42` for wait surfaces and focus halo. Red for errors and record dot only.
 - Print grain on large colour fields; ink `#14201A` for dark rails.
-- Corners: 10px controls, 16px panels. Yellow focus ring: ink outline + gold halo.
+- Corners: 16px fields (HeroUI form extra-large), pill buttons, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
+
+## Next pass (queued)
+
+Pass 7 upgrades this from a styled page into a small system: type scale, shared
+controls, section roles. Mix Cash App (hero register), HeroUI (controls),
+Stripe (operate). Spec: `docs/UI-HANDOVER.md` §16. Do not change the locked IA,
+faces, or flag colour roles until the owner says so.
 
 ## Interaction contract (preview)
 
