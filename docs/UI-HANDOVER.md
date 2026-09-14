@@ -1,13 +1,13 @@
 # UI handover
 
-Written 13 September 2026, updated 14 September 2026. For the next agent
+Written 13 September 2026, updated 15 September 2026. For the next agent
 working on the visual design of Parler à la justice.
 
-**Current assignment is §16 (pass 7).** Turn `/preview` into one design system
-(typography, components, sections). Cash App gives the type architecture,
-HeroUI gives the control shapes, Stripe gives the calibration. All three apply
-to every section. Do not restart the information architecture. Do not restyle
-the live Worker.
+**Current assignment is §18 (foundation pass and component extraction).**
+ The semantic token scale is complete. Button, Field, Alert, and
+ServiceHeader modules are extracted. Next: extract Record module, then
+visual review. Do not restart the information architecture. Do not restyle
+the live Worker. Do not migrate the preview to StyleX.
 
 Read in this order:
 
@@ -749,3 +749,289 @@ in this pass introduces several new white/gold-on-brand pairs to check.
 Built as specified above. Contrast on white/brand body text measured at
 4.74:1 (AA). Gold on brand not used for body. `prefers-reduced-motion`
 kills crop parallax, count-up, and the Voix sim waveform. Tests: 21/21.
+
+## 18. Pass 9: foundation tokens and component extraction (in progress, 15 Sep 2026)
+
+Owner goal: take `/preview` as the basis for a Senegalese government
+design system (tentatively **Sunu Design System**, on `sunu.design` or
+similar). Web first, mobile later. References named by the owner:
+`design.cash.app/foundations` and `ux4g.gov.in`. The system should
+eventually behave like HeroUI or shadcn ui for Senegalese government
+frontend work.
+
+This pass is **not** a restyle. It adds the semantic foundation and
+extracts the first reusable modules. Visual direction stays as shipped
+in pass 8 plus the approved channels redesign (§18.1).
+
+### 18.1 Channels redesign (shipped, commit `adf76c2`)
+
+Pass 8's illustration-led `pv-channels` reused the hero illustrations in
+tiles. The owner judged that reusing the same illustrations was not the
+best professional move and asked for something different and unique.
+
+**First attempt: route map.** Image-free route map with connecting
+lines, numbered stops, and "Aa" plaques. Owner rejected it as "bold but
+incoherent" because:
+
+- Connecting lines implied a sequence. Writing and recording are
+  actions within one intake, not steps.
+- Numbered stops and dark plaques introduced a second visual language.
+- Announced channels received too much visual emphasis.
+- Copy overpromised ("Avant de l'envoyer" contradicted the demo).
+
+**Second attempt: open composition A (approved).** One shared pale-green
+surface. Two aligned columns: "Écrire votre demande" and "Ajouter votre
+votre voix". The text column shows a sample message on the same
+pale-green field. The voice column shows a broad illustrative waveform
+(`Waveform.tsx` source="sim", microphone inactive). Copy states: "Un
+texte reste nécessaire. La voix le complète. Rien n'est transmis."
+Announced channels (Vidéo, SMS 3737, USSD *711#, Téléphone language
+menu) appear below as a subordinate information rail. No channel is a
+button. No new images. Mobile stacks the two columns.
+
+The owner accepted this direction on 14 Sep. Tests updated to assert
+the open-composition contract. All 21 tests pass.
+
+### 18.2 Foundation audit (15 Sep 2026)
+
+The audit classified the preview as a strong **reference application**,
+not yet a reusable system. Evidence:
+
+- 99 `font-size` declarations (one-off values).
+- 30 `border-radius` declarations.
+- 17 border declarations.
+- Broad reuse of `--color-brand-soft` for unrelated surfaces (fields,
+  guidance, cards, review blocks, audio, confirmations).
+- CSS conventions coupled to `Preview.tsx`.
+- Navigation and records not yet extracted as stable modules.
+
+The audit recommended: add semantic tokens first, then extract
+components, then redesign navigation after the foundation stabilizes.
+
+### 18.3 Foundation pass (shipped, commits `6b12e9e` and `6321b69`)
+
+Added semantic tokens to `.pv` in `preview.css`. Migrated major preview
+modules to those roles. No behavior changes.
+
+**Surface roles:**
+
+| Token | Maps to | Use |
+|---|---|---|
+| `--surface-page` | `--color-surface` | Page background |
+| `--surface-field` | `--color-field` | Inputs |
+| `--surface-panel` | `--color-brand-soft` | Guidance, grouping |
+| `--surface-record` | `--color-surface` | Receipts, dossiers |
+| `--surface-selected` | `--color-brand-soft-hover` | Selected options |
+| `--surface-attention` | `--color-gold` | Wait surfaces |
+
+**Border roles:**
+
+| Token | Maps to | Use |
+|---|---|---|
+| `--border-control` | `--color-field-line` | Input boundaries |
+| `--border-divider` | `--color-line` | Record dividers |
+| `--border-focus` | `--color-ink` | Focus ring |
+| `--border-channel` | `rgb(0 112 58 / 0.16)` | Channel column divider |
+| `--border-on-dark` | `rgba(255, 255, 255, 0.14)` | Dividers on dark rails |
+
+**Radius roles:**
+
+| Token | Value | Use |
+|---|---|---|
+| `--radius-control` | 16px | Fields, type-pick options |
+| `--radius-button` | 999px | Buttons (pills) |
+| `--radius-panel` | 16px | Panels, receipts, dossiers |
+| `--radius-track` | 3px | Progress tracks, link focus |
+| `--radius-tile` | 6px | Frise buttons |
+
+**Spacing roles:**
+
+| Token | Value | Use |
+|---|---|---|
+| `--space-control` | 16px | Control padding |
+| `--space-group` | 24px | Group gaps |
+| `--space-section` | 64px | Section spacing |
+
+**Text-size roles:**
+
+| Token | Value | Use |
+|---|---|---|
+| `--text-display` | `clamp(48px, 7vw, 88px)` | Hero display |
+| `--text-title` | `clamp(32px, 4vw, 48px)` | Section titles |
+| `--text-heading` | 22px | Headings |
+| `--text-heading-sm` | 18px | Small headings (soon list) |
+| `--text-lede` | 18px | Lede paragraphs |
+| `--text-body` | 16px | Body, field text |
+| `--text-brand` | 17px | Brand name, footer title |
+| `--text-ui` | 15px | Buttons, nav, descriptions |
+| `--text-label` | 14px | Labels, legend, confirm |
+| `--text-caption` | 13px | Nav, guidance, help, meta |
+| `--text-meta` | 12px | Hints, meta, captions |
+| `--text-micro` | 11px | Progress numbers, history time |
+| `--text-data` | 18px | Lookup input |
+| `--text-code` | 24px | Dossier code |
+
+**Migration scope:** 80 `font-size` values, 8 `border-radius` values, 4
+border colors migrated to tokens. Two mobile display overrides (`34px`,
+`32px`) and `50%` circle radii remain raw by design. `border: 0` resets,
+`transparent` bases, and `2px` indicator-dot rings (color already
+tokenized) remain raw. One print-only `#777` border remains.
+
+**Surface taxonomy (rules for new modules):**
+
+- Inputs use `--surface-field`.
+- Guidance uses `--surface-panel`.
+- Selectable items use `--surface-selected`.
+- Receipts and dossiers use `--surface-record`.
+- Green communicates action or progress.
+- Gold communicates attention or waiting.
+- Red is reserved for errors and the recording indicator.
+- Sections use spacing.
+- Groups use surfaces.
+- Records use dividers.
+- Inputs use control boundaries.
+- Focus uses one standard ring (ink outline plus gold halo).
+
+### 18.4 Component extraction (in progress)
+
+Four modules extracted so far. Each is a standalone file in
+`web/src/client/preview/`. Each consumes the semantic tokens. Each is
+wired into `Preview.tsx`.
+
+**Button** (`Button.tsx`, commit `bf9271c`):
+
+- Variants: `primary`, `secondary`, `quiet`.
+- Polymorphic: renders `<button>` by default, `<a>` when `href` is set.
+- Optional `arrow` prop appends the Arrow icon (exported from the same
+  file).
+- Ref forwarding (used by the record button).
+- All 13 button usages in `Preview.tsx` migrated. Local `Arrow`
+  helper removed from `Preview.tsx`.
+
+**Field** (`Field.tsx`, commit `5c1a2b8`):
+
+- `kind: "textarea"` or `kind: "input"`.
+- Label with required marker (`(obligatoire)`).
+- `hint` prop renders a `pv-field__hint` paragraph.
+- `meta` and `metaId` props render the character-count row with an id
+  for `aria-describedby`.
+- `className` prop allows `pv-field--compact` and other modifiers.
+- Ref forwarding.
+- 2 field usages migrated (message textarea, place input).
+
+**Alert** (`Alert.tsx`, commit `5c1a2b8`):
+
+- `ErrorSummary`: title plus a list of `{ href, label, onNavigate }`
+  items. Ref forwarding. Used for the write-step and review-step error
+  summaries.
+- `InlineError`: single-line error with `role="alert"` and optional
+  `className`. Used for copy failure, lookup error, and reply error.
+- 2 error summaries and 3 inline errors migrated.
+
+**ServiceHeader** (`ServiceHeader.tsx`, commit `c7bd423`):
+
+- Props: `brandHref`, `brandLabel`, `brandSublabel`, `brandMark`
+  (ReactNode), `nav` (array of `{ href, label, current }`), `navLabel`.
+- Renders the `pv-header` with brand mark, label, sublabel, and nav
+  items with `aria-current="page"` on the current item.
+- Header in `Frame` migrated to it. Brand mark SVG passed as
+  `brandMark` prop.
+
+### 18.5 StyleX decision
+
+The owner asked whether StyleX should become the standard. Decision:
+
+- CSS variables remain the public design-system interface.
+- StyleX may be used internally for the React package later.
+- Do not migrate the preview now. The previous StyleX migration
+  (§12) was reverted after UX regressions.
+- Do not add a StyleX migration as part of this pass.
+
+### 18.6 What is done
+
+- Channels redesign: shipped (`adf76c2`).
+- Foundation tokens: shipped (`6b12e9e`, `6321b69`).
+- Button module: shipped (`bf9271c`).
+- Field and Alert modules: shipped (`5c1a2b8`).
+- ServiceHeader module: shipped (`c7bd423`).
+- Tests: 21 of 21 pass.
+- TypeScript: passes.
+- Build: passes (existing large-chunk warning only).
+- `git diff --check`: passes.
+- Impeccable detector: only the intentional Mona Sans warning remains.
+
+### 18.7 What is next
+
+1. **Extract Record module.** Pull receipt, history, and dossier into
+   a Record component. The receipt has a gold header, a reference
+   block, a meta grid, and action buttons. The history is a timeline
+   list. The dossier is a card with a status block and a reply form.
+   These are the most complex modules to extract.
+2. **Visual review.** Start the dev server and inspect the migrated
+   modules at desktop and mobile widths. Browser automation is still
+   blocked (Chrome missing). Manual screenshots needed.
+3. **Push to origin.** 16 local commits are unpushed. Push only when
+   the owner authorizes.
+4. **After Record:** redesign navigation into separate modules for a
+   single public service, an authenticated citizen portal, and the
+   `sunu.design` documentation site.
+5. **Later:** publish tokens as CSS and JSON. Create React components
+   with semantic HTML fallbacks. Add a Figma library matching production
+   tokens. Add visual, keyboard, contrast, and screen-reader checks.
+
+### 18.8 Files touched in this pass
+
+| File | Change |
+|---|---|
+| `web/src/client/preview/preview.css` | Semantic tokens added, modules migrated |
+| `web/src/client/preview/Preview.tsx` | Button, Field, Alert, ServiceHeader wired in |
+| `web/src/client/preview/Button.tsx` | New: Button module |
+| `web/src/client/preview/Field.tsx` | New: Field module |
+| `web/src/client/preview/Alert.tsx` | New: Alert module |
+| `web/src/client/preview/ServiceHeader.tsx` | New: ServiceHeader module |
+| `docs/DESIGN.md` | Foundation contract documented |
+| `docs/progress.md` | Status and next steps updated |
+| `web/test/preview.spec.ts` | Tests updated for channels redesign |
+
+### 18.9 Commits in this pass
+
+| Commit | Message |
+|---|---|
+| `adf76c2` | `feat(preview): redesign citizen channel choices` |
+| `6b12e9e` | `feat(preview): add semantic foundation tokens and migrate modules` |
+| `6321b69` | `feat(preview): complete semantic token scale and migrate raw values` |
+| `bf9271c` | `feat(preview): extract Button as first reusable module` |
+| `5c1a2b8` | `feat(preview): extract Field and Alert as reusable modules` |
+| `c7bd423` | `feat(preview): extract ServiceHeader as reusable module` |
+
+### 18.10 Rules for the next agent
+
+1. **Read this section first.** Then `docs/DESIGN.md` for the current
+   token contract. Then `docs/progress.md` for status.
+2. **Do not migrate to StyleX.** The decision is in §18.5.
+3. **Do not restyle the product app.** `/preview` is the design
+   authority. Product routes converge after sign-off.
+4. **Reuse the extracted modules.** Button, Field, Alert, and
+   ServiceHeader are in `web/src/client/preview/`. Import them. Do not
+   duplicate their CSS in `Preview.tsx`.
+5. **Use semantic tokens.** New modules must consume `--surface-*`,
+   `--border-*`, `--radius-*`, `--space-*`, and `--text-*` roles. Do
+   not add raw px values for font-size, border-radius, or border-color.
+6. **Keep the surface taxonomy.** Inputs use field surfaces. Guidance
+   uses panel surfaces. Selectable items use selected surfaces.
+   Receipts and dossiers use record surfaces. Green communicates
+   action. Gold communicates attention. Red is for errors only.
+7. **Verification loop.** TypeScript (`bunx tsc -p
+   web/tsconfig.client.json --noEmit`), tests (`bun run --cwd web
+   test`), build (`bun run --cwd web build`), `git diff --check`, and
+   the Impeccable detector (`node
+   /Users/aliouwade/.agents/skills/impeccable/scripts/detect.mjs
+   --json <files>`).
+8. **Browser automation is blocked.** Chrome is missing. Do not claim
+   visual approval from passing tests. Use the headless shell in §8 or
+   ask the owner for screenshots.
+9. **Do not auto-commit.** Git commits stay human-gated. Do not push
+   unless the owner authorizes.
+10. **Keep the channels redesign intact.** No repeated hero image in
+    the channel section. No route-map lines. No numbered stops. The
+    approved open composition A is the current state.
