@@ -31,7 +31,7 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Flag green `#00853F` as fill (`--color-brand`); green text uses `--color-brand-text`. Gold `#FDEF42` for wait surfaces and focus halo. Red for errors and record dot only.
 - Print grain on large colour fields; ink `#14201A` for dark rails.
 - Corners: 16px fields (HeroUI form extra-large), pill buttons, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
-- Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, and initial `--text-*` tokens. New modules must consume semantic roles instead of palette literals.
+- Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, `--border-channel`, `--border-on-dark`, `--radius-control`, `--radius-button`, `--radius-panel`, `--radius-track`, `--radius-tile`, and a full `--text-*` scale (`--text-display`, `--text-title`, `--text-heading`, `--text-heading-sm`, `--text-lede`, `--text-body`, `--text-brand`, `--text-ui`, `--text-label`, `--text-caption`, `--text-meta`, `--text-micro`, `--text-data`, `--text-code`). New modules must consume semantic roles instead of palette literals or raw px values.
 
 ## Next pass (queued)
 
@@ -40,9 +40,11 @@ per `docs/UI-HANDOVER.md` §17 (illustration-led tiles, announced codes,
 flag-green impact band, scroll crop parallax, count-up). Locked IA and flag
 roles unchanged.
 
-Still outstanding from §16's original scope: a `--text-*` size scale (font
-sizes are still one-off `clamp()`/px values in `preview.css`). Nobody has
-done this step.
+Foundation pass shipped (15 Sep 2026): semantic surface, border, radius,
+spacing, and text-size tokens added; major preview modules migrated to
+those roles. Two mobile display overrides (`34px`, `32px`) and `50%` circle
+radii remain raw by design. Next: extract Button, Field, Alert,
+ServiceHeader, and Record modules.
 
 ## Interaction contract (preview)
 

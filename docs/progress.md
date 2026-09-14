@@ -19,17 +19,18 @@ pushed and not deployed. Turnstile on case create is live (T006a).
 
 Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 
-## Next: `--text-*` size scale on `/preview` (not started)
+## Next: extract first component modules (not started)
 
 Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
 `pv-impact`. The owner rejected the subsequent route-map channels design as
 incoherent and chose A: an open, image-free composition. The local replacement
 uses text and optional voice actions, a broad illustrative waveform, and a
 secondary strip of announced channels. The owner accepted this direction on
-14 Sep. Foundation pass started: semantic surface, border, spacing, and text roles now
-exist in `preview.css` and major preview modules consume them. Still open from
-pass 7: migrate the remaining one-off `clamp()`/px font sizes to the full
-`--text-*` scale.
+14 Sep. Foundation pass shipped 15 Sep: semantic surface, border, radius,
+spacing, and full text-size tokens now exist in `preview.css` and major
+preview modules consume them. Two mobile display overrides and `50%` circle
+radii remain raw by design. Next: extract Button, Field, Alert,
+ServiceHeader, and Record modules.
 
 ## In progress: T009 visual direction
 
@@ -65,6 +66,10 @@ See `docs/UI-HANDOVER.md`.
 - **Pass 8 shipped:** illustration-led `pv-channels` (Écrit/Voix tiles +
   announced codes beside atelier crop) and flag-green grain `pv-impact`
   band with count-up. Spec: `docs/UI-HANDOVER.md` §17.
+- **Foundation pass shipped:** semantic surface, border, radius, spacing,
+  and full text-size tokens; major preview modules migrated to those roles
+  (15 Sep). Two mobile display overrides and `50%` circle radii remain raw
+  by design.
 
 ## Tests
 
@@ -88,7 +93,8 @@ checked 14 Sep 2026.
 
 ## Not done
 
-- **`--text-*` size scale** on `/preview` (see above).
+- **Extract first component modules** (Button, Field, Alert,
+  ServiceHeader, Record) from `preview.css` / `Preview.tsx`.
 - `web/index.html` still loads Public Sans from Google Fonts on every route,
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app
