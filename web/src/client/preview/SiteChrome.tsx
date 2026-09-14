@@ -63,8 +63,8 @@ export function SiteChrome({
 			</div>
 			<ServiceHeader
 				brandHref="/"
-				brandLabel="Parler à la justice"
-				brandSublabel="Démo"
+				brandLabel="Parler à la Justice"
+				brandSublabel="démo"
 				brandMark={BRAND_MARK}
 				nav={[
 					{ href: "/", label: "Déposer une demande", shortLabel: "Déposer", current: current === "deposer" },
