@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Waveform, type WaveSource } from "./Waveform";
+import { Button, Arrow } from "./Button";
 import "./preview.css";
 
 const MAX = 4000;
@@ -79,14 +80,6 @@ function clock(seconds: number): string {
 	return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
-function Arrow() {
-	return (
-		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-			<path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-		</svg>
-	);
-}
-
 function CheckIcon() {
 	return (
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -154,9 +147,9 @@ function LiveChannel({
 					</div>
 				)}
 			</div>
-			<button className={`pv-button pv-button--${voice ? "secondary" : "primary"}`} type="button" aria-describedby="channels-note" onClick={() => onStart(focus)}>
-				{action} <Arrow />
-			</button>
+			<Button variant={voice ? "secondary" : "primary"} type="button" aria-describedby="channels-note" onClick={() => onStart(focus)} arrow>
+				{action}
+			</Button>
 		</article>
 	);
 }
@@ -484,7 +477,7 @@ export function Preview() {
 							<h1 id="hero-title">Adressez une demande à la justice</h1>
 							<p className="pv-lede">Essayez le parcours avec une situation fictive&nbsp;: écrivez, relisez, suivez votre demande.</p>
 							<div className="pv-hero__action">
-								<button className="pv-button pv-button--primary" type="button" onClick={() => beginTask()}>Commencer <Arrow /></button>
+								<Button variant="primary" type="button" onClick={() => beginTask()} arrow>Commencer</Button>
 							</div>
 						</div>
 						<HeroSlides />
@@ -598,16 +591,16 @@ export function Preview() {
 								<div className="pv-audio" data-state={recorder.source !== "idle" ? "live" : recorder.clip ? "clip" : "idle"}>
 									<div className="pv-audio__bar">
 										<strong>Message vocal <span className="pv-optional">(facultatif)</span></strong>
-										<button ref={recordRef} className="pv-button pv-button--secondary" type="button" onClick={recorder.toggle} disabled={recorder.pending} aria-pressed={recorder.source !== "idle"} data-recording={recorder.source !== "idle" ? "true" : undefined}>
+										<Button ref={recordRef} variant="secondary" type="button" onClick={recorder.toggle} disabled={recorder.pending} aria-pressed={recorder.source !== "idle"} data-recording={recorder.source !== "idle" ? "true" : undefined}>
 											<span className="pv-record-dot" />
 											{recorder.pending ? "Autorisation…" : recorder.source !== "idle" ? "Arrêter" : recorder.clip ? "Réenregistrer" : "Enregistrer"}
-										</button>
+										</Button>
 									</div>
 									{recorder.source !== "idle" && <Waveform source={recorder.source} stream={recorder.stream} height={40} />}
 									{recorder.clip && recorder.source === "idle" && (
 										<div className="pv-clip">
 											<audio controls src={recorder.clip.url} aria-label="Réécouter le message vocal" />
-											<button className="pv-button pv-button--quiet" type="button" onClick={recorder.discard}>Supprimer</button>
+											<Button variant="quiet" type="button" onClick={recorder.discard}>Supprimer</Button>
 										</div>
 									)}
 									{(recorder.source !== "idle" || recorder.clip || recorder.note !== KEEP_NOTE) && (
@@ -618,7 +611,7 @@ export function Preview() {
 									)}
 								</div>
 								<div className="pv-form__footer">
-									<button className="pv-button pv-button--primary" type="button" disabled={recording} onClick={proceedWrite}>Continuer <Arrow /></button>
+									<Button variant="primary" type="button" disabled={recording} onClick={proceedWrite} arrow>Continuer</Button>
 									{recording && <p>Arrêtez l'enregistrement pour continuer.</p>}
 								</div>
 							</>
@@ -649,7 +642,7 @@ export function Preview() {
 											<audio controls src={recorder.clip.url} aria-label="Réécouter le message vocal" />
 										</div>
 									)}
-									<button className="pv-button pv-button--quiet" type="button" onClick={backToWrite}>Modifier le message</button>
+									<Button variant="quiet" type="button" onClick={backToWrite}>Modifier le message</Button>
 								</div>
 								<fieldset className="pv-type-pick" id="type-pick">
 									<legend>Type de demande <span className="pv-optional">(obligatoire)</span></legend>
@@ -673,8 +666,8 @@ export function Preview() {
 									<label htmlFor="demo-confirm">Je comprends qu'aucune demande n'est transmise au Ministère ni à un service judiciaire. Ceci est une démonstration.</label>
 								</div>
 								<div className="pv-form__footer">
-									<button className="pv-button pv-button--primary" type="button" onClick={confirmDeposit}>Confirmer le dépôt fictif <Arrow /></button>
-									<button className="pv-button pv-button--secondary" type="button" onClick={backToWrite}>Retour</button>
+									<Button variant="primary" type="button" onClick={confirmDeposit} arrow>Confirmer le dépôt fictif</Button>
+									<Button variant="secondary" type="button" onClick={backToWrite}>Retour</Button>
 								</div>
 							</>
 						)}
@@ -711,9 +704,9 @@ export function Preview() {
 								{recorder.clip && <p>Message vocal joint&nbsp;: {clock(recorder.clip.seconds)}, conservé sur cet appareil.</p>}
 							</div>
 							<div className="pv-receipt__actions">
-								<a className="pv-button pv-button--primary" href={`/preview/suivre?ref=${SAMPLE_CODE}${requestType ? `&type=${encodeURIComponent(requestType)}` : ""}`}>Suivre ce dossier <Arrow /></a>
-								<button className="pv-button pv-button--secondary" type="button" onClick={copyCode} aria-describedby={copyState === "error" ? "copy-error" : undefined}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</button>
-								<button className="pv-button pv-button--quiet" type="button" onClick={() => window.print()}>Imprimer</button>
+								<Button variant="primary" href={`/preview/suivre?ref=${SAMPLE_CODE}${requestType ? `&type=${encodeURIComponent(requestType)}` : ""}`} arrow>Suivre ce dossier</Button>
+								<Button variant="secondary" type="button" onClick={copyCode} aria-describedby={copyState === "error" ? "copy-error" : undefined}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</Button>
+								<Button variant="quiet" type="button" onClick={() => window.print()}>Imprimer</Button>
 								{copyState === "error" && <p className="pv-lookup__error pv-receipt__actions-error" id="copy-error" role="alert">Copie automatique impossible. La référence est sélectionnée&nbsp;: copiez-la avec Ctrl+C ou &#8984;C.</p>}
 							</div>
 							<ol className="pv-history" aria-label="Étapes du suivi">
@@ -796,7 +789,7 @@ export function PreviewSuivre() {
 									aria-invalid={error ? true : undefined}
 									aria-describedby={error ? "reference-help reference-error" : "reference-help"}
 								/>
-								<button className="pv-button pv-button--primary" type="submit">Rechercher</button>
+								<Button variant="primary" type="submit">Rechercher</Button>
 							</div>
 							<p className="pv-lookup__help" id="reference-help">
 								Format&nbsp;: 12 caractères. Essayez <button className="pv-link" type="button" onClick={() => { setQuery(SAMPLE_CODE); setError(null); }}>{SAMPLE_CODE}</button>.
@@ -846,7 +839,7 @@ export function PreviewSuivre() {
 											<textarea id="reply" ref={replyRef} value={reply} onChange={(event) => setReply(event.target.value)} aria-invalid={replyError || undefined} aria-describedby={replyError ? "reply-error" : undefined} placeholder="Exemple : tribunal d'instance de Pikine, audience prévue en août." />
 											{replyError && <p className="pv-lookup__error" id="reply-error" role="alert">Écrivez au moins 12 caractères.</p>}
 											<div className="pv-reply__footer">
-												<button className="pv-button pv-button--primary" type="button" onClick={sendReply}>Envoyer la précision <Arrow /></button>
+												<Button variant="primary" type="button" onClick={sendReply} arrow>Envoyer la précision</Button>
 												<p>Dans cet aperçu, rien n'est envoyé.</p>
 											</div>
 										</div>
