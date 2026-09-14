@@ -636,7 +636,21 @@ Each line is a check someone can run.
 ### Known defects to fix in step 4
 
 - Mobile progress rail: two steps on a dark pill; labels overflow near 390px.
-- Empty `/preview/suivre` still reads as a marketing split on desktop.
+- **Fixed 14 Sep:** empty `/preview/suivre` had no first-screen job (marketing
+  split on desktop, footer landing under the button on phones). A yellow
+  `pv-track-help` band now explains the wait in 3 steps and gives the section
+  a sibling, which drops the old flex-centred dead space automatically
+  (`.pv-track:not(:only-child)` was already the rule for this).
+- **Fixed 14 Sep:** clipboard copy failure was silent (`copyState === "error"`
+  was set but never rendered). It now shows an inline message and still falls
+  back to text selection.
+- **Already fixed before this handover was written:** the review stage
+  (locked reread, type picker, step-rail wording) was live in code by the time
+  §16 first listed it as open — the critique snapshot below predates the
+  commit that added it. Verified 14 Sep by driving write → review → confirm →
+  receipt in a real browser: the user's own text appears at review, the type
+  choice is required there, and step 1/2 labels never disagree with
+  `aria-current`.
 - Workspace is still a 260px rail beside a 720px column (critique snapshot
   `2026-09-14T03-04-00Z`, P2). Keep task mode.
 - `web/src/client/index.css` leaks `h1, h2, h3 { color: var(--ink) }` and a

@@ -494,8 +494,9 @@ export function Preview() {
 							</div>
 							<div className="pv-receipt__actions">
 								<a className="pv-button pv-button--primary" href={`/preview/suivre?ref=${SAMPLE_CODE}${requestType ? `&type=${encodeURIComponent(requestType)}` : ""}`}>Suivre ce dossier <Arrow /></a>
-								<button className="pv-button pv-button--secondary" type="button" onClick={copyCode}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</button>
+								<button className="pv-button pv-button--secondary" type="button" onClick={copyCode} aria-describedby={copyState === "error" ? "copy-error" : undefined}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</button>
 								<button className="pv-button pv-button--quiet" type="button" onClick={() => window.print()}>Imprimer</button>
+								{copyState === "error" && <p className="pv-lookup__error pv-receipt__actions-error" id="copy-error" role="alert">Copie automatique impossible. La référence est sélectionnée&nbsp;: copiez-la avec Ctrl+C ou &#8984;C.</p>}
 							</div>
 							<ol className="pv-history" aria-label="Étapes du suivi">
 								<li data-status="complete"><span /><div><strong>Reçue</strong><time>13 sept. 05:42</time></div></li>
@@ -588,6 +589,16 @@ export function PreviewSuivre() {
 					<img className="pv-track__art" src="/images/hero/noter-1280.webp" srcSet="/images/hero/noter-1280.webp 1280w, /images/hero/noter-2560.webp 2560w" sizes="(max-width: 1184px) 50vw, 560px" width={2720} height={1536} alt="Illustration décorative : une personne note une référence dans un carnet." decoding="async" />
 				</div>
 			</section>
+
+			{!found && (
+				<section className="pv-type-band" aria-label="Comment fonctionne le suivi">
+					<div className="pv-container pv-track-help">
+						<div className="pv-track-help__step"><span>1</span><div><strong>Vous recevez une référence</strong><p>À la fin d'un dépôt, une référence à 12 caractères est fournie, par exemple {SAMPLE_CODE}.</p></div></div>
+						<div className="pv-track-help__step"><span>2</span><div><strong>Vous la saisissez ici</strong><p>La référence retrouve votre dossier fictif et son statut actuel. Aucun compte n'est nécessaire.</p></div></div>
+						<div className="pv-track-help__step"><span>3</span><div><strong>Vous répondez si besoin</strong><p>Un agent peut demander une précision. Le dossier avance quand vous répondez.</p></div></div>
+					</div>
+				</section>
+			)}
 
 			{found && (
 				<section className="pv-outcome-band" id="dossier" aria-labelledby="dossier-title">

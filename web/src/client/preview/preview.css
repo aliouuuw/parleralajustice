@@ -176,6 +176,13 @@
 .pv-types li { font-family: var(--font-heading); font-size: clamp(15px, 1.25vw, 17px); font-weight: var(--weight-strong); letter-spacing: -0.005em; line-height: 1.25; white-space: nowrap; }
 .pv-types li:not(:last-child)::after { content: ""; display: inline-block; width: 1px; height: 0.8em; margin-inline: 11px 13px; background: var(--color-ink); opacity: 0.22; vertical-align: -0.05em; }
 
+/* Empty /suivre: the yellow band explains the wait instead of leaving a lone field over dead space. */
+.pv-track-help { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; padding-block: 34px; }
+.pv-track-help__step { display: flex; gap: 14px; }
+.pv-track-help__step > span { flex: 0 0 auto; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--color-ink); color: var(--color-gold); font-family: var(--font-data); font-size: 12px; }
+.pv-track-help__step strong { display: block; font-size: 15px; font-weight: var(--weight-strong); letter-spacing: -0.005em; }
+.pv-track-help__step p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: var(--color-on-gold-2); }
+
 .pv-workspace { background: var(--color-surface); }
 .pv-workspace__layout { display: grid; grid-template-columns: 260px minmax(0, 720px); justify-content: space-between; gap: 56px; padding-block: 88px 96px; }
 .pv-rail { align-self: start; display: grid; gap: 28px; }
@@ -279,6 +286,7 @@
 .pv-receipt__meta dt { color: var(--color-text-secondary); font-weight: var(--weight-strong); }
 .pv-receipt__meta dd { margin: 0; font-weight: var(--weight-strong); }
 .pv-receipt__actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 22px 24px 26px; }
+.pv-receipt__actions-error { flex-basis: 100%; margin-top: 4px; }
 .pv-history { margin: 0; padding: 4px 24px 24px; list-style: none; background: var(--color-brand-soft); }
 .pv-history li { position: relative; display: flex; gap: 12px; padding-top: 20px; }
 .pv-history li:not(:last-child)::after { content: ""; position: absolute; top: 36px; bottom: -14px; left: 5px; width: 2px; border-radius: 2px; background: var(--color-line); }
@@ -348,6 +356,7 @@
 @media (max-width: 900px) {
 	.pv-track__layout, .pv-dossier { grid-template-columns: 1fr; }
 	.pv-track__art { display: none; }
+	.pv-track-help { grid-template-columns: 1fr; gap: 20px; padding-block: 26px; }
 	.pv-statuses { position: static; }
 	.pv-header__inner { flex-wrap: wrap; gap: 0; padding-top: 14px; }
 	.pv-nav { order: 2; width: 100%; min-height: 44px; gap: 24px; overflow-x: auto; }
