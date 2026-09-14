@@ -5,7 +5,7 @@
 Indie civic demo of citizen justice intake in Senegal. Not affiliated with the Ministry.
 
 - **Runtime**: Bun
-- **Framework**: Cloudflare Worker + static assets (Vite/React later)
+- **Framework**: Cloudflare Worker + Vite/React (HeroUI v3) via `@cloudflare/vite-plugin`
 - **Database**: Cloudflare D1
 - **Auth**: Better Auth 1.7, email OTP, native `database: env.DB`
 - **Object storage**: R2 bucket `parleralajustice-audio` (binding `AUDIO`)
@@ -25,15 +25,15 @@ docs/backlog.json
 research/jokko-ak-yoon-e-justice.md
 web/package.json
 web/wrangler.jsonc
+web/vite.config.mts
+web/index.html
 web/src/index.ts
 web/src/auth.ts
 web/src/auth-schema.ts
 web/src/cases.ts
+web/src/client/
 web/migrations/0001_better_auth.sql
 web/migrations/0002_cases.sql
-web/public/index.html
-web/public/app.js
-web/public/styles.css
 web/test/
 ```
 
@@ -42,7 +42,7 @@ web/test/
 - **File names**: kebab-case for docs. Worker TS files stay short (`auth.ts`).
 - **No `any`**: use generated `Env`, `Doc`, and `Id` types.
 - **Verify from repo root**: `bun run test` (runs Vitest in `web/`).
-- **Wrangler**: `bunx wrangler` / `bun run deploy`. Development uses `wrangler dev`, not `wrangler deploy`.
+- **Wrangler**: `bunx wrangler` / `bun run deploy`. Development uses `bun run dev` (Vite + Cloudflare plugin on port 5173). Do not use `wrangler deploy` for local work.
 - **Auth instance**: create per request with `createAuth(env, request)`. Derive `baseURL` from the request origin.
 - **Migrations**: append-only SQL under `web/migrations/`. Apply with `bun run db:migrate` (remote) or `db:migrate:local`.
 - **OTP spike**: `spike_otp` stores plaintext OTP. Replace before any public login flow. Do not log OTP values. Demo readout is `POST /api/demo/otp` (never GET).
@@ -64,6 +64,8 @@ web/test/
 | Do not auto-commit unless the human asks | Git commits stay human-gated. |
 
 ## Verification
+
+Client markup regression tests use `react-dom/server` in the existing Vitest pool. They do not replace browser interaction or visual checks.
 
 After any code change, run:
 

@@ -23,7 +23,7 @@ Three products, not two. See [research/jokko-ak-yoon-e-justice.md](research/jokk
 ```
 docs/        product rules and task graph
 research/    cited public briefing
-web/         Cloudflare Worker (Bun, Vite assets later)
+web/         Cloudflare Worker + Vite/React client (`web/src/client/`)
 ```
 
 ## Stack
@@ -48,7 +48,7 @@ bun run test
 bun run dev
 ```
 
-Open http://localhost:8787
+Open http://localhost:5173 (Vite). If that port is already in use, Vite picks the next free port.
 
 Connexion demo: use an e-mail with a domain (`demo@exemple.sn`). The code prints on screen. Real mail is not wired.
 

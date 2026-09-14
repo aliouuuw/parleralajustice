@@ -1,0 +1,325 @@
+@font-face { font-family: "Karrik"; src: url("/fonts/karrik-regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Sligoil"; src: url("/fonts/sligoil-micromedium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+
+/*
+ * The page follows the hero illustrations: white ground, flat matte colour blocks,
+ * no decorative outlines, depth from a second tone of the same colour, fine print grain.
+ * Proportion as in the prompt: mostly white and green-black, then green, then yellow, red only as a signal.
+ */
+.pv {
+	--color-ink: #14201a;
+	--color-brand: #00853f;
+	--color-brand-hover: #006a32;
+	--color-brand-text: #00703a;
+	--color-brand-soft: #e7f2eb;
+	--color-brand-soft-hover: #d6e9dd;
+	--color-brand-lit: #9bcb3b;
+	--color-gold: #fdef42;
+	--color-on-gold-2: #3f4222;
+	--color-red: #e31b23;
+	--color-danger: #b8141b;
+	--color-danger-soft: #fdeceb;
+	--color-warning: #6e5c00;
+	--color-text: var(--color-ink);
+	--color-text-secondary: #4a5a51;
+	--color-text-tertiary: #66756c;
+	--color-field-line: #7d8c83;
+	--color-line: #dbe3de;
+	--color-surface: #ffffff;
+	--color-on-dark: #ffffff;
+	--color-on-dark-2: #b9c6be;
+	--color-disabled: #e9eeeb;
+	--color-disabled-text: #6d7a72;
+	--proceed: var(--color-brand);
+	--wave-quiet: var(--color-field-line);
+	/* Print grain, as in the illustrations: dark speckles for light fills, light speckles for dark fills. */
+	--grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .13 0 0 0 0 .1 0 0 0 .34 -.15'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+	--grain-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .26 -.11'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+	--font-heading: "Karrik", "Public Sans", ui-sans-serif, system-ui, sans-serif;
+	--font-body: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+	--font-data: "Sligoil", ui-monospace, "SF Mono", Menlo, monospace;
+	--radius-control: 10px;
+	--radius-panel: 16px;
+	--container: 1184px;
+	--gutter: clamp(20px, 4vw, 48px);
+	--ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--slide-ms: 7s;
+
+	min-height: 100dvh;
+	background: var(--color-surface);
+	color: var(--color-text);
+	font-family: var(--font-body);
+	font-size: 16px;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+}
+
+.pv *, .pv *::before, .pv *::after { box-sizing: border-box; }
+.pv h1, .pv h2, .pv h3 { color: var(--color-text); }
+.pv button, .pv textarea { font: inherit; }
+.pv button { cursor: pointer; }
+.pv a { color: inherit; text-underline-offset: 3px; }
+/* System focus: ink ring with a flag-yellow halo, visible on white, yellow, green and ink surfaces. */
+.pv :focus-visible { outline: 3px solid var(--color-ink); outline-offset: 2px; box-shadow: 0 0 0 7px var(--color-gold); }
+.pv-container { width: min(var(--container), 100%); margin-inline: auto; padding-inline: var(--gutter); }
+.pv-skip { position: fixed; z-index: 20; top: 12px; left: 12px; padding: 10px 14px; border-radius: var(--radius-control); background: var(--color-gold); color: var(--color-ink); font-weight: 650; transform: translateY(-160%); }
+.pv-skip:focus { transform: translateY(0); }
+
+/* Dark fills carry grain on top of the colour, never on top of text. */
+.pv-notice, .pv-progress, .pv-footer { background: var(--grain-light) 0 0 / 220px, var(--color-ink); color: var(--color-on-dark-2); }
+/* The notice line is too thin for grain: it reads as static behind small text. */
+.pv-notice { background: var(--color-ink); }
+.pv-type-band { background: var(--grain) 0 0 / 220px, var(--color-gold); }
+.pv-outcome-band { background: var(--grain) 0 0 / 220px, var(--color-brand); }
+
+.pv-notice { font-size: 12px; }
+.pv-notice__inner { display: flex; flex-wrap: wrap; gap: 2px 12px; padding-block: 8px; }
+.pv-notice strong { color: var(--color-gold); font-weight: 650; }
+
+.pv-header { background: var(--color-surface); }
+.pv-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 76px; }
+.pv-brand { display: flex; align-items: center; gap: 12px; border-radius: var(--radius-control); color: var(--color-text); text-decoration: none; }
+.pv-brand__mark { flex: 0 0 auto; display: block; }
+.pv-brand strong, .pv-brand small { display: block; }
+.pv-brand strong { font-family: var(--font-heading); font-size: 17px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.2; }
+.pv-brand small { margin-top: 1px; color: var(--color-text-secondary); font-size: 12px; }
+.pv-nav { display: flex; align-items: stretch; align-self: stretch; gap: 28px; white-space: nowrap; }
+.pv-nav a { position: relative; display: inline-flex; align-items: center; color: var(--color-text-secondary); font-size: 13px; font-weight: 550; text-decoration: none; transition: color 160ms var(--ease-standard); }
+.pv-nav a:hover { color: var(--color-text); }
+.pv-nav a[aria-current="page"] { color: var(--color-text); font-weight: 650; }
+.pv-nav a[aria-current="page"]::after { content: ""; position: absolute; right: 0; bottom: 18px; left: 0; height: 3px; border-radius: 3px; background: var(--color-brand); }
+
+/* Hero, tablet and mobile: copy above, the scene overlaps its own blank top. */
+.pv-hero { --stage-w: min(1240px, 100vw, max(560px, calc((100svh - 460px) * 1.7708))); position: relative; padding-top: clamp(32px, 4vw, 44px); }
+.pv-hero__copy { position: relative; z-index: 1; display: grid; justify-items: center; text-align: center; }
+.pv-hero h1 { max-width: 16ch; margin: 0; font-family: var(--font-heading); font-size: clamp(40px, 4.8vw, 60px); font-weight: 400; line-height: 1.02; letter-spacing: -0.025em; text-wrap: balance; }
+.pv-lede { max-width: 46ch; margin: 16px 0 0; color: var(--color-text-secondary); font-size: 18px; line-height: 1.55; text-wrap: balance; }
+.pv-hero__action { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 18px; margin-top: 24px; }
+.pv-hero__action > span { color: var(--color-text-secondary); font-size: 13px; }
+
+.pv-slides { position: relative; width: var(--stage-w); margin: calc(var(--stage-w) * -0.12) auto 0; }
+.pv-slides__stage {
+	position: relative; aspect-ratio: 2720 / 1536; overflow: clip;
+	/* Feather the image edges into the page so no seam shows. */
+	-webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+	-webkit-mask-composite: source-in;
+	mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 10%, #000 88%, transparent);
+	mask-composite: intersect;
+}
+/* Crossfade: the outgoing scene softens out of focus, the incoming one settles into focus. Visibility is state, not animation. */
+.pv-slides__stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(8px); transition: opacity 1200ms var(--ease-standard), filter 1200ms var(--ease-standard); }
+.pv-slides__stage img[data-active] { opacity: 1; filter: blur(0); animation: pv-settle var(--slide-ms) var(--ease-standard) both; }
+@keyframes pv-settle { from { transform: scale(1.025); } to { transform: none; } }
+
+/* Progress line, drawn like the tracking timeline: green is done, yellow is current. */
+.pv-frise { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; width: min(680px, 100%); margin: -12px auto 0; padding-inline: var(--gutter); }
+.pv-frise ol { display: flex; flex: 1; min-width: 0; margin: 0; padding: 0; list-style: none; }
+.pv-frise li { display: flex; flex: 1; align-items: center; gap: 6px; min-width: 0; }
+.pv-frise li > button { display: inline-flex; align-items: center; gap: 8px; min-width: 32px; min-height: 36px; padding: 0 4px; border: 0; border-radius: 6px; background: none; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; white-space: nowrap; transition: color 160ms var(--ease-standard); }
+.pv-frise li > button:hover, .pv-frise li[data-state="current"] > button { color: var(--color-text); }
+.pv-frise__dot { flex: 0 0 auto; width: 10px; height: 10px; border: 2px solid var(--color-field-line); border-radius: 50%; background: var(--color-surface); transition: background-color 300ms var(--ease-standard), border-color 300ms var(--ease-standard); }
+.pv-frise li[data-state="done"] .pv-frise__dot { border-color: var(--color-brand); background: var(--color-brand); }
+.pv-frise li[data-state="current"] .pv-frise__dot { border-color: var(--color-ink); background: var(--color-gold); }
+.pv-frise__track { position: relative; flex: 1; min-width: 12px; height: 3px; border-radius: 3px; background: var(--color-line); overflow: hidden; }
+.pv-frise li[data-state="done"] .pv-frise__track { background: var(--color-brand); }
+.pv-frise__fill { position: absolute; top: 0; bottom: 0; left: 0; width: 0; border-radius: 3px; background: var(--color-brand); animation: pv-fill var(--slide-ms) linear forwards; }
+/* Pause on the control itself, on keyboard focus, or by the button. A mouse resting on the big scene must not freeze it. */
+.pv-frise:hover .pv-frise__fill, .pv-slides:has(:focus-visible) .pv-frise__fill, .pv-slides[data-paused] .pv-frise__fill { animation-play-state: paused; }
+@keyframes pv-fill { to { width: 100%; } }
+.pv-frise__pause { flex: 0 0 auto; display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--color-text-secondary); transition: color 160ms var(--ease-standard), background-color 160ms var(--ease-standard); }
+.pv-frise__pause:hover { background: var(--color-brand-soft); color: var(--color-text); }
+
+/* Hero, desktop: the scene fills the first screen and the copy sits in its blank sky.
+ * Height reserve: 110px notice and header, 276px for copy plus progress line minus the blank top of the image. */
+@media (min-width: 1024px) {
+	.pv-hero { --img-w: min(100vw, 1920px, max(900px, calc((100svh - 390px) * 2.426))); min-height: max(calc(var(--img-w) * 0.4122 + 276px), min(calc(100svh - 110px), calc(var(--img-w) * 0.5647 + 320px))); padding-top: 28px; overflow: clip; }
+	.pv-hero h1 { max-width: none; font-size: clamp(48px, 4.4vw, 68px); white-space: nowrap; }
+	.pv-lede { max-width: none; margin-top: 12px; }
+	.pv-hero__action { margin-top: 22px; }
+	.pv-slides { position: absolute; bottom: 12px; left: 50%; width: var(--img-w); margin: 0; transform: translateX(-50%); }
+	.pv-slides__stage {
+		-webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
+		mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
+	}
+}
+
+.pv-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; padding: 10px 18px; border: 0; border-radius: var(--radius-control); font-size: 15px; font-weight: 650; line-height: 1.2; text-decoration: none; transition: background-color 160ms var(--ease-standard), color 160ms var(--ease-standard); }
+.pv-button--primary { background: var(--color-brand); color: var(--color-on-dark); }
+.pv-button--primary:hover { background: var(--color-brand-hover); }
+.pv-button--secondary { background: var(--color-brand-soft); color: var(--color-text); }
+.pv-button--secondary:hover { background: var(--color-brand-soft-hover); }
+.pv-button--quiet { background: transparent; color: var(--color-text-secondary); }
+.pv-button--quiet:hover { background: var(--color-brand-soft); color: var(--color-text); }
+.pv-button:disabled { background: var(--color-disabled); color: var(--color-disabled-text); cursor: not-allowed; }
+.pv-button svg { transition: transform 160ms var(--ease-standard); }
+.pv-button:hover:not(:disabled) svg { transform: translateX(3px); }
+
+.pv-types { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 56px; padding-block: 40px 44px; }
+.pv-types__heading h2 { margin: 0; font-family: var(--font-heading); font-size: 26px; font-weight: 400; line-height: 1.15; letter-spacing: -0.015em; }
+.pv-types ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 40px; margin: 0; padding: 0; list-style: none; }
+.pv-types li { min-width: 0; }
+.pv-types strong, .pv-types span { display: block; }
+.pv-types strong { font-size: 15px; font-weight: 650; }
+.pv-types span { margin-top: 3px; color: var(--color-on-gold-2); font-size: 13px; }
+
+.pv-workspace { background: var(--color-surface); }
+.pv-workspace__layout { display: grid; grid-template-columns: 260px minmax(0, 720px); justify-content: space-between; gap: 56px; padding-block: 88px 96px; }
+.pv-rail { align-self: start; display: grid; gap: 28px; }
+.pv-progress { padding: 26px 24px; border-radius: var(--radius-panel); }
+.pv-progress > p { margin: 0 0 22px; font-size: 12px; font-weight: 650; }
+.pv-progress ol { margin: 0; padding: 0; list-style: none; }
+.pv-progress li { position: relative; display: flex; gap: 12px; min-height: 68px; }
+.pv-progress li:not(:last-child)::after { content: ""; position: absolute; top: 34px; bottom: 6px; left: 13px; width: 2px; border-radius: 2px; background: oklch(38% 0.02 155); }
+.pv-progress li > span { position: relative; z-index: 1; display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: oklch(32% 0.02 155); color: var(--color-on-dark); font-family: var(--font-data); font-size: 11px; }
+.pv-progress li[aria-current="step"] { color: var(--color-on-dark); }
+.pv-progress li[aria-current="step"] > span { background: var(--color-gold); color: var(--color-ink); }
+.pv-progress li[data-complete="true"] > span { background: var(--color-brand); color: var(--color-on-dark); }
+.pv-progress strong, .pv-progress small { display: block; }
+.pv-progress strong { padding-top: 3px; font-size: 13px; font-weight: 650; }
+.pv-progress small { margin-top: 2px; font-size: 12px; }
+.pv-guidance { padding-inline: 4px; }
+.pv-guidance h2 { margin: 0; font-size: 14px; font-weight: 650; letter-spacing: -0.01em; }
+.pv-guidance ul { margin: 10px 0 0; padding: 0; list-style: none; color: var(--color-text-secondary); font-size: 13px; }
+.pv-guidance li + li { margin-top: 8px; }
+
+.pv-form__heading > p { margin: 0 0 10px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+.pv-form__heading h2 { margin: 0; font-family: var(--font-heading); font-size: clamp(30px, 3.2vw, 40px); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; }
+.pv-form__heading > span { display: block; margin-top: 10px; color: var(--color-text-secondary); font-size: 15px; }
+
+.pv-error-summary { margin-top: 24px; padding: 16px 20px; border-radius: var(--radius-control); background: var(--color-danger-soft); color: var(--color-danger); }
+.pv-error-summary strong { font-size: 14px; font-weight: 650; }
+.pv-error-summary ul { margin: 8px 0 0; padding-left: 18px; font-size: 14px; }
+.pv-error-summary a { color: var(--color-danger); }
+
+.pv-field { margin-top: 32px; }
+.pv-field label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 650; }
+/* Fields keep a real boundary (WCAG non-text contrast); decorative outlines are gone everywhere else. */
+.pv-field textarea { display: block; width: 100%; min-height: 190px; padding: 16px 18px; border: 1.5px solid var(--color-field-line); border-radius: var(--radius-control); background: var(--color-surface); color: var(--color-text); font-size: 16px; line-height: 1.55; resize: vertical; transition: border-color 150ms var(--ease-standard), box-shadow 150ms var(--ease-standard); }
+.pv-field textarea::placeholder { color: var(--color-text-tertiary); opacity: 1; }
+.pv-field textarea:hover { border-color: var(--color-ink); }
+.pv-field textarea:focus-visible { outline: none; border-color: var(--color-ink); box-shadow: 0 0 0 4px var(--color-gold); }
+.pv-field textarea[aria-invalid="true"] { border-color: var(--color-danger); }
+.pv-field__meta { display: flex; justify-content: space-between; gap: 16px; margin-top: 8px; color: var(--color-text-secondary); font-size: 12px; }
+.pv-field__meta span:last-child { flex-shrink: 0; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.pv-field__meta [data-tone="ok"] { color: var(--color-brand-text); }
+.pv-field__meta [data-tone="near"] { color: var(--color-warning); }
+.pv-field__meta [data-tone="over"] { color: var(--color-danger); }
+
+.pv-audio { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; margin-top: 28px; padding: 20px 22px; border-radius: var(--radius-panel); background: var(--color-brand-soft); }
+.pv-audio > div:first-child strong, .pv-audio > div:first-child span { display: block; }
+.pv-audio > div:first-child strong { font-size: 14px; font-weight: 650; }
+.pv-audio > div:first-child span { margin-top: 2px; color: var(--color-text-secondary); font-size: 13px; }
+.pv-audio .pv-button--secondary { background: var(--color-surface); }
+.pv-audio .pv-button--secondary:hover { background: var(--color-brand-soft-hover); }
+.pv-record-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--color-red); }
+.pv-button[data-recording="true"] { background: var(--color-danger-soft); color: var(--color-danger); }
+.pv-button[data-recording="true"] .pv-record-dot { border-radius: 2px; }
+.pv-audio__status { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; color: var(--color-text-secondary); font-size: 12px; }
+.pv-audio__status canvas { grid-column: 1 / -1; display: block; width: 100%; }
+.pv-audio__status time { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+.pv-form__footer { display: flex; align-items: center; gap: 18px; margin-top: 32px; }
+.pv-form__footer p { margin: 0; color: var(--color-text-secondary); font-size: 13px; }
+
+.pv-outcome { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px 64px; padding-block: 88px 96px; }
+.pv-outcome__intro h2 { margin: 0; color: var(--color-on-dark); font-family: var(--font-heading); font-size: clamp(32px, 2.8vw, 40px); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; }
+.pv-outcome__intro > span { display: block; max-width: 40ch; margin-top: 16px; color: var(--color-on-dark); font-size: 15px; line-height: 1.6; }
+.pv-receipt { align-self: start; border-radius: var(--radius-panel); background: var(--color-surface); overflow: hidden; }
+.pv-receipt > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 24px; background: var(--grain) 0 0 / 220px, var(--color-gold); }
+.pv-receipt > header p, .pv-receipt > header time { display: block; margin: 0; }
+.pv-receipt > header p { font-size: 14px; font-weight: 650; }
+.pv-receipt > header time { margin-top: 2px; color: var(--color-on-gold-2); font-size: 12px; }
+.pv-receipt > header > span { font-size: 12px; font-weight: 650; white-space: nowrap; }
+.pv-receipt__reference { padding: 28px 24px 0; }
+.pv-receipt__reference > span { display: block; color: var(--color-text-secondary); font-size: 12px; }
+.pv-receipt__reference > strong { display: block; margin-top: 8px; font-family: var(--font-data); font-size: clamp(28px, 3.4vw, 40px); font-weight: 500; letter-spacing: 0.035em; line-height: 1.2; overflow-wrap: anywhere; }
+.pv-receipt__reference p { margin: 10px 0 0; color: var(--color-text-secondary); font-size: 13px; }
+.pv-receipt__actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 22px 24px 26px; }
+.pv-history { margin: 0; padding: 4px 24px 24px; list-style: none; background: var(--color-brand-soft); }
+.pv-history li { position: relative; display: flex; gap: 12px; padding-top: 20px; }
+.pv-history li:not(:last-child)::after { content: ""; position: absolute; top: 36px; bottom: -14px; left: 5px; width: 2px; border-radius: 2px; background: var(--color-line); }
+.pv-history li > span { position: relative; z-index: 1; flex: 0 0 12px; width: 12px; height: 12px; margin-top: 4px; border: 2px solid var(--color-field-line); border-radius: 50%; background: var(--color-surface); }
+.pv-history li[data-status="complete"] > span { border-color: var(--color-brand); background: var(--color-brand); }
+.pv-history li[data-status="active"] > span { border-color: var(--color-ink); background: var(--color-gold); }
+.pv-history li > div { display: flex; flex: 1; justify-content: space-between; gap: 20px; }
+.pv-history strong { font-size: 13px; font-weight: 600; }
+.pv-history time { color: var(--color-text-secondary); font-family: var(--font-data); font-size: 11px; white-space: nowrap; }
+
+.pv-footer__inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; padding-block: 40px; }
+.pv-footer strong { color: var(--color-on-dark); font-family: var(--font-heading); font-size: 17px; font-weight: 400; }
+.pv-footer p { margin: 6px 0 0; font-size: 12px; }
+.pv-footer nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px 24px; }
+.pv-footer a { color: var(--color-on-dark); font-size: 13px; }
+.pv-footer a:hover { color: var(--color-gold); }
+
+@media (max-width: 900px) {
+	.pv-header__inner { flex-wrap: wrap; gap: 0; padding-top: 14px; }
+	.pv-nav { order: 2; width: 100%; min-height: 44px; gap: 24px; overflow-x: auto; }
+	.pv-nav a[aria-current="page"]::after { bottom: 4px; }
+	.pv-types { grid-template-columns: 1fr; gap: 24px; }
+	.pv-types ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.pv-workspace__layout { grid-template-columns: 1fr; gap: 28px; padding-block: 56px 64px; }
+	.pv-rail { gap: 20px; }
+	.pv-progress > p { display: none; }
+	.pv-progress ol { display: grid; grid-template-columns: 1fr 1fr; }
+	.pv-progress li { min-height: auto; }
+	.pv-progress li:not(:last-child)::after { top: 13px; right: 16px; bottom: auto; left: 36px; width: auto; height: 2px; }
+	.pv-outcome { grid-template-columns: 1fr; gap: 32px; padding-block: 64px 72px; }
+}
+
+@media (max-width: 600px) {
+	.pv { font-size: 15px; }
+	.pv-notice__inner { display: block; padding-block: 7px; }
+	.pv-notice strong, .pv-notice span { display: block; }
+	.pv-header__inner { min-height: 0; }
+	.pv-brand { padding-bottom: 12px; }
+	.pv-nav { gap: 20px; }
+	.pv-nav a { font-size: 12px; }
+	.pv-hero { --stage-w: 100vw; padding-top: 36px; }
+	.pv-hero h1 { font-size: 38px; }
+	.pv-lede { margin-top: 14px; font-size: 16px; }
+	.pv-hero__action { flex-direction: column; margin-top: 22px; }
+	/* Square crop keeps the central 56% of each scene, where the prompt placed the subject. */
+	.pv-slides { margin-top: -56px; }
+	.pv-slides__stage { aspect-ratio: 1; }
+	.pv-frise li:not([data-state="current"]) .pv-frise__label { display: none; }
+	.pv-types { gap: 20px; padding-block: 32px 36px; }
+	.pv-types ul { grid-template-columns: 1fr; gap: 16px; }
+	.pv-workspace__layout { gap: 24px; padding-block: 40px 48px; }
+	.pv-progress { padding: 18px; }
+	.pv-progress li { gap: 9px; }
+	.pv-progress strong { max-width: 16ch; font-size: 12px; }
+	.pv-progress small { font-size: 11px; }
+	.pv-progress li > span { flex-basis: 24px; width: 24px; height: 24px; }
+	.pv-progress li:not(:last-child)::after { top: 11px; left: 30px; }
+	.pv-field textarea { min-height: 160px; }
+	.pv-audio { grid-template-columns: 1fr; padding: 18px; }
+	.pv-audio .pv-button { justify-self: start; }
+	.pv-form__footer { align-items: flex-start; flex-direction: column; }
+	.pv-outcome { padding-block: 48px 56px; }
+	.pv-outcome__intro h2 { font-size: 32px; }
+	.pv-receipt > header { padding: 18px; }
+	.pv-receipt__reference { padding: 24px 18px 0; }
+	.pv-receipt__actions { padding: 20px 18px 22px; }
+	.pv-history { padding: 4px 18px 22px; }
+	.pv-history li > div { display: block; }
+	.pv-history time { display: block; margin-top: 2px; }
+	.pv-footer__inner { flex-direction: column; }
+	.pv-footer nav { justify-content: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pv *, .pv *::before, .pv *::after { scroll-behavior: auto !important; transition: none !important; }
+	.pv-button:hover svg { transform: none !important; }
+	/* No autoplay: without the fill animation nothing advances. The dots still switch scenes. */
+	.pv-slides__stage img[data-active], .pv-frise__fill { animation: none; }
+	.pv-slides__stage img { filter: none; }
+	.pv-frise__pause { display: none; }
+}
+
+@media print {
+	.pv-notice, .pv-header, .pv-hero, .pv-type-band, .pv-workspace, .pv-outcome__intro, .pv-footer { display: none; }
+	.pv-outcome-band { background: none; }
+	.pv-outcome { display: block; padding: 0; }
+	.pv-receipt { border: 1px solid #777; }
+}

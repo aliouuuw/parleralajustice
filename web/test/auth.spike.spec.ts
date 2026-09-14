@@ -53,6 +53,26 @@ describe("Better Auth email OTP spike", () => {
 		expect(session.status).toBe(200);
 		const body = (await session.json()) as { user: { email: string } } | null;
 		expect(body?.user.email).toBe(EMAIL);
+
+		const signOut = await SELF.fetch(`${ORIGIN}/api/auth/sign-out`, {
+			method: "POST",
+			headers: {
+				Origin: ORIGIN,
+				"Content-Type": "application/json",
+				Cookie: cookieHeader(signIn),
+			},
+			body: "{}",
+		});
+		expect(signOut.status).toBe(200);
+
+		const after = await SELF.fetch(`${ORIGIN}/api/auth/get-session`, {
+			headers: {
+				Origin: ORIGIN,
+				Cookie: cookieHeader(signIn),
+			},
+		});
+		expect(after.status).toBe(200);
+		expect(await after.json()).toBeNull();
 	});
 
 	it("rejects an e-mail without a domain dot", async () => {

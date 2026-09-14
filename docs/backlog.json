@@ -73,6 +73,15 @@
           "deps": ["T003"],
           "files": ["web/src/auth.ts", "web/src/cases.ts", "web/src/index.ts", "web/wrangler.jsonc"],
           "verify": "bun run test"
+        },
+        {
+          "id": "T009",
+          "title": "Rebuild UI on HeroUI v3 with professional civic design",
+          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. User approved replacing yellow tape and stamped-paper styling with restrained green-and-neutral identity and a restructured desktop home. Implemented Public Sans typography, guidance beside the form, task-first mobile order, consistent controls, digital receipt with copy/print, clear demo login, tracking and register screens. Existing APIs unchanged in this redesign. Worker tests (10), both TypeScript configurations, production build and static render assertions pass. Detector reports one advisory for a single font family, deliberately retained with weight/size hierarchy. User chose to review the browser preview instead of cached Chromium automation. Visual and interaction sign-off remain pending; not committed or deployed.",
+          "status": "pending",
+          "deps": ["T003", "T005"],
+          "files": ["web/src/client/", "web/vite.config.mts", "web/index.html", "web/wrangler.jsonc", "web/tsconfig.client.json"],
+          "verify": "bun run test && bun run build"
         }
       ]
     },

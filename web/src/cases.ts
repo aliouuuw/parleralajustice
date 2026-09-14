@@ -66,7 +66,7 @@ const SEED: Array<{
 		status: "en_cours",
 		name: null,
 		email: null,
-		body: "DEMONSTRATION. Delai d'une audience au TGI. Aucune identite reelle.",
+		body: "DÉMONSTRATION. Délai d'une audience au TGI. Aucune identité réelle.",
 		events: ["Dossier reçu", "Transmis au greffe (démo)"],
 	},
 	{
@@ -76,7 +76,7 @@ const SEED: Array<{
 		status: "repondu",
 		name: "Awa Demo",
 		email: "awa.demo@example.com",
-		body: "DEMONSTRATION. Relance sur un extrait. Personne fictive.",
+		body: "DÉMONSTRATION. Relance sur un extrait. Personne fictive.",
 		events: ["Dossier reçu", "En traitement", "Réponse envoyée (démo)"],
 	},
 	{
@@ -86,7 +86,7 @@ const SEED: Array<{
 		status: "recu",
 		name: null,
 		email: null,
-		body: "DEMONSTRATION. Signalement anonyme fictif. Ne pas traiter comme une affaire.",
+		body: "DÉMONSTRATION. Signalement anonyme fictif. Ne pas traiter comme une affaire.",
 		events: ["Dossier reçu"],
 	},
 ];
@@ -99,7 +99,16 @@ export async function seedCases(db: D1Database): Promise<void> {
 	const existing = await db.prepare("SELECT tracking_code FROM cases WHERE tracking_code LIKE 'PALJ-SEED%'").all<{ tracking_code: string }>();
 	const have = new Set((existing.results ?? []).map((row) => row.tracking_code));
 	for (const seed of SEED) {
-		if (have.has(seed.code)) continue;
+		if (have.has(seed.code)) {
+			await db
+				.prepare(
+					`UPDATE cases SET kind = ?, channel = ?, email = ?, display_name = ?, body = ?, status = ?
+					 WHERE tracking_code = ?`,
+				)
+				.bind(seed.kind, seed.channel, seed.email, seed.name, seed.body, seed.status, seed.code)
+				.run();
+			continue;
+		}
 		const id = crypto.randomUUID();
 		const created = Date.now() - 86_400_000;
 		await db
@@ -180,7 +189,7 @@ export async function handleAppApi(
 	const url = new URL(request.url);
 
 	if (url.pathname === "/api/demo/otp") {
-		if (request.method !== "POST") return json({ error: "Methode non autorisee." }, 405);
+		if (request.method !== "POST") return json({ error: "Méthode non autorisée." }, 405);
 		const limited = await env.CASE_RATE_LIMIT.limit({ key: `otp:${clientKey(request)}` });
 		if (!limited.success) return json({ error: "Trop de tentatives. Attendez une minute." }, 429);
 		const payload = await readJson(request);
@@ -224,30 +233,30 @@ export async function handleAppApi(
 		const limited = await env.CASE_RATE_LIMIT.limit({ key: `case:${clientKey(request)}` });
 		if (!limited.success) return json({ error: "Trop de dossiers. Attendez une minute." }, 429);
 		const payload = await readJson(request);
-		if (!payload) return json({ error: "Requete invalide." }, 400);
+		if (!payload) return json({ error: "Requête invalide." }, 400);
 		if (payload.demoConfirmed !== true) {
-			return json({ error: "Cochez la case de demonstration." }, 400);
+			return json({ error: "Cochez la case de démonstration." }, 400);
 		}
 		const turnstileToken = asString(payload.turnstileToken) ?? "";
 		const humanCheck = await verifyTurnstile(env.TURNSTILE_SECRET_KEY, turnstileToken, request);
-		if (!humanCheck) return json({ error: "Verification anti-robot echouee." }, 400);
+		if (!humanCheck) return json({ error: "Vérification anti-robot échouée." }, 400);
 		const kind = asString(payload.kind);
 		const channel = asString(payload.channel);
 		if (!kind || !KINDS.has(kind)) {
 			return json({ error: "Choisissez un type de demande." }, 400);
 		}
 		if (!channel || !CHANNELS.has(channel)) {
-			return json({ error: "Choisissez anonyme ou identifie." }, 400);
+			return json({ error: "Choisissez anonyme ou identifié." }, 400);
 		}
 		const body = asString(payload.body)?.trim() ?? "";
 		if (body.length < 12 || body.length > 4000) {
-			return json({ error: "Le message doit faire entre 12 et 4000 caracteres." }, 400);
+			return json({ error: "Le message doit faire entre 12 et 4000 caractères." }, 400);
 		}
 		let email: string | null = null;
 		let displayName: string | null = null;
 		if (channel === "identified") {
 			const user = await getUser();
-			if (!user) return json({ error: "Connectez-vous pour un dossier identifie." }, 401);
+			if (!user) return json({ error: "Connectez-vous pour un dossier identifié." }, 401);
 			email = user.email;
 			displayName = user.name;
 		}
@@ -272,7 +281,10 @@ export async function handleAppApi(
 
 	const caseMatch = url.pathname.match(/^\/api\/cases\/([A-Za-z0-9-]+)$/);
 	if (request.method === "GET" && caseMatch?.[1]) {
+		const limited = await env.CASE_RATE_LIMIT.limit({ key: `case-read:${clientKey(request)}` });
+		if (!limited.success) return json({ error: "Trop de lectures. Attendez une minute." }, 429);
 		const code = caseMatch[1].toUpperCase();
+		await seedCases(env.DB);
 		const dossier = await env.DB
 			.prepare(
 				`SELECT id, tracking_code, kind, channel, email, display_name, body, status, audio_key, created_at

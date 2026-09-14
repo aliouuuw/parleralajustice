@@ -1,6 +1,6 @@
 # Product
 
-Last updated: 12 September 2026.
+Last updated: 13 September 2026.
 
 ## Who
 
@@ -48,6 +48,16 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 - Better Auth + D1. Email OTP first. Resend later. WhatsApp OTP (Kapso) later. Meta limit rungs start at 250, then 2,000 (no 1,000 rung).
 - Turnstile + Workers Rate Limiting on case create and OTP.
 - Didit only as a clip on the developer CNI. No DAF registry API.
+- Frontend: React + Vite + Tailwind CSS v4 + HeroUI v3, built via `@cloudflare/vite-plugin`. Still one Worker: Vite builds static assets to `dist/client`, which `wrangler.jsonc`'s `assets.directory` points at; `src/index.ts` stays the untouched Worker entry. `bun run dev` runs `vite` (Worker + bindings + React HMR in one server); `bun run deploy` runs `vite build && wrangler deploy`.
+
+## Visual identity and intake (approved product direction)
+
+- User rejected decorative civic modernism in favor of a focused application experience, referencing Stripe onboarding, Mercury and Linear.
+- One green interaction accent `#17634E`, neutral step rail and white workspace. No unrelated motifs, multiple brand colors or oversized marketing copy.
+- Public Sans handles interface text and headings. System monospace remains limited to tracking references.
+- Intake has two stages: write a fictitious message with optional audio, then review, choose the existing request type and confirm submission. Desktop has a step rail; mobile places compact progress above the task.
+- The receipt is a structured digital record, not a simulated government document. No seal, star, perforation or Ministry branding.
+- The disclaimer, demo-only scope and existing intake functions remain. See `docs/DESIGN.md`.
 
 ## Auth spike (done)
 

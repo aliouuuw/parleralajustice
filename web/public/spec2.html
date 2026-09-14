@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Candidats</title><style>
+@font-face{font-family:"Karrik";src:url("/fonts/cand/karrik-1.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Karrik";src:url("/fonts/cand/karrik-1.woff2") format("woff2");font-weight:600}
+@font-face{font-family:"Switzer";src:url("/fonts/cand/switzer-1.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Switzer";src:url("/fonts/cand/switzer-3.woff2") format("woff2");font-weight:600}
+@font-face{font-family:"Cabinet";src:url("/fonts/cand/cabinet-1.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Cabinet";src:url("/fonts/cand/cabinet-2.woff2") format("woff2");font-weight:600}
+@font-face{font-family:"GeneralSans";src:url("/fonts/cand/generalsans-1.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"GeneralSans";src:url("/fonts/cand/generalsans-2.woff2") format("woff2");font-weight:600}
+@font-face{font-family:"Atkinson";src:url("/fonts/cand/atkinson-1.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Atkinson";src:url("/fonts/cand/atkinson-2.woff2") format("woff2");font-weight:600}
+:root{--proceed:#0B6B3A;--ink:#1B1F1D;--muted:#4A544E;--rule:#D7DCD8;--paper:#F4F6F5;--gold:#8A6D1F;--goldbg:#FBF3DC}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:system-ui}
+.panel{border-bottom:8px solid var(--paper);padding:34px 48px 44px}
+.tag{display:inline-block;margin-bottom:26px;padding:4px 10px;border:1px solid var(--rule);border-radius:3px;font:600 11px/1 ui-monospace;letter-spacing:.1em;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.mark{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--rule);margin-bottom:30px}
+.mark b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.mark s{text-decoration:none;padding-left:14px;border-left:1px solid var(--rule);font-size:12px;color:var(--muted)}
+.eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--proceed)}
+h1{margin:10px 0 0;font-size:42px;line-height:1.06;font-weight:600;letter-spacing:-.025em}
+.lede{margin:16px 0 0;max-width:46ch;font-size:17px;line-height:1.55;color:var(--muted)}
+.types{margin:22px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--ink)}
+.types span::after{content:"";display:inline-block;width:3px;height:3px;margin-left:18px;border-radius:50%;background:var(--rule);vertical-align:middle}
+.types span:last-child::after{display:none}
+.btn{margin-top:26px;display:inline-flex;align-items:center;min-height:48px;padding:0 26px;border:0;border-radius:6px;background:var(--proceed);color:#fff;font-size:16px;font-weight:600;font-family:inherit}
+.step{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+h2{margin:8px 0 0;font-size:31px;line-height:1.12;font-weight:600;letter-spacing:-.02em}
+.field{margin-top:18px;padding:14px 15px;border:1px solid #9AA5A0;border-radius:6px;color:#7C8A84;font-size:16px}
+.meta{display:flex;justify-content:space-between;margin-top:7px;font-size:12.5px;color:var(--muted)}
+.rec{margin-top:26px;padding:20px 22px;border:1px solid var(--rule);border-radius:6px;background:var(--paper)}
+.rec .lbl{font:600 10.5px/1 ui-monospace;letter-spacing:.1em;color:var(--muted)}
+.code{margin:10px 0 0;font-size:34px;font-weight:600;letter-spacing:.02em}
+.demo{float:right;padding:3px 8px;border:1px solid var(--gold);border-radius:3px;background:var(--goldbg);color:var(--gold);font:600 10.5px/1.4 ui-monospace;letter-spacing:.1em}
+</style></head><body>
+
+<section class="panel" style="font-family:Karrik">
+  <span class="tag">A — KARRIK · VELVETYNE · OFL</span>
+  <div class="grid">
+    <div>
+      <div class="mark"><b>Parler à la justice</b><s>Démonstration indépendante</s></div>
+      <span class="eyebrow">Service</span>
+      <h1>Adressez-vous à la justice</h1>
+      <p class="lede">Une demande, une réclamation ou un signalement. Vous recevez un code de suivi immédiat.</p>
+      <div class="types"><span>Information</span><span>Réclamation</span><span>Signalement</span><span>Suggestion</span><span>Observation</span><span>Contestation</span></div>
+      <button class="btn">Commencer</button>
+    </div>
+    <div>
+      <div class="step">Étape 1 sur 2</div>
+      <h2>Que souhaitez-vous nous dire&nbsp;?</h2>
+      <div class="field">Décrivez les faits. Dates, lieux, personnes concernées.</div>
+      <div class="meta"><span>12 caractères minimum</span><span>0 / 4 000</span></div>
+      <div class="rec"><span class="demo">DÉMO</span><div class="lbl">RÉCÉPISSÉ DE DÉPÔT</div><p class="code">PALJ-7K4M-2QX9</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" style="font-family:Switzer">
+  <span class="tag">B — SWITZER · FONTSHARE</span>
+  <div class="grid">
+    <div>
+      <div class="mark"><b>Parler à la justice</b><s>Démonstration indépendante</s></div>
+      <span class="eyebrow">Service</span>
+      <h1>Adressez-vous à la justice</h1>
+      <p class="lede">Une demande, une réclamation ou un signalement. Vous recevez un code de suivi immédiat.</p>
+      <div class="types"><span>Information</span><span>Réclamation</span><span>Signalement</span><span>Suggestion</span><span>Observation</span><span>Contestation</span></div>
+      <button class="btn">Commencer</button>
+    </div>
+    <div>
+      <div class="step">Étape 1 sur 2</div>
+      <h2>Que souhaitez-vous nous dire&nbsp;?</h2>
+      <div class="field">Décrivez les faits. Dates, lieux, personnes concernées.</div>
+      <div class="meta"><span>12 caractères minimum</span><span>0 / 4 000</span></div>
+      <div class="rec"><span class="demo">DÉMO</span><div class="lbl">RÉCÉPISSÉ DE DÉPÔT</div><p class="code">PALJ-7K4M-2QX9</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" style="font-family:Cabinet">
+  <span class="tag">C — CABINET GROTESK · FONTSHARE</span>
+  <div class="grid">
+    <div>
+      <div class="mark"><b>Parler à la justice</b><s>Démonstration indépendante</s></div>
+      <span class="eyebrow">Service</span>
+      <h1>Adressez-vous à la justice</h1>
+      <p class="lede">Une demande, une réclamation ou un signalement. Vous recevez un code de suivi immédiat.</p>
+      <div class="types"><span>Information</span><span>Réclamation</span><span>Signalement</span><span>Suggestion</span><span>Observation</span><span>Contestation</span></div>
+      <button class="btn">Commencer</button>
+    </div>
+    <div>
+      <div class="step">Étape 1 sur 2</div>
+      <h2>Que souhaitez-vous nous dire&nbsp;?</h2>
+      <div class="field">Décrivez les faits. Dates, lieux, personnes concernées.</div>
+      <div class="meta"><span>12 caractères minimum</span><span>0 / 4 000</span></div>
+      <div class="rec"><span class="demo">DÉMO</span><div class="lbl">RÉCÉPISSÉ DE DÉPÔT</div><p class="code">PALJ-7K4M-2QX9</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" style="font-family:GeneralSans">
+  <span class="tag">D — GENERAL SANS · FONTSHARE</span>
+  <div class="grid">
+    <div>
+      <div class="mark"><b>Parler à la justice</b><s>Démonstration indépendante</s></div>
+      <span class="eyebrow">Service</span>
+      <h1>Adressez-vous à la justice</h1>
+      <p class="lede">Une demande, une réclamation ou un signalement. Vous recevez un code de suivi immédiat.</p>
+      <div class="types"><span>Information</span><span>Réclamation</span><span>Signalement</span><span>Suggestion</span><span>Observation</span><span>Contestation</span></div>
+      <button class="btn">Commencer</button>
+    </div>
+    <div>
+      <div class="step">Étape 1 sur 2</div>
+      <h2>Que souhaitez-vous nous dire&nbsp;?</h2>
+      <div class="field">Décrivez les faits. Dates, lieux, personnes concernées.</div>
+      <div class="meta"><span>12 caractères minimum</span><span>0 / 4 000</span></div>
+      <div class="rec"><span class="demo">DÉMO</span><div class="lbl">RÉCÉPISSÉ DE DÉPÔT</div><p class="code">PALJ-7K4M-2QX9</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" style="font-family:Atkinson">
+  <span class="tag">E — ATKINSON HYPERLEGIBLE NEXT · BRAILLE INSTITUTE</span>
+  <div class="grid">
+    <div>
+      <div class="mark"><b>Parler à la justice</b><s>Démonstration indépendante</s></div>
+      <span class="eyebrow">Service</span>
+      <h1>Adressez-vous à la justice</h1>
+      <p class="lede">Une demande, une réclamation ou un signalement. Vous recevez un code de suivi immédiat.</p>
+      <div class="types"><span>Information</span><span>Réclamation</span><span>Signalement</span><span>Suggestion</span><span>Observation</span><span>Contestation</span></div>
+      <button class="btn">Commencer</button>
+    </div>
+    <div>
+      <div class="step">Étape 1 sur 2</div>
+      <h2>Que souhaitez-vous nous dire&nbsp;?</h2>
+      <div class="field">Décrivez les faits. Dates, lieux, personnes concernées.</div>
+      <div class="meta"><span>12 caractères minimum</span><span>0 / 4 000</span></div>
+      <div class="rec"><span class="demo">DÉMO</span><div class="lbl">RÉCÉPISSÉ DE DÉPÔT</div><p class="code">PALJ-7K4M-2QX9</p></div>
+    </div>
+  </div>
+</section>
+
+</body></html>
