@@ -77,7 +77,7 @@
         {
           "id": "T009",
           "title": "Rebuild UI on HeroUI v3 with professional civic design",
-          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. Local commits through 4b032eb (pass 7: type tokens, Mona Sans, controls, channels/impact sections); not pushed; not deployed. Live Worker still serves the old vanilla JS UI. Pass 8 (queued) turns the channels/impact sections back up with $impeccable bolder/delight/overdrive/colorize. Brief: docs/UI-HANDOVER.md §17. Do not deploy until visual sign-off. Existing case/auth APIs unchanged.",
+          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. Local commits through 300c3eb (pass 8: illustration-led pv-channels, flag-green pv-impact); not pushed; not deployed. Live Worker still serves the old vanilla JS UI. Open follow-up: --text-* size scale to replace one-off clamp()/px font sizes in preview.css. Brief: docs/UI-HANDOVER.md §17. Do not deploy until visual sign-off. Existing case/auth APIs unchanged.",
           "status": "pending",
           "deps": ["T003", "T005"],
           "files": ["web/src/client/", "web/vite.config.mts", "web/index.html", "web/wrangler.jsonc", "web/tsconfig.client.json"],

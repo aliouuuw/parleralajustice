@@ -1,6 +1,6 @@
 # Progress
 
-Checked: 14 September 2026, 07:00 UTC.
+Checked: 14 September 2026, 09:00 UTC.
 
 ## Live
 
@@ -67,13 +67,15 @@ checked 14 Sep 2026.
 
 ## Git
 
-- Branch: `main` at `4b032eb`, **ahead of `origin/main` by 6**, not pushed
+- Branch: `main` at `300c3eb`, **ahead of `origin/main` by 8**, not pushed
   - `3f0a582` `feat: implement HeroUI v3 with React and Vite for civic intake`
   - `f49a4a0` `feat(preview): add detailed critique and tracking for civic intake`
   - `105c02c` `feat: update design documentation and CSS for HeroUI v3 integration`
   - `304aaad` `feat: refine design documentation and update font integration for HeroUI v3`
   - `782b882` `fix(preview): give empty suivi a job, surface clipboard failures`
   - `4b032eb` `feat(preview): add channel and impact sections from the live platform`
+  - `7891d48` `docs: record pass 8 brief and correct stale pass-7 status`
+  - `300c3eb` `feat(preview): turn channels and impact back up`
 - `origin/main` is `6fba040` (T006a docs)
 - Working tree is clean. No pull request. No GitHub issues. Working directly
   on `main`. Do not auto-commit. Do not push unless the owner asks.
@@ -84,7 +86,7 @@ checked 14 Sep 2026.
 - `web/index.html` still loads Public Sans from Google Fonts on every route,
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app
-- Push the three local commits, then a separate authorized production deploy
+- Push the eight local commits, then a separate authorized production deploy
 - Promote `/preview` into the product routes (owner decision after sign-off)
 - Real email (Resend) and close the `/api/demo/otp` backdoor (T006b)
 - Access control on `/guichet`: live `GET /api/guichet/cases` returns the case list with no auth
