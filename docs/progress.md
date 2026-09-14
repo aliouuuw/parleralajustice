@@ -1,6 +1,6 @@
 # Progress
 
-Checked: 14 September 2026, 09:00 UTC.
+Checked: 14 September 2026, 23:50 UTC.
 
 ## Live
 
@@ -11,23 +11,17 @@ pushed and not deployed. Turnstile on case create is live (T006a).
 
 ## One UI in this repo
 
-**Citizen intake** (`/`, `/parler`, `/suivre`, `/d/:code`): the illustrated
-preview system in `web/src/client/preview/`. Connexion, guichet, and acte still
-use the previous HeroUI chrome. There is no `/preview` route.
+All public routes use the illustrated preview system in
+`web/src/client/preview/`: `/`, `/parler`, `/suivre`, `/d/:code`,
+`/connexion`, `/guichet`, `/acte`, and 404. There is no `/preview` route.
 
-## Next: extract Record module (not started)
+Body copy reads as a live civic service. The independent-demo banner, brand
+« démo », and deposit checkbox remain the disclosure.
 
-Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
-`pv-impact`. The owner rejected the subsequent route-map channels design as
-incoherent and chose A: an open, image-free composition. The local replacement
-uses text and optional voice actions, a broad illustrative waveform, and a
-secondary strip of announced channels. The owner accepted this direction on
-14 Sep. Foundation pass shipped 15 Sep: semantic surface, border, radius,
-spacing, and full text-size tokens now exist in `preview.css` and major
-preview modules consume them. Button, Field, Alert, and ServiceHeader
-modules extracted as the first reusable components. Two mobile display
-overrides and `50%` circle radii remain raw by design. Next: extract Record
-module.
+## Next (queued)
+
+Visual sign-off, then push and deploy. After that: Record module extract,
+T006b (real email OTP), and auth on `/guichet`.
 
 ## In progress: T009 visual direction
 
@@ -80,37 +74,36 @@ See `docs/UI-HANDOVER.md`.
   migrated to it (15 Sep).
 - **Field prop leak fixed:** `kind`, `meta`, and `metaId` no longer reach
   the DOM control; React warning gone (14 Sep).
+- **Secondary pages share landing chrome** (14 Sep): connexion, acte,
+  guichet, 404 use `pv-track` + illustration; brand « Parler à la Justice »
+  + « démo »; pill fields aligned to buttons; mobile hero tighter.
+- **Copy pass (14 Sep):** body copy no longer repeats « fictif » / « démo ».
+  Banner remains « Prototype indépendant ».
 
 ## Tests
 
 `bun run test`: 21 of 21 pass in 4 files (8 in `web/test/preview.spec.ts`),
-checked 14 Sep 2026.
+checked 14 Sep 2026, 23:47 UTC.
 
 ## Git
 
-- Branch: `main`, **ahead of `origin/main` by 17**, not pushed
-  - `adf76c2` `feat(preview): redesign citizen channel choices`
-  - `6b12e9e` `feat(preview): add semantic foundation tokens and migrate modules`
-  - `6321b69` `feat(preview): complete semantic token scale and migrate raw values`
-  - `bf9271c` `feat(preview): extract Button as first reusable module`
-  - `5c1a2b8` `feat(preview): extract Field and Alert as reusable modules`
-  - `c7bd423` `feat(preview): extract ServiceHeader as reusable module`
-  - `d2eb23a` `docs: add pass 9 handover section for foundation and component work`
-  - plus `3f0a582`–`300c3eb`: HeroUI rebuild, preview critique, passes 7 and 8
+- Branch: `main`, **ahead of `origin/main` by 24**, not pushed
+  - `f2340b3` `copy(site): let the banner carry the demo disclosure`
+  - `776e905` `style(site): align controls, brand, and mobile hero`
+  - `64be24b` `feat(site): align secondary pages with landing chrome`
+  - plus earlier preview, HeroUI, and token commits
 - `origin/main` is `6fba040` (T006a docs)
 - Working tree is clean. No pull request. No GitHub issues. Working directly
   on `main`. Do not auto-commit. Do not push unless the owner asks.
 
 ## Not done
 
+- Visual sign-off, then push and production deploy of the new UI
 - **Extract Record module** (receipt, history, dossier) from
   `preview.css` / `Preview.tsx`. Button, Field, Alert, and
   ServiceHeader are done.
-- `web/index.html` still loads Public Sans from Google Fonts on every route,
-  including `/preview`. Owner decision: move the product app to Mona Sans, or
-  scope the link to the product app
-- Push the eight local commits, then a separate authorized production deploy
-- Promote `/preview` into the product routes (done 14 Sep). `/preview` routes removed.
+- `web/index.html` still loads Public Sans from Google Fonts on every route.
+  Owner decision: move the product app to Mona Sans, or scope the link
 - Real email (Resend) and close the `/api/demo/otp` backdoor (T006b)
 - Access control on `/guichet`: live `GET /api/guichet/cases` returns the case list with no auth
 - X thread (T008): wait until a reviewed UI is on the Worker

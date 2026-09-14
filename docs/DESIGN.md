@@ -17,9 +17,9 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
 - **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). On desktop, notice + header + hero equal `100dvh`. After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
 - Yellow **taxonomy band** educates before the task; **type selection** is a HeroUI select on step 1 (required).
-- **Channels** (`pv-channels`): owner-selected open composition A, accepted 14 Sep. No repeated hero art, route lines, numbered stops, or nested cards. One centered heading introduces a shared pale-green choice surface with writing and optional voice columns. Familiar pill buttons enter task mode and focus the textarea or Enregistrer; never auto-start recording. A broad Waveform `sim` sits on a pale-green field, explicitly labelled illustrative with the microphone inactive; IntersectionObserver and reduced-motion preference gate animation. Copy states text remains necessary and nothing is transmitted. A secondary strip below lists Vidéo, SMS, USSD, Téléphone with published codes from research §J.2 (`3737`, `*711#`, phone language menu). These channels remain informational and unavailable in the preview. The columns stack on phones.
-- **Impact** (`pv-impact`): fictive stats on a full flag-green `--grain` band (Sligoil, white on brand, subtle count-up on enter; reduced motion keeps final values). Two claim cards stay on white below with the aperçu's own honest claims (research §J.5 #3).
-- **Two-stage intake:** (1) choose type, write message + optional voice, (2) review, optional lieu, demo confirmation, Turnstile → receipt with a stored tracking code.
+- **Channels** (`pv-channels`): owner-selected open composition A, accepted 14 Sep. No repeated hero art, route lines, numbered stops, or nested cards. One centered heading introduces a shared pale-green choice surface with writing and optional voice columns. Familiar pill buttons enter task mode and focus the textarea or Enregistrer; never auto-start recording. A broad Waveform `sim` sits on a pale-green field, explicitly labelled illustrative with the microphone inactive; IntersectionObserver and reduced-motion preference gate animation. Copy states text remains necessary; the voice completes it. A secondary strip below lists Vidéo, SMS, USSD, Téléphone with published codes from research §J.2 (`3737`, `*711#`, phone language menu). These channels remain informational and unavailable here. The columns stack on phones.
+- **Impact** (`pv-impact`): example stats on a full flag-green `--grain` band (Sligoil, white on brand, subtle count-up on enter; reduced motion keeps final values). Labels have no « fictif » suffix. Disclosure sits in the site banner.
+- **Two-stage intake:** (1) choose type, write message + optional voice, (2) review, optional lieu, deposit confirmation checkbox, Turnstile → receipt with a stored tracking code.
 - **Tracking:** lookup, dossier card, agent reply loop, status glossary (always open, current status in gold).
 - Footer links: Ministry, e-Services, e-Sénégal, and **Obtenir un acte** (outbound only).
 
@@ -30,10 +30,10 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Both faces are OFL and include the Wolof letters ŋ and Ŋ (checked 14 Sep, `research/cash-app-foundations.md`). Choice and rejected faces: `docs/UI-HANDOVER.md` §6.
 - Flag green `#00853F` as fill (`--color-brand`); green text uses `--color-brand-text`. Gold `#FDEF42` for wait surfaces and focus halo. Red for errors and record dot only.
 - Print grain on large colour fields; ink `#14201A` for dark rails.
-- Corners: 16px fields (HeroUI form extra-large), pill buttons, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
+- Corners: pill single-line fields and buttons (48px, `--radius-button`), 24px textarea, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
 - Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, `--border-channel`, `--border-on-dark`, `--radius-control`, `--radius-button`, `--radius-panel`, `--radius-track`, `--radius-tile`, and a full `--text-*` scale (`--text-display`, `--text-title`, `--text-heading`, `--text-heading-sm`, `--text-lede`, `--text-body`, `--text-brand`, `--text-ui`, `--text-label`, `--text-caption`, `--text-meta`, `--text-micro`, `--text-data`, `--text-code`). New modules must consume semantic roles instead of palette literals or raw px values.
 - **Field vs panel:** fields are white (`--surface-field`) with a visible `--border-control`. Panels stay brand-soft (`--surface-panel`) for grouping and guidance. Records and claim blocks use white `--surface-record` with `--border-divider` when they need an edge. Do not paint inputs and cards the same pale green.
-- **Service header:** sticky civic bar with brand lockup, primary jobs (déposer, suivre, acte), and demo account action. Short labels on phones. Structural bottom border only. Guichet stays in the footer.
+- **Service header:** sticky civic bar. Brand is « Parler à la Justice » plus a small « démo ». Primary jobs: déposer, suivre, acte. Account action is « Connexion ». Short labels on phones. Structural bottom border only. Guichet stays in the footer as « Registre ».
 
 ## Next pass (queued)
 
@@ -58,13 +58,13 @@ Next: extract Record module.
 
 - Text required: 12 to 4000 characters trimmed. Voice optional, max 3 minutes, stays on device in this preview (not uploaded).
 - Step 1 **Continuer** validates message only; opens review. Recording blocks continue.
-- Step 2 **Confirmer** requires type, demo checkbox; then shows receipt. **Modifier** returns to step 1 with draft preserved.
+- Step 2 **Confirmer le dépôt** requires type and the deposit checkbox; then shows receipt. **Modifier** returns to step 1 with draft preserved.
 - Turnstile on confirm. Receipt: copy reference, print, link to `/suivre`. Codes come from `POST /api/cases`.
 - Reduced motion: no carousel autoplay animation (the pause button was removed; hover and focus pause the fill).
 
 ## Copy and disclosure
 
-Independent-demo banner on every screen. Final checkbox states nothing is transmitted. No coat of arms, seal, or Ministry branding. French UI register.
+Independent-demo banner on every screen: not the Ministry; no request is transmitted. Body copy reads as a live civic service. Brand « démo » and the banner carry the disclosure. The step-2 checkbox confirms the deposit. No coat of arms, seal, or Ministry branding. French UI register. No locale switcher.
 
 ## Verification
 

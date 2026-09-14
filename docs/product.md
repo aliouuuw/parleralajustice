@@ -54,10 +54,9 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 
 ## Visual identity and intake (approved product direction)
 
-- **`/` is the design authority.** See `docs/DESIGN.md`. Connexion, guichet, and acte still use the previous chrome.
-- Intake: write a fictitious message with optional audio, then review, choose request type (live platform categories), optional lieu, demo confirmation, then receipt.
+- **`/` is the design authority.** See `docs/DESIGN.md`. Connexion, guichet, acte, and 404 share the landing chrome (`pv-track` + illustration).
+- Intake: write a message with optional audio, then review, choose request type (live platform categories), optional lieu, confirm the deposit, then receipt. Legal disclosure is the site banner, not repeated « fictif » labels in the body.
 - The receipt is a structured digital record, not a simulated government document. No seal, star, perforation or Ministry branding.
-- HeroUI routes under `web/src/client/pages/` converge on the preview system after visual approval.
 
 ## Auth spike (done)
 
