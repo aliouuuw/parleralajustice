@@ -669,14 +669,12 @@ Each line is a check someone can run.
   `http://localhost:5173`.
 - Tests: `bun run test` from the repo root.
 
-## 17. Pass 8: turn the channels and impact sections back up (queued, 14 Sep 2026)
+## 17. Pass 8: turn the channels and impact sections back up (shipped, 14 Sep 2026)
 
 Owner verdict on `pv-channels` and `pv-impact` (shipped in commit `4b032eb`,
-still on `main` unchanged. This pass has **not started**, nothing is
-uncommitted): *"correct and needed but design level was dropped here. We need
-to turn it up again."* Content and honesty rules stay. Only the execution
-changes. Explicit instruction: use `$impeccable`, specifically **bolder,
-delight, slight overdrive, colorize**.
+then redesigned in pass 8). Content and honesty rules stay. Only the
+execution changed. Explicit instruction: use `$impeccable`, specifically
+**bolder, delight, slight overdrive, colorize**.
 
 ### Why the verdict is right
 
@@ -745,3 +743,9 @@ Load `craft-floor.md` before editing. Verify contrast on every new pairing
 computed, not eyeballed. Pass 7 shipped one accidental miss this way
 (`text-tertiary` on `--color-field`, 4.38:1, since fixed) and the green band
 in this pass introduces several new white/gold-on-brand pairs to check.
+
+### Shipped (14 Sep 2026)
+
+Built as specified above. Contrast on white/brand body text measured at
+4.74:1 (AA). Gold on brand not used for body. `prefers-reduced-motion`
+kills crop parallax, count-up, and the Voix sim waveform. Tests: 21/21.

@@ -17,8 +17,8 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
 - **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
 - Yellow **taxonomy band** educates before the task; **type selection** happens again on step 2 (required).
-- **Channels** (`pv-channels`): 6 cards from the live platform's own channel list (research §J.2). Écrit and Voix are live and styled green; Vidéo, SMS, USSD, Téléphone are shown quiet and marked "Annoncé par le service réel". Mocked as content, never as a working control, so the aperçu never claims more than 2 channels.
-- **Impact** (`pv-impact`): mirrors the live platform's "Notre Impact" section (research §J.1/J.6), rebuilt honestly. A fictive stat row (all 4 numbers labelled "(fictif)"), then 2 cards of claims that are actually true of this aperçu, not the live platform's contradictory security claims (research §J.5 #3).
+- **Channels** (`pv-channels`): illustration-led. Écrit and Voix are two large tiles (`ecrire` / `parler` crops) that enter task mode and focus the matching control (textarea / Enregistrer; never auto-start recording). Voix shows Waveform `sim`, gated by IntersectionObserver and `prefers-reduced-motion`. Vidéo, SMS, USSD, Téléphone sit in one compact list beside the unused `atelier` crop, with the live codes from research §J.2 (`3737`, `*711#`, phone language menu). Marked "Pas encore ouverts", never interactive, never simulated.
+- **Impact** (`pv-impact`): fictive stats on a full flag-green `--grain` band (Sligoil, white on brand, subtle count-up on enter; reduced motion keeps final values). Two claim cards stay on white below with the aperçu's own honest claims (research §J.5 #3).
 - **Two-stage intake:** (1) write message + optional voice, (2) review message, choose type, optional lieu, demo confirmation → receipt.
 - **Tracking:** lookup, dossier card, agent reply loop, status glossary (always open, current status in gold).
 - Footer links: Ministry, e-Services, e-Sénégal, and **Obtenir un acte** (outbound only).
@@ -34,18 +34,14 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 
 ## Next pass (queued)
 
-Pass 7 shipped: Mona Sans, the weight tokens above, control states, and the
-`pv-channels`/`pv-impact` sections. Still outstanding from §16's original
-scope: a `--text-*` size scale (font sizes are still 90 one-off `clamp()`/px
-values in `preview.css`, up from a 76 baseline. Nobody has done this step.
+Pass 8 shipped (14 Sep 2026): `pv-channels` / `pv-impact` turned back up
+per `docs/UI-HANDOVER.md` §17 (illustration-led tiles, announced codes,
+flag-green impact band, scroll crop parallax, count-up). Locked IA and flag
+roles unchanged.
 
-**Pass 8 (queued):** the owner's verdict on `pv-channels`/`pv-impact` is
-"correct and needed but design level was dropped here." Turn them back up
-with `$impeccable` bolder + delight + slight overdrive + colorize. Direction
-picked: illustration-led (real hero-illustration crops for Écrit/Voix, real
-published codes for the 4 announced channels, impact on a full green band).
-Full spec: `docs/UI-HANDOVER.md` §17. Do not change the locked IA or flag
-colour roles until the owner says so.
+Still outstanding from §16's original scope: a `--text-*` size scale (font
+sizes are still one-off `clamp()`/px values in `preview.css`). Nobody has
+done this step.
 
 ## Interaction contract (preview)
 

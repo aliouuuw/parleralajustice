@@ -34,22 +34,24 @@ const SLIDES = [
 	["noter", "Noter la référence", "Vue de dessus, une personne note une référence dans un carnet."],
 ] as const;
 
-// Channels as the live platform announces them (research §J.2). Only écrit and voix exist here;
-// the rest are shown as indicative, not simulated, so the aperçu does not overstate its scope.
-const CHANNELS = [
-	["live", "write", "Écrit", "Décrivez votre situation avec vos mots.", "Disponible dans cet aperçu"],
-	["live", "mic", "Voix", "Un message vocal, jusqu'à 3 minutes.", "Disponible dans cet aperçu"],
-	["soon", "video", "Vidéo", "Message filmé avec preuve visuelle.", "Annoncé par le service réel"],
-	["soon", "sms", "SMS", "Envoi depuis un téléphone simple.", "Annoncé par le service réel"],
-	["soon", "ussd", "USSD", "Menu par code, sans connexion.", "Annoncé par le service réel"],
-	["soon", "phone", "Téléphone", "Ligne d'accompagnement avec un agent.", "Annoncé par le service réel"],
+const LIVE_CHANNELS = [
+	["message", "write", "Écrit", "Décrivez votre situation avec vos mots.", "ecrire"],
+	["record", "voice", "Voix", "Un message vocal, jusqu'à 3 minutes.", "parler"],
+] as const;
+
+// Published codes from the live platform (research §J.2). Content only: never a control.
+const ANNOUNCED_CHANNELS = [
+	["Vidéo", "Message filmé avec preuve visuelle.", ""],
+	["SMS", "Envoi depuis un téléphone simple.", "3737"],
+	["USSD", "Menu par code, sans connexion.", "*711#"],
+	["Téléphone", "Ligne d'accompagnement avec un agent.", "1 Français · 2 Wolof · 3 Pulaar · 4 Serer"],
 ] as const;
 
 const IMPACT_STATS = [
-	["128", "demandes suivies (fictif)"],
-	["94", "citoyens accompagnés (fictif)"],
-	["48h", "délai moyen de réponse (fictif)"],
-	["91%", "taux de résolution (fictif)"],
+	[128, "", "demandes suivies (fictif)"],
+	[94, "", "citoyens accompagnés (fictif)"],
+	[48, "h", "délai moyen de réponse (fictif)"],
+	[91, "%", "taux de résolution (fictif)"],
 ] as const;
 
 const IMPACT_CARDS = [
@@ -85,29 +87,127 @@ function Arrow() {
 	);
 }
 
-const CHANNEL_ICON_PATH: Record<(typeof CHANNELS)[number][1], string> = {
-	write: "M4 17.5 15 6.5l2.5 2.5L6.5 20H4v-2.5ZM13.5 8 16 10.5",
-	mic: "M11 4a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-5 0v-5A2.5 2.5 0 0 1 11 4ZM6.5 11.5a4.5 4.5 0 0 0 9 0M11 16v3.5M8 19.5h6",
-	video: "M4 8.5a2 2 0 0 1 2-2h6.5a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7ZM14.5 11l4-2.5v7l-4-2.5",
-	sms: "M4.5 6.5h13a1 1 0 0 1 1 1v7.5a1 1 0 0 1-1 1H10L6.5 19v-3H4.5a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1Z",
-	ussd: "M7 8h.01M12 8h.01M17 8h.01M7 12h.01M12 12h.01M17 12h.01M7 16h.01M12 16h.01M17 16h.01",
-	phone: "M5 5.5c0-.6.4-1 1-1h2.2c.5 0 .9.3 1 .8l.8 3a1 1 0 0 1-.3 1L8 10.7c1 2 2.6 3.6 4.6 4.6l1.4-1.7a1 1 0 0 1 1-.3l3 .8c.5.1.8.5.8 1V17c0 .6-.4 1-1 1h-1C10.6 18 5 12.4 5 5.5Z",
-};
-
-function ChannelIcon({ id }: { id: (typeof CHANNELS)[number][1] }) {
-	return (
-		<svg className="pv-channel__icon" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-			<path d={CHANNEL_ICON_PATH[id]} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-		</svg>
-	);
-}
-
 function CheckIcon() {
 	return (
 		<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 			<path d="M3.5 8.5 6.5 11.5 12.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
 		</svg>
 	);
+}
+
+function prefersReducedMotion(): boolean {
+	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function LiveChannelTile({
+	focus,
+	channel,
+	name,
+	description,
+	image,
+	onStart,
+}: {
+	focus: "message" | "record";
+	channel: "write" | "voice";
+	name: string;
+	description: string;
+	image: string;
+	onStart: (focus: "message" | "record") => void;
+}) {
+	const ref = useRef<HTMLButtonElement>(null);
+	const [play, setPlay] = useState(false);
+	const voice = channel === "voice";
+
+	useEffect(() => {
+		if (!voice) return;
+		const el = ref.current;
+		if (!el || typeof IntersectionObserver === "undefined") return;
+		const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+		const io = new IntersectionObserver(([entry]) => {
+			setPlay(entry.isIntersecting && !motion.matches);
+		}, { threshold: 0.3 });
+		io.observe(el);
+		const onMotion = () => { if (motion.matches) setPlay(false); };
+		motion.addEventListener("change", onMotion);
+		return () => {
+			io.disconnect();
+			motion.removeEventListener("change", onMotion);
+		};
+	}, [voice]);
+
+	return (
+		<button ref={ref} className="pv-channel-tile" data-channel={channel} type="button" onClick={() => onStart(focus)}>
+			<span className="pv-channel-tile__art">
+				<img src={`/images/hero/${image}-1280.webp`} srcSet={`/images/hero/${image}-1280.webp 1280w, /images/hero/${image}-2560.webp 2560w`} sizes="(max-width: 600px) 100vw, (max-width: 1184px) 50vw, 560px" width={2720} height={1536} alt="" decoding="async" />
+				{voice && (
+					<span className="pv-channel-tile__wave">
+						<Waveform source="sim" stream={null} height={48} running={play} />
+					</span>
+				)}
+			</span>
+			<span className="pv-channel-tile__body">
+				<span className="pv-channel-tile__name">{name}</span>
+				<span className="pv-channel-tile__desc">{description}</span>
+				<span className="pv-channel-tile__state">Disponible dans cet aperçu <Arrow /></span>
+			</span>
+		</button>
+	);
+}
+
+function ImpactStats() {
+	const ref = useRef<HTMLUListElement>(null);
+	const [play, setPlay] = useState(false);
+	const [fromZero, setFromZero] = useState(false);
+
+	useEffect(() => {
+		if (prefersReducedMotion()) return;
+		setFromZero(true);
+		const el = ref.current;
+		if (!el || typeof IntersectionObserver === "undefined") return;
+		const io = new IntersectionObserver(([entry]) => {
+			if (!entry.isIntersecting) return;
+			setPlay(true);
+			io.disconnect();
+		}, { threshold: 0.3 });
+		io.observe(el);
+		return () => io.disconnect();
+	}, []);
+
+	return (
+		<ul ref={ref} className="pv-impact__stats">
+			{IMPACT_STATS.map(([value, suffix, label]) => (
+				<li key={label} className="pv-impact__stat">
+					<ImpactNumber value={value} suffix={suffix} play={play} fromZero={fromZero} />
+					<span>{label}</span>
+				</li>
+			))}
+		</ul>
+	);
+}
+
+function ImpactNumber({ value, suffix, play, fromZero }: { value: number; suffix: string; play: boolean; fromZero: boolean }) {
+	const [n, setN] = useState(value);
+
+	useEffect(() => {
+		if (!fromZero || play) return;
+		setN(0);
+	}, [fromZero, play]);
+
+	useEffect(() => {
+		if (!play) return;
+		const start = performance.now();
+		const dur = 820;
+		let raf = 0;
+		const tick = (now: number) => {
+			const t = Math.min(1, (now - start) / dur);
+			setN(Math.round(value * (1 - (1 - t) ** 3)));
+			if (t < 1) raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	}, [play, value]);
+
+	return <strong>{n.toLocaleString("fr-FR")}{suffix}</strong>;
 }
 
 function Frame({ current, children, taskMode }: { current: "deposer" | "suivre"; children: ReactNode; taskMode?: boolean }) {
@@ -296,6 +396,7 @@ export function Preview() {
 	const summaryRef = useRef<HTMLDivElement>(null);
 	const reviewSummaryRef = useRef<HTMLDivElement>(null);
 	const messageRef = useRef<HTMLTextAreaElement>(null);
+	const recordRef = useRef<HTMLButtonElement>(null);
 	const reviewTitleRef = useRef<HTMLHeadingElement>(null);
 	const codeRef = useRef<HTMLElement>(null);
 	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -310,11 +411,12 @@ export function Preview() {
 
 	useEffect(() => () => clearTimeout(copyTimer.current), []);
 
-	function beginTask() {
+	function beginTask(focus: "message" | "record" = "message") {
 		setTaskMode(true);
 		requestAnimationFrame(() => {
-			document.getElementById("workspace")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
-			messageRef.current?.focus();
+			document.getElementById("workspace")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth", block: "start" });
+			if (focus === "record") recordRef.current?.focus();
+			else messageRef.current?.focus();
 		});
 	}
 
@@ -375,7 +477,7 @@ export function Preview() {
 							<h1 id="hero-title">Adressez une demande à la justice</h1>
 							<p className="pv-lede">Essayez le parcours avec une situation fictive&nbsp;: écrivez, relisez, suivez votre demande.</p>
 							<div className="pv-hero__action">
-								<button className="pv-button pv-button--primary" type="button" onClick={beginTask}>Commencer <Arrow /></button>
+								<button className="pv-button pv-button--primary" type="button" onClick={() => beginTask()}>Commencer <Arrow /></button>
 							</div>
 						</div>
 						<HeroSlides />
@@ -395,30 +497,40 @@ export function Preview() {
 								<h2 id="channels-title">L'écrit et la voix, aujourd'hui</h2>
 								<p>Cet aperçu couvre deux canaux. Les autres reprennent ceux annoncés par le service réel, à titre indicatif&nbsp;: ils ne sont pas simulés ici.</p>
 							</div>
-							<ul className="pv-channels__grid">
-								{CHANNELS.map(([state, id, name, description, note]) => (
-									<li key={id} className="pv-channel" data-state={state}>
-										<ChannelIcon id={id} />
-										<h3>{name}</h3>
-										<p>{description}</p>
-										<span className="pv-channel__state">{note}</span>
-									</li>
+							<div className="pv-channels__live">
+								{LIVE_CHANNELS.map(([focus, channel, name, description, image]) => (
+									<LiveChannelTile key={channel} focus={focus} channel={channel} name={name} description={description} image={image} onStart={beginTask} />
 								))}
-							</ul>
+							</div>
+							<div className="pv-channels__soon">
+								<img className="pv-channels__soon-art" src="/images/hero/atelier-1280.webp" srcSet="/images/hero/atelier-1280.webp 1280w, /images/hero/atelier-2560.webp 2560w" sizes="(max-width: 900px) 100vw, 520px" width={2720} height={1536} alt="Un homme dans un atelier de couture consulte un téléphone." decoding="async" />
+								<div>
+									<h3>Pas encore ouverts</h3>
+									<ul className="pv-soon">
+										{ANNOUNCED_CHANNELS.map(([name, description, code]) => (
+											<li key={name} data-wide={code.length > 12 || undefined}>
+												<strong>{name}</strong>
+												{code && <span className="pv-soon__code">{code}</span>}
+												<p>{description}</p>
+											</li>
+										))}
+									</ul>
+								</div>
+							</div>
 						</div>
 					</section>
 
 					<section className="pv-impact" aria-labelledby="impact-title">
-						<div className="pv-container">
-							<div className="pv-impact__head">
-								<h2 id="impact-title">Notre impact</h2>
-								<p>Chiffres fictifs, présentés pour montrer comment le service pourrait rendre compte de son activité.</p>
+						<div className="pv-impact__band">
+							<div className="pv-container">
+								<div className="pv-impact__head">
+									<h2 id="impact-title">Notre impact</h2>
+									<p>Chiffres fictifs, présentés pour montrer comment le service pourrait rendre compte de son activité.</p>
+								</div>
+								<ImpactStats />
 							</div>
-							<ul className="pv-impact__stats">
-								{IMPACT_STATS.map(([value, label]) => (
-									<li key={label} className="pv-impact__stat"><strong>{value}</strong><span>{label}</span></li>
-								))}
-							</ul>
+						</div>
+						<div className="pv-container">
 							<div className="pv-impact__cards">
 								{IMPACT_CARDS.map(([title, items]) => (
 									<article key={title} className="pv-impact__card">
@@ -479,7 +591,7 @@ export function Preview() {
 								<div className="pv-audio" data-state={recorder.source !== "idle" ? "live" : recorder.clip ? "clip" : "idle"}>
 									<div className="pv-audio__bar">
 										<strong>Message vocal <span className="pv-optional">(facultatif)</span></strong>
-										<button className="pv-button pv-button--secondary" type="button" onClick={recorder.toggle} disabled={recorder.pending} aria-pressed={recorder.source !== "idle"} data-recording={recorder.source !== "idle" ? "true" : undefined}>
+										<button ref={recordRef} className="pv-button pv-button--secondary" type="button" onClick={recorder.toggle} disabled={recorder.pending} aria-pressed={recorder.source !== "idle"} data-recording={recorder.source !== "idle" ? "true" : undefined}>
 											<span className="pv-record-dot" />
 											{recorder.pending ? "Autorisation…" : recorder.source !== "idle" ? "Arrêter" : recorder.clip ? "Réenregistrer" : "Enregistrer"}
 										</button>

@@ -18,10 +18,12 @@ export function Waveform({
 	source,
 	stream,
 	height = 64,
+	running = true,
 }: {
 	source: WaveSource;
 	stream: MediaStream | null;
 	height?: number;
+	running?: boolean;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const levelsRef = useRef<number[]>([]);
@@ -69,39 +71,44 @@ export function Waveform({
 
 		let width = 0;
 		let raf = 0;
+		const start = performance.now();
+		let lastPush = 0;
+		let paint: (now: number) => void = () => {};
+
 		const observer = new ResizeObserver(() => {
 			const dpr = Math.min(window.devicePixelRatio || 1, 2);
 			width = canvas.clientWidth;
 			canvas.width = Math.round(width * dpr);
 			canvas.height = Math.round(height * dpr);
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			if (!running) paint(performance.now());
 		});
-		observer.observe(canvas);
 
-		const start = performance.now();
-		let lastPush = 0;
-
-		const draw = (now: number) => {
-			raf = requestAnimationFrame(draw);
+		paint = (now: number) => {
 			if (!width) return;
 			const t = (now - start) / 1000;
 			const slots = Math.max(1, Math.floor(width / (BAR + GAP)));
 
 			const levels = levelsRef.current;
-			// The ribbon fills the track from the first frame, so an idle recorder
-			// reads as a quiet signal rather than an empty box.
-			while (levels.length < slots) levels.unshift(0.14 + 0.09 * Math.sin(levels.length * 0.19));
-			while (levels.length > slots) levels.shift();
+			if (!running && sourceRef.current === "sim") {
+				levels.length = 0;
+				for (let i = 0; i < slots; i += 1) levels.push(synthetic(i * 0.12));
+			} else {
+				// The ribbon fills the track from the first frame, so an idle recorder
+				// reads as a quiet signal rather than an empty box.
+				while (levels.length < slots) levels.unshift(0.14 + 0.09 * Math.sin(levels.length * 0.19));
+				while (levels.length > slots) levels.shift();
 
-			if (now - lastPush >= 34) {
-				lastPush = now;
-				const mode = sourceRef.current;
-				const next =
-					mode === "live" ? liveRef.current
-					: mode === "sim" ? synthetic(t)
-					: 0.14 + 0.09 * Math.sin(t * 2.2);
-				levels.push(next);
-				levels.shift();
+				if (now - lastPush >= 34) {
+					lastPush = now;
+					const mode = sourceRef.current;
+					const next =
+						mode === "live" ? liveRef.current
+						: mode === "sim" ? synthetic(t)
+						: 0.14 + 0.09 * Math.sin(t * 2.2);
+					levels.push(next);
+					levels.shift();
+				}
 			}
 
 			ctx.clearRect(0, 0, width, height);
@@ -124,12 +131,18 @@ export function Waveform({
 			ctx.globalAlpha = 1;
 		};
 
+		const draw = (now: number) => {
+			paint(now);
+			if (running) raf = requestAnimationFrame(draw);
+		};
+
+		observer.observe(canvas);
 		raf = requestAnimationFrame(draw);
 		return () => {
 			cancelAnimationFrame(raf);
 			observer.disconnect();
 		};
-	}, [height]);
+	}, [height, running]);
 
 	return <canvas ref={canvasRef} className="pv-wave" style={{ height }} aria-hidden="true" />;
 }

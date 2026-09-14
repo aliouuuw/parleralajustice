@@ -19,18 +19,11 @@ pushed and not deployed. Turnstile on case create is live (T006a).
 
 Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 
-## Next: pass 8, turn the channels/impact sections back up (not started)
+## Next: `--text-*` size scale on `/preview` (not started)
 
-Brief: **`docs/UI-HANDOVER.md` §17**. Pass 7 (§16) is done and committed:
-type tokens, Mona Sans, controls, and the `pv-channels`/`pv-impact` sections
-all shipped (`105c02c`, `782b882`, `4b032eb`). Owner verdict on the last
-commit: correct content, but those two sections read as a generic card grid
-and dropped the design level the rest of `/preview` holds. Fix with
-`$impeccable` bolder + delight + slight overdrive + colorize, scoped to just
-those two sections. Direction already picked: illustration-led (real hero-
-illustration crops for Écrit/Voix, a compact real-code list for the 4
-announced channels, impact on a full green band). Full spec, locked rules,
-and the reasons the other 2 directions were rejected: handover §17.
+Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
+`pv-impact`. Still open from pass 7's original scope: replace one-off
+`clamp()`/px font sizes in `preview.css` with a `--text-*` scale.
 
 ## In progress: T009 visual direction
 
@@ -61,12 +54,15 @@ See `docs/UI-HANDOVER.md`.
 - GitHub remote (T007)
 - T009 code: HeroUI v3 and Vite client, preview north star, HeroUI control mapping (local only)
 - **Pass 7 shipped:** type tokens, Mona Sans (Karrik removed), control states,
-  `pv-channels` and `pv-impact` sections. Cash App foundations and font
+  first `pv-channels` / `pv-impact` sections. Cash App foundations and font
   coverage researched first (14 Sep).
+- **Pass 8 shipped:** illustration-led `pv-channels` (Écrit/Voix tiles +
+  announced codes beside atelier crop) and flag-green grain `pv-impact`
+  band with count-up. Spec: `docs/UI-HANDOVER.md` §17.
 
 ## Tests
 
-`bun run test`: 20 of 20 pass in 4 files (7 in `web/test/preview.spec.ts`),
+`bun run test`: 21 of 21 pass in 4 files (8 in `web/test/preview.spec.ts`),
 checked 14 Sep 2026.
 
 ## Git
@@ -84,8 +80,7 @@ checked 14 Sep 2026.
 
 ## Not done
 
-- **Pass 8** (see above): turn `pv-channels`/`pv-impact` back up with
-  `$impeccable`. Handover §17.
+- **`--text-*` size scale** on `/preview` (see above).
 - `web/index.html` still loads Public Sans from Google Fonts on every route,
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app
