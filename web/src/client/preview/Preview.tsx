@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Waveform, type WaveSource } from "./Waveform";
 import { Button, Arrow } from "./Button";
+import { Field } from "./Field";
+import { ErrorSummary, InlineError } from "./Alert";
 import "./preview.css";
 
 const MAX = 4000;
@@ -575,19 +577,28 @@ export function Preview() {
 									<span>Décrivez une situation fictive, avec vos mots.</span>
 								</div>
 								{showWriteError && (
-									<div className="pv-error-summary" ref={summaryRef} id="message-errors" role="alert" tabIndex={-1}>
-										<strong>Corrigez le message avant de continuer</strong>
-										<ul><li><a href="#message" onClick={(event) => { event.preventDefault(); messageRef.current?.focus(); }}>{writeError}</a></li></ul>
-									</div>
+									<ErrorSummary ref={summaryRef} id="message-errors" title="Corrigez le message avant de continuer" items={[
+										{ href: "#message", label: writeError, onNavigate: (event) => { event.preventDefault(); messageRef.current?.focus(); } },
+									]} />
 								)}
-								<div className="pv-field">
-									<label htmlFor="message">Votre message <span className="pv-optional">(obligatoire)</span></label>
-									<textarea id="message" ref={messageRef} value={text} maxLength={MAX + 200} required aria-invalid={showWriteError || undefined} aria-describedby={showWriteError ? "message-help message-errors" : "message-help"} placeholder="Exemple : je souhaite comprendre le déroulement d'une audience." onChange={(event) => setText(event.target.value)} />
-									<div className="pv-field__meta" id="message-help">
+								<Field
+									id="message"
+									kind="textarea"
+									label="Votre message"
+									required
+									ref={messageRef}
+									value={text}
+									maxLength={MAX + 200}
+									aria-invalid={showWriteError || undefined}
+									aria-describedby={showWriteError ? "message-help message-errors" : "message-help"}
+									placeholder="Exemple : je souhaite comprendre le déroulement d'une audience."
+									onChange={(event) => setText(event.target.value)}
+									metaId="message-help"
+									meta={<>
 										<span>{MIN} caractères minimum</span>
 										<span data-tone={tone}>{count.toLocaleString("fr-FR")} / 4 000</span>
-									</div>
-								</div>
+									</>}
+								/>
 								<div className="pv-audio" data-state={recorder.source !== "idle" ? "live" : recorder.clip ? "clip" : "idle"}>
 									<div className="pv-audio__bar">
 										<strong>Message vocal <span className="pv-optional">(facultatif)</span></strong>
@@ -625,13 +636,10 @@ export function Preview() {
 									<span>Vérifiez le message, choisissez le type de demande, puis confirmez la démonstration.</span>
 								</div>
 								{showReviewError && (
-									<div className="pv-error-summary" ref={reviewSummaryRef} id="review-errors" role="alert" tabIndex={-1}>
-										<strong>Complétez les éléments manquants</strong>
-										<ul>
-											{!requestType && <li><a href="#type-pick" onClick={(event) => { event.preventDefault(); document.getElementById("type-pick")?.focus(); }}>Choisissez un type de demande.</a></li>}
-											{!demoOk && <li><a href="#demo-confirm" onClick={(event) => { event.preventDefault(); document.getElementById("demo-confirm")?.focus(); }}>Cochez la confirmation de démonstration.</a></li>}
-										</ul>
-									</div>
+									<ErrorSummary ref={reviewSummaryRef} id="review-errors" title="Complétez les éléments manquants" items={[
+										...(!requestType ? [{ href: "#type-pick", label: "Choisissez un type de demande.", onNavigate: (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); document.getElementById("type-pick")?.focus(); } }] : []),
+										...(!demoOk ? [{ href: "#demo-confirm", label: "Cochez la confirmation de démonstration.", onNavigate: (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); document.getElementById("demo-confirm")?.focus(); } }] : []),
+									]} />
 								)}
 								<div className="pv-review-block" aria-labelledby="review-message-label">
 									<p className="pv-review-block__label" id="review-message-label">Votre message</p>
@@ -656,11 +664,18 @@ export function Preview() {
 										))}
 									</div>
 								</fieldset>
-								<div className="pv-field pv-field--compact">
-									<label htmlFor="place">Lieu concerné <span className="pv-optional">(facultatif)</span></label>
-									<input id="place" type="text" value={place} maxLength={120} placeholder="Exemple : tribunal d'instance de Pikine" onChange={(event) => setPlace(event.target.value)} />
-									<p className="pv-field__hint">Tribunal, cour ou lieu des faits. Donnée fictive dans cet aperçu.</p>
-								</div>
+								<Field
+									id="place"
+									kind="input"
+									type="text"
+									label="Lieu concerné"
+									className="pv-field--compact"
+									value={place}
+									maxLength={120}
+									placeholder="Exemple : tribunal d'instance de Pikine"
+									onChange={(event) => setPlace(event.target.value)}
+									hint="Tribunal, cour ou lieu des faits. Donnée fictive dans cet aperçu."
+								/>
 								<div className="pv-confirm">
 									<input id="demo-confirm" type="checkbox" checked={demoOk} onChange={(event) => setDemoOk(event.target.checked)} />
 									<label htmlFor="demo-confirm">Je comprends qu'aucune demande n'est transmise au Ministère ni à un service judiciaire. Ceci est une démonstration.</label>
@@ -707,7 +722,7 @@ export function Preview() {
 								<Button variant="primary" href={`/preview/suivre?ref=${SAMPLE_CODE}${requestType ? `&type=${encodeURIComponent(requestType)}` : ""}`} arrow>Suivre ce dossier</Button>
 								<Button variant="secondary" type="button" onClick={copyCode} aria-describedby={copyState === "error" ? "copy-error" : undefined}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</Button>
 								<Button variant="quiet" type="button" onClick={() => window.print()}>Imprimer</Button>
-								{copyState === "error" && <p className="pv-lookup__error pv-receipt__actions-error" id="copy-error" role="alert">Copie automatique impossible. La référence est sélectionnée&nbsp;: copiez-la avec Ctrl+C ou &#8984;C.</p>}
+								{copyState === "error" && <InlineError id="copy-error" className="pv-receipt__actions-error">Copie automatique impossible. La référence est sélectionnée&nbsp;: copiez-la avec Ctrl+C ou &#8984;C.</InlineError>}
 							</div>
 							<ol className="pv-history" aria-label="Étapes du suivi">
 								<li data-status="complete"><span /><div><strong>Reçue</strong><time>13 sept. 05:42</time></div></li>
@@ -794,7 +809,7 @@ export function PreviewSuivre() {
 							<p className="pv-lookup__help" id="reference-help">
 								Format&nbsp;: 12 caractères. Essayez <button className="pv-link" type="button" onClick={() => { setQuery(SAMPLE_CODE); setError(null); }}>{SAMPLE_CODE}</button>.
 							</p>
-							{error && <p className="pv-lookup__error" id="reference-error" role="alert">{error}</p>}
+							{error && <InlineError id="reference-error">{error}</InlineError>}
 						</form>
 					</div>
 					<img className="pv-track__art" src="/images/hero/noter-1280.webp" srcSet="/images/hero/noter-1280.webp 1280w, /images/hero/noter-2560.webp 2560w" sizes="(max-width: 1184px) 50vw, 560px" width={2720} height={1536} alt="Illustration décorative : une personne note une référence dans un carnet." decoding="async" />
@@ -837,7 +852,7 @@ export function PreviewSuivre() {
 										<div className="pv-reply">
 											<label htmlFor="reply">Votre précision</label>
 											<textarea id="reply" ref={replyRef} value={reply} onChange={(event) => setReply(event.target.value)} aria-invalid={replyError || undefined} aria-describedby={replyError ? "reply-error" : undefined} placeholder="Exemple : tribunal d'instance de Pikine, audience prévue en août." />
-											{replyError && <p className="pv-lookup__error" id="reply-error" role="alert">Écrivez au moins 12 caractères.</p>}
+											{replyError && <InlineError id="reply-error">Écrivez au moins 12 caractères.</InlineError>}
 											<div className="pv-reply__footer">
 												<Button variant="primary" type="button" onClick={sendReply} arrow>Envoyer la précision</Button>
 												<p>Dans cet aperçu, rien n'est envoyé.</p>

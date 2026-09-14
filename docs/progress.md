@@ -19,7 +19,7 @@ pushed and not deployed. Turnstile on case create is live (T006a).
 
 Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 
-## Next: extract Field, Alert, ServiceHeader, Record modules (not started)
+## Next: extract ServiceHeader and Record modules (not started)
 
 Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
 `pv-impact`. The owner rejected the subsequent route-map channels design as
@@ -28,9 +28,9 @@ uses text and optional voice actions, a broad illustrative waveform, and a
 secondary strip of announced channels. The owner accepted this direction on
 14 Sep. Foundation pass shipped 15 Sep: semantic surface, border, radius,
 spacing, and full text-size tokens now exist in `preview.css` and major
-preview modules consume them. Button module extracted as the first reusable
-component. Two mobile display overrides and `50%` circle radii remain raw
-by design. Next: extract Field, Alert, ServiceHeader, and Record modules.
+preview modules consume them. Button, Field, and Alert modules extracted as
+the first reusable components. Two mobile display overrides and `50%` circle
+radii remain raw by design. Next: extract ServiceHeader and Record modules.
 
 ## In progress: T009 visual direction
 
@@ -74,6 +74,10 @@ See `docs/UI-HANDOVER.md`.
   `primary` / `secondary` / `quiet` variants, polymorphic button/anchor,
   optional arrow, ref forwarding. All 13 button usages in `Preview.tsx`
   migrated to it (15 Sep).
+- **Field and Alert modules extracted:** `Field.tsx` (textarea/input,
+  label with required marker, hint, meta with id) and `Alert.tsx`
+  (`ErrorSummary` with title + link list, `InlineError`). All field and
+  error usages in `Preview.tsx` migrated to them (15 Sep).
 
 ## Tests
 
@@ -97,8 +101,8 @@ checked 14 Sep 2026.
 
 ## Not done
 
-- **Extract Field, Alert, ServiceHeader, Record modules** from
-  `preview.css` / `Preview.tsx`. Button is done.
+- **Extract ServiceHeader and Record modules** from
+  `preview.css` / `Preview.tsx`. Button, Field, and Alert are done.
 - `web/index.html` still loads Public Sans from Google Fonts on every route,
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app
