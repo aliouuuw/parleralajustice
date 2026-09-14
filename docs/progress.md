@@ -1,45 +1,63 @@
 # Progress
 
-Checked: 13 September 2026, 04:37 UTC.
+Checked: 14 September 2026, 02:41 UTC.
 
 ## Live
 
-https://parleralajustice.aliouuuw.workers.dev — still serves the OLD vanilla JS UI. The HeroUI rebuild (T009) is local-only, not deployed. Turnstile on case create is live and verified (see T006a below); that part of production is current.
+https://parleralajustice.aliouuuw.workers.dev — still the old vanilla JS UI.
 
-## In progress: T009, HeroUI v3 UI rebuild
+The HeroUI rebuild (T009) is committed locally as `3f0a582` and is **not pushed** and **not deployed**. Turnstile on case create is live (T006a).
 
-- 13 Sep 01:55 UTC: IA/UX/UI rewrite. Home is the form. Flag inks (green proceed, yellow stub, red stamp). Guichet in the footer. `docs/DESIGN.md` replaced.
+## Two UIs in this repo
 
-- Replaced the hand-rolled vanilla JS UI with React + Vite + Tailwind v4 + HeroUI v3.
-- Current direction: user rejected decorative civic modernism and approved a focused application product, referencing Stripe onboarding, Mercury and Linear. Public Sans, one green accent, neutral progress rail and white task workspace (see `docs/DESIGN.md`).
-- The initial React port covered all 8 routes. Intake now has two stages: write with optional audio, then review the message, choose the existing request type and confirm submission. Back/edit retains the draft and completed audio.
-- `web/public/` (old `index.html`/`app.js`/`styles.css`) deleted in the earlier port. No backend changes in this intake pass.
-- Earlier critique fixes retained: receipt copy/print, read rate limits, sign-out and French register labels/dates. The new intake guards audio-in-progress and duplicate submission. Turnstile mounts explicitly on review and cleans up when leaving it.
-- Verification: 13/13 Vitest tests, including three new initial-markup regressions that failed before implementation; Worker and client TypeScript checks; production build. The latest design detector reports no findings. Build retains the existing >500 kB JavaScript chunk warning.
-- User explicitly chose manual review instead of cached Chromium. No responsive, microphone or interactive browser pass is claimed. Check write/review/back, final confirmation, Turnstile, receipt, login and register before visual sign-off.
-- Not yet done: user visual sign-off, then separately authorized commit and production deploy.
+1. **Product app** (`/`, `/parler`, `/suivre`, …) — React + HeroUI v3. Focused application look. Rules in `docs/DESIGN.md`. This is what `3f0a582` would ship if deployed.
+2. **Visual preview** (`/preview`, `/preview/suivre`) — separate CSS prototype. Illustrated hero, flag-green palette, live-platform categories. This is the surface under visual review. It is **not** the live Worker.
+
+Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
+
+## In progress: T009 visual direction + live-platform alignment
+
+Pass 6 on `/preview` is uncommitted (14 Sep): north star **A**, two-stage intake, task mode.
+
+Pass 5 baseline (14 Sep):
+
+- Full-screen illustrated hero (3 scenes, pause control)
+- `/preview/suivre` with one fictive dossier `PALJ-7K4M-2QX9`
+- In-browser voice (3 min cap, playback, delete, no upload)
+- Categories and statuses copied from the live site (research §J)
+
+Live Jokko check (14 Sep, ~00:50 local) is also uncommitted:
+
+- Notes in `research/jokko-ak-yoon-e-justice.md` §J
+- Screenshots in `research/jokko-live-2026-09-14/`
+- Product decisions in `docs/product.md` (categories, statuses, non-guessable refs)
+
+Visual sign-off is still pending. The owner has rejected four earlier visual passes. See `docs/UI-HANDOVER.md`.
 
 ## Done
 
 - Public briefing in `research/`
 - Auth spike: Better Auth 1.7 + D1 email OTP
 - `workers.dev` subdomain: `aliouuuw`
-- v0 UI: two doors, disclaimer, anonymous code, OTP demo login, voice to R2, `/guichet` seed (now on HeroUI, see T009 above)
+- v0 UI: two doors, disclaimer, anonymous code, OTP demo login, voice to R2, `/guichet` seed
 - Hygiene: drop Hello World APIs, POST demo OTP, typed JSON, audio key allowlist, HTML escape
 - Connexion: e-mail must include a domain (`demo@exemple.sn`)
 - Turnstile on case create (T006a), live and verified
-- Tests: 10 passing
+- GitHub remote (T007)
+- T009 code commit: HeroUI v3 + Vite client on `main` at `3f0a582` (local only)
 
 ## Git
 
-- Branch: `main` at `6fba040`, in sync with `origin/main`
-- T009 is uncommitted: modified docs, `web/` config, `web/src/cases.ts`, and `web/test/auth.spike.spec.ts`; deleted `web/public/*`; untracked `web/src/client/` plus `web/index.html` / `web/vite.config.mts` / `web/tsconfig.client.json` / `.impeccable/`
-- Remote: https://github.com/aliouuuw/parleralajustice (T007 done)
+- Branch: `main` at `3f0a582`, **ahead of `origin/main` by 1 commit** (`feat: implement HeroUI v3 with React and Vite for civic intake`)
+- `origin/main` is still `6fba040` (T006a docs)
+- Uncommitted: live-platform research + screenshots, product/handover notes, `/preview` pass 5 (tracking page, voice, categories)
+- Remote: https://github.com/aliouuuw/parleralajustice
 - No pull request. No GitHub issues. Working directly on `main`.
 
 ## Not done
 
-- T009 visual QA + commit + deploy (see above)
-- Real email (Resend) + close the `/api/demo/otp` backdoor (T006b) — see docs/product.md
-- Access control on `/guichet` — confirmed live and unprotected: `GET /api/guichet/cases` returns the case list to anyone, no auth
-- X thread (T008)
+- T009 visual QA, then push `3f0a582`, then a separate authorized production deploy
+- Promote `/preview` into the product routes, or keep iterating on `/preview` (owner decision)
+- Real email (Resend) + close the `/api/demo/otp` backdoor (T006b)
+- Access control on `/guichet` — live `GET /api/guichet/cases` returns the case list with no auth
+- X thread (T008) — wait until a reviewed UI is on the Worker

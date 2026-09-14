@@ -1,48 +1,48 @@
 # Design
 
+Last updated: 14 September 2026.
+
+## Authority
+
+**`/preview` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. The HeroUI app under `web/src/client/pages/` should converge here after sign-off, not the reverse.
+
 ## Direction
 
-A focused application product, not a decorated government homepage. The user rejected the civic-modernism pass: oversized editorial copy, unrelated motifs and multiple accent colors. References are the craft of Stripe onboarding, Mercury applications and Linear submission/tracking, not their marketing layouts.
+A civic intake product with one strong compositional idea: **illustrated scenes set the tone; the task workspace stays flat, legible, and honest.** Not a Ministry homepage. Not startup marketing gradients. References: precision of Tremor-style data surfaces, warmth of rounded controls and illustration-led storytelling.
 
-The approved interaction is a two-stage intake: write, then review and submit. The user's message is the central content. Do not add simulated chat, legal classifications, document requirements or promises unsupported by the backend.
+Shadow the live « Justice Accessible Sénégal » platform for **categories and statuses** (research §J). Do not copy its UI chrome, placeholder stats, or contradictory anonymity claims.
 
 ## Composition
 
-- Shared container: 1080px maximum. The task column stays at or below 640px.
-- Desktop: a neutral step rail beside an open white workspace. No hero, decorative card stack, patterned background or invented institutional illustration.
-- Mobile: compact progress above the task. Navigation and the footer retain tracking and official-service links.
-- The writing stage shows one question, the textarea, optional audio and Continue.
-- Review shows the actual message, optional audio playback, request type, identity mode and demo confirmation.
-- The receipt shows a readable reference, preservation actions, original message and chronological history.
+- Container max ~1184px (`--container`). Task column up to ~720px beside a 260px rail on desktop.
+- **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise with pause). After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
+- Yellow **taxonomy band** educates before the task; **type selection** happens again on step 2 (required).
+- **Two-stage intake:** (1) write message + optional voice, (2) review message, choose type, optional lieu, demo confirmation → receipt.
+- **Tracking:** lookup, dossier card, agent reply loop, collapsible status glossary.
+- Footer links: Ministry, e-Services, e-Sénégal, and **Obtenir un acte** (outbound only).
 
 ## Visual system
 
-- Public Sans throughout. Weight, spacing and alignment establish hierarchy, not a second display font.
-- Display headings: 28-38px. Controls and messages: 13-16px. Input text remains 16px on mobile. Supporting text stays at least 12px.
-- White workspace `#FFFFFF`, neutral rail `#F6F8FA`, text `#242B32`, secondary text `#616D79`.
-- One interaction accent: green `#17634E`, hover `#10503E`.
-- Rules `#E3E7EB`; input borders `#88939E`. Error and status colors express state, not branding.
-- Controls use 7px corners. Record surfaces use 12px corners and a single border, without decorative shadows.
-- No flag bands, seals, abstract weaving, colored arcs, serif headlines, gradient wordmarks or Ministry branding.
+- **Karrik** — headings and identity (`font-weight: 400` only).
+- **Public Sans** — body and controls.
+- **Sligoil** — references, counters, timestamps.
+- Flag green `#00853F` as fill (`--color-brand`); green text uses `--color-brand-text`. Gold `#FDEF42` for wait surfaces and focus halo. Red for errors and record dot only.
+- Print grain on large colour fields; ink `#14201A` for dark rails.
+- Corners: 10px controls, 16px panels. Yellow focus ring: ink outline + gold halo.
 
-## Interaction contract
+## Interaction contract (preview)
 
-- Text remains required: 12-4000 characters after trimming. Audio supplements the text.
-- Continue cannot submit. It validates the message and opens review.
-- Microphone permission, recording and upload block Continue until resolved.
-- Back and Modify preserve message, request type and completed audio. Editing requires renewed demo confirmation.
-- Keep the recorder mounted across stages. Disable and hide the writing fieldset during review so hidden required fields cannot block submission.
-- Mount Turnstile explicitly on review and remove the widget when leaving review. Keep server-side verification unchanged.
-- Final submission needs a demo confirmation and a Turnstile token. Errors preserve the draft on the current page.
-- No persistent draft or recovery promise: a reload or route exit can discard unsent work.
-- Step changes focus the current heading. Short transform-only feedback respects reduced motion.
+- Text required: 12–4000 characters trimmed. Voice optional, max 3 minutes, stays on device in this preview (not uploaded).
+- Step 1 **Continuer** validates message only; opens review. Recording blocks continue.
+- Step 2 **Confirmer** requires type, demo checkbox; then shows receipt. **Modifier** returns to step 1 with draft preserved.
+- No Turnstile on `/preview` (static demo). Production app keeps server Turnstile on real create.
+- Receipt: copy reference, print, link to `/preview/suivre`. Non-sequential demo code `PALJ-7K4M-2QX9`.
+- Reduced motion: no carousel autoplay animation; pause control hidden.
 
 ## Copy and disclosure
 
-One concise independent-demo disclosure stays on every screen. The final checkbox states that the submission is not a judicial procedure. Use contextual help instead of repeating the full disclaimer in each paragraph. Account access never means verified legal identity.
+Independent-demo banner on every screen. Final checkbox states nothing is transmitted. No coat of arms, seal, or Ministry branding. French UI register.
 
 ## Verification
 
-Run Worker and client TypeScript checks, `bun run test`, and the production build. Initial intake markup has Vitest server-render regression checks; those tests do not establish interactive correctness.
-
-The user chose manual browser review. Check writing, review, back/edit, audio replacement, Turnstile loading/expiry, submission errors, receipt copying/printing, and 320px/390px layouts before visual sign-off.
+`bun run test` includes `web/test/preview.spec.ts` (server-render regressions). Manual browser pass on write → review → back → confirm → receipt → suivi, 320px and 390px, microphone permission paths.

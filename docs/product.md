@@ -1,6 +1,6 @@
 # Product
 
-Last updated: 13 September 2026.
+Last updated: 14 September 2026.
 
 ## Who
 
@@ -14,7 +14,9 @@ Free demo. Paid audit or rebuild is later and is not the launch message.
 
 Do not collapse these in copy or UI.
 
-1. **Jokko Ak Yoon** — dialogue (info, réclamation, signalement, suggestion). Not for acts. Domain `jokkooakyoon.sn` (double o).
+1. **Jokko Ak Yoon** — dialogue. Not for acts. Domain `jokkooakyoon.sn` (double o). Live since 14 Sep 2026 under the name « Justice Accessible Sénégal » (research §J).
+   - The demo now shadows the **live product**, not the APS announcement: categories Demande d'information, Réclamation, Difficulté rencontrée, Signalement, Suggestion ou observation, Autre (no Contestation).
+   - Status model from the live platform: Reçue, Assignée, En cours de traitement, En attente d'informations, Résolue, Rejetée, Clôturée.
 2. **e-Justice métier** — court stack, TGI Pikine-Guédiawaye. Not public.
 3. **e-Services** — acts at `public.e-service.sn` and `e-senegal.sn`.
 
@@ -52,12 +54,10 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 
 ## Visual identity and intake (approved product direction)
 
-- User rejected decorative civic modernism in favor of a focused application experience, referencing Stripe onboarding, Mercury and Linear.
-- One green interaction accent `#17634E`, neutral step rail and white workspace. No unrelated motifs, multiple brand colors or oversized marketing copy.
-- Public Sans handles interface text and headings. System monospace remains limited to tracking references.
-- Intake has two stages: write a fictitious message with optional audio, then review, choose the existing request type and confirm submission. Desktop has a step rail; mobile places compact progress above the task.
+- **`/preview` is the design authority** until sign-off. See `docs/DESIGN.md` for tokens, typography (Karrik, Public Sans, Sligoil), flag palette, illustrated hero, and two-stage intake.
+- Intake: write a fictitious message with optional audio, then review, choose request type (live platform categories), optional lieu, demo confirmation, then receipt.
 - The receipt is a structured digital record, not a simulated government document. No seal, star, perforation or Ministry branding.
-- The disclaimer, demo-only scope and existing intake functions remain. See `docs/DESIGN.md`.
+- HeroUI routes under `web/src/client/pages/` converge on the preview system after visual approval.
 
 ## Auth spike (done)
 
@@ -72,3 +72,11 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 - Two steps: redesign thread around 48 hours after launch, working demo day 7–10.
 - Receipts: DNS, WHOIS, Contabo vs sovereignty speech. Craft finding on `/admin` JS, not “hacked”.
 - No WHOIS cold-pitch.
+
+## Decisions from the live platform (14 Sep 2026)
+
+1. Demo categories and statuses follow the live platform (research §J.3, §J.4).
+2. Voice records in the browser (3 minutes max, as their phone channel), plays back, stays on the device. No transcription claim.
+3. References are non-sequential by design (`PALJ-7K4M-2QX9`). A public lookup page should not use guessable codes like `ALJ-2025-0001`.
+4. Citizen-chosen priority: argue against it (agents triage) in the private audit only, not in public copy.
+5. Defects in research §J.5 stay private.

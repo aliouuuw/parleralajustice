@@ -1,17 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Waveform, type WaveSource } from "./Waveform";
 import "./preview.css";
 
 const MAX = 4000;
 const MIN = 12;
-const SAMPLE_CODE = "PALJ-7K4M-2QX9";
+const VOICE_LIMIT = 180;
+export const SAMPLE_CODE = "PALJ-7K4M-2QX9";
+
+// Categories as the live « Justice Accessible Sénégal » form lists them (research §J.3).
 const TYPES = [
-	["Information", "Comprendre une procédure"],
+	["Demande d'information", "Comprendre une procédure ou un service"],
 	["Réclamation", "Signaler un dysfonctionnement"],
+	["Difficulté rencontrée", "Un obstacle pour accéder à la justice"],
 	["Signalement", "Porter un fait à connaissance"],
-	["Suggestion", "Proposer une amélioration"],
-	["Observation", "Faire une remarque"],
-	["Contestation", "Contester une décision"],
+	["Suggestion ou observation", "Proposer une amélioration"],
+	["Autre", "Une situation qui n'entre dans aucun type"],
+] as const;
+
+// Status model of the live platform (research §J.4), worded for citizens.
+export const STATUSES = [
+	["Reçue", "La demande est enregistrée. Elle attend d'être confiée à un agent."],
+	["Assignée", "Un agent est chargé du dossier."],
+	["En cours de traitement", "L'agent examine la demande."],
+	["En attente d'informations", "L'agent a besoin d'une précision. Le dossier avance quand vous répondez."],
+	["Résolue", "Une réponse est disponible."],
+	["Rejetée", "La demande ne peut pas être traitée. La raison est indiquée."],
+	["Clôturée", "Le dossier est fermé."],
 ] as const;
 
 const SLIDES = [
@@ -20,53 +34,12 @@ const SLIDES = [
 	["noter", "Noter la référence", "Vue de dessus, une personne note une référence dans un carnet."],
 ] as const;
 
-function HeroSlides() {
-	const [active, setActive] = useState(0);
-	const [paused, setPaused] = useState(false);
+const REFERENCE = /^[A-Z]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
-	return (
-		<div className="pv-slides" role="region" aria-roledescription="carrousel" aria-label="Illustrations du service" data-paused={paused || undefined}>
-			<div className="pv-slides__stage" aria-live={paused ? "polite" : "off"}>
-				{SLIDES.map(([id, , alt], i) => (
-					<img
-						key={id}
-						src={`/images/hero/${id}-1280.webp`}
-						srcSet={`/images/hero/${id}-1280.webp 1280w, /images/hero/${id}-2560.webp 2560w`}
-						sizes="(max-width: 1240px) 100vw, 1240px"
-						width={2720}
-						height={1536}
-						alt={alt}
-						decoding="async"
-						fetchPriority={i === 0 ? "high" : undefined}
-						data-active={i === active || undefined}
-						aria-hidden={i !== active || undefined}
-					/>
-				))}
-			</div>
-			<div className="pv-frise">
-				<ol>
-					{SLIDES.map(([id, label], i) => (
-						<li key={id} data-state={i < active ? "done" : i === active ? "current" : undefined}>
-							<button type="button" aria-label={`Illustration ${i + 1} sur ${SLIDES.length} : ${label}`} aria-pressed={i === active} onClick={() => setActive(i)}>
-								<span className="pv-frise__dot" />
-								<span className="pv-frise__label">{label}</span>
-							</button>
-							<span className="pv-frise__track">
-								{i === active && <span key={active} className="pv-frise__fill" onAnimationEnd={() => setActive((i + 1) % SLIDES.length)} />}
-							</span>
-						</li>
-					))}
-				</ol>
-				<button className="pv-frise__pause" type="button" aria-label={paused ? "Reprendre le diaporama" : "Mettre le diaporama en pause"} onClick={() => setPaused((p) => !p)}>
-					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
-						{paused
-							? <path d="M4 2.8v8.4a.6.6 0 0 0 .9.5l6.6-4.2a.6.6 0 0 0 0-1L4.9 2.3a.6.6 0 0 0-.9.5Z" fill="currentColor" />
-							: <><rect x="3" y="2" width="2.6" height="10" rx="1.3" fill="currentColor" /><rect x="8.4" y="2" width="2.6" height="10" rx="1.3" fill="currentColor" /></>}
-					</svg>
-				</button>
-			</div>
-		</div>
-	);
+/** Accepts a reference typed with spaces, dashes or lowercase. */
+export function normalizeReference(input: string): string {
+	const raw = input.toUpperCase().replace(/[^A-Z0-9]/g, "");
+	return raw.length === 12 ? `${raw.slice(0, 4)}-${raw.slice(4, 8)}-${raw.slice(8)}` : input.trim().toUpperCase();
 }
 
 function clock(seconds: number): string {
@@ -81,98 +54,11 @@ function Arrow() {
 	);
 }
 
-function useRecorder() {
-	const [source, setSource] = useState<WaveSource>("idle");
-	const [stream, setStream] = useState<MediaStream | null>(null);
-	const [note, setNote] = useState("Aucun son conservé dans cet aperçu.");
-	const [elapsed, setElapsed] = useState(0);
-	const [pending, setPending] = useState(false);
-	const mounted = useRef(true);
-
-	useEffect(() => {
-		mounted.current = true;
-		return () => { mounted.current = false; };
-	}, []);
-	useEffect(() => {
-		if (source === "idle") return;
-		const id = window.setInterval(() => setElapsed((n) => n + 1), 1000);
-		return () => window.clearInterval(id);
-	}, [source]);
-	useEffect(() => () => { stream?.getTracks().forEach((track) => track.stop()); }, [stream]);
-
-	async function toggle() {
-		if (pending) return;
-		if (source !== "idle") {
-			stream?.getTracks().forEach((track) => track.stop());
-			setStream(null);
-			setSource("idle");
-			setNote("Test terminé. Aucun son conservé.");
-			return;
-		}
-		setPending(true);
-		setElapsed(0);
-		try {
-			const live = await navigator.mediaDevices.getUserMedia({ audio: true });
-			if (!mounted.current) { live.getTracks().forEach((track) => track.stop()); return; }
-			setStream(live);
-			setSource("live");
-			setNote("Micro actif. Le signal est réel, aucun son n'est conservé.");
-		} catch {
-			if (mounted.current) setNote("Micro indisponible. Autorisez le microphone ou continuez avec le texte.");
-		} finally {
-			if (mounted.current) setPending(false);
-		}
-	}
-	return { source, stream, note, elapsed, pending, toggle };
-}
-
-export function Preview() {
-	const recorder = useRecorder();
-	const [text, setText] = useState("");
-	const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
-	const [attempted, setAttempted] = useState(false);
-	const [submitted, setSubmitted] = useState(false);
-	const summaryRef = useRef<HTMLDivElement>(null);
-	const messageRef = useRef<HTMLTextAreaElement>(null);
-	const codeRef = useRef<HTMLElement>(null);
-	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-	const count = text.trim().length;
-	const ready = count >= MIN && count <= MAX;
-	const busy = recorder.pending || recorder.source !== "idle";
-	const error = count < MIN ? "Écrivez au moins 12 caractères." : "Raccourcissez le message à 4 000 caractères maximum.";
-	const showError = attempted && !ready;
-	const tone = count > MAX ? "over" : count > MAX * 0.9 ? "near" : ready ? "ok" : undefined;
-
-	useEffect(() => () => clearTimeout(copyTimer.current), []);
-
-	function proceed() {
-		if (busy) return;
-		setAttempted(true);
-		if (ready) {
-			setSubmitted(true);
-			requestAnimationFrame(() => document.getElementById("receipt")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
-		} else {
-			requestAnimationFrame(() => summaryRef.current?.focus());
-		}
-	}
-
-	async function copyCode() {
-		clearTimeout(copyTimer.current);
-		try {
-			await navigator.clipboard.writeText(SAMPLE_CODE);
-			setCopyState("copied");
-			copyTimer.current = setTimeout(() => setCopyState("idle"), 3000);
-		} catch {
-			setCopyState("error");
-			const range = document.createRange();
-			if (codeRef.current) range.selectNodeContents(codeRef.current);
-			window.getSelection()?.removeAllRanges();
-			window.getSelection()?.addRange(range);
-		}
-	}
+function Frame({ current, children, taskMode }: { current: "deposer" | "suivre"; children: ReactNode; taskMode?: boolean }) {
+	useEffect(() => { window.scrollTo(0, 0); }, [current]);
 
 	return (
-		<div className="pv">
+		<div className={taskMode ? "pv pv--task" : "pv"}>
 			<a className="pv-skip" href="#main-content">Aller au contenu principal</a>
 			<div className="pv-notice">
 				<div className="pv-container pv-notice__inner">
@@ -192,133 +78,12 @@ export function Preview() {
 						<span><strong>Parler à la justice</strong><small>Service de démonstration</small></span>
 					</a>
 					<nav className="pv-nav" aria-label="Navigation principale">
-						<a href="/preview" aria-current="page">Déposer une demande</a>
-						<a href="/suivre">Suivre un dossier</a>
+						<a href="/preview" aria-current={current === "deposer" ? "page" : undefined}>Déposer une demande</a>
+						<a href="/preview/suivre" aria-current={current === "suivre" ? "page" : undefined}>Suivre un dossier</a>
 					</nav>
 				</div>
 			</header>
-
-			<main id="main-content">
-				<section className="pv-hero" aria-labelledby="hero-title">
-					<div className="pv-container pv-hero__copy">
-						<h1 id="hero-title">Adressez une demande à la justice</h1>
-						<p className="pv-lede">Essayez le parcours avec une situation fictive&nbsp;: écrivez, relisez, suivez votre demande.</p>
-						<div className="pv-hero__action">
-							<button className="pv-button pv-button--primary" type="button" onClick={() => messageRef.current?.focus()}>Commencer <Arrow /></button>
-							<span>Deux étapes. Aucun compte requis.</span>
-						</div>
-					</div>
-					<HeroSlides />
-				</section>
-
-				<section className="pv-type-band" aria-labelledby="types-title">
-					<div className="pv-container pv-types">
-						<div className="pv-types__heading">
-							<h2 id="types-title">Six types de demandes</h2>
-						</div>
-						<ul>
-							{TYPES.map(([name, description]) => <li key={name}><strong>{name}</strong><span>{description}</span></li>)}
-						</ul>
-					</div>
-				</section>
-
-				<section className="pv-workspace" aria-labelledby="form-title">
-					<div className="pv-container pv-workspace__layout">
-						<div className="pv-rail">
-							<aside className="pv-progress" aria-label="Progression du dépôt">
-								<p>Votre demande, en deux étapes</p>
-								<ol>
-									<li aria-current="step"><span>1</span><div><strong>Votre message</strong><small>En cours</small></div></li>
-									<li data-complete={submitted ? "true" : undefined}><span>2</span><div><strong>Confirmation</strong><small>{submitted ? "Terminé" : "À venir"}</small></div></li>
-								</ol>
-							</aside>
-							<aside className="pv-guidance" aria-labelledby="guidance-title">
-								<h2 id="guidance-title">Avant de commencer</h2>
-								<ul>
-									<li>Utilisez uniquement des informations fictives.</li>
-									<li>Ce prototype ne donne pas de conseil juridique.</li>
-									<li>La référence illustre le suivi. Aucun dossier réel n'est créé.</li>
-								</ul>
-							</aside>
-						</div>
-
-						<div className="pv-form">
-							<div className="pv-form__heading">
-								<p>Étape 1 sur 2</p>
-								<h2 id="form-title">Que souhaitez-vous nous dire ?</h2>
-								<span>Décrivez une situation fictive, avec vos mots.</span>
-							</div>
-							{showError && (
-								<div className="pv-error-summary" ref={summaryRef} id="message-errors" role="alert" tabIndex={-1}>
-									<strong>Corrigez le message avant de continuer</strong>
-									<ul><li><a href="#message" onClick={(event) => { event.preventDefault(); messageRef.current?.focus(); }}>{error}</a></li></ul>
-								</div>
-							)}
-							<div className="pv-field">
-								<label htmlFor="message">Votre message <span style={{ color: "var(--color-text-secondary)", fontWeight: 400 }}>(obligatoire)</span></label>
-								<textarea id="message" ref={messageRef} value={text} maxLength={MAX + 200} required aria-invalid={showError || undefined} aria-describedby={showError ? "message-help message-errors" : "message-help"} placeholder="Exemple : je souhaite comprendre le déroulement d'une audience." onChange={(event) => setText(event.target.value)} />
-								<div className="pv-field__meta" id="message-help">
-									<span>{MIN} caractères minimum</span>
-									<span data-tone={tone}>{count.toLocaleString("fr-FR")} / 4 000</span>
-								</div>
-							</div>
-							<div className="pv-audio">
-								<div>
-									<strong>Message vocal</strong>
-									<span>Aperçu du microphone. Le texte reste obligatoire.</span>
-								</div>
-								<button className="pv-button pv-button--secondary" type="button" onClick={recorder.toggle} disabled={recorder.pending} aria-pressed={recorder.source !== "idle"} data-recording={recorder.source !== "idle" ? "true" : undefined}>
-									<span className="pv-record-dot" />
-									{recorder.pending ? "Autorisation…" : recorder.source === "idle" ? "Tester le micro" : "Arrêter"}
-								</button>
-								{recorder.source !== "idle" && <Waveform source={recorder.source} stream={recorder.stream} height={40} />}
-								<div className="pv-audio__status">
-									<span role="status">{recorder.note}</span>
-									<time>{clock(recorder.elapsed)}</time>
-								</div>
-							</div>
-							<div className="pv-form__footer">
-								<button className="pv-button pv-button--primary" type="button" disabled={busy} onClick={proceed}>Continuer <Arrow /></button>
-								<p>{busy ? "Arrêtez le test du micro pour continuer." : "Rien n'est déposé à cette étape."}</p>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				{submitted && (
-					<section className="pv-outcome-band" id="receipt">
-						<div className="pv-container pv-outcome">
-							<div className="pv-outcome__intro">
-								<h2>Une référence à conserver.<br />Un suivi à retrouver.</h2>
-								<span>Le récépissé rassemble la référence et les étapes du suivi. Cet exemple montre un parcours fictif.</span>
-							</div>
-							<article className="pv-receipt" aria-label="Exemple de récépissé de dépôt">
-								<header>
-									<div>
-										<p>Exemple de confirmation</p>
-										<time>Aucune demande transmise</time>
-									</div>
-									<span>Données fictives</span>
-								</header>
-								<div className="pv-receipt__reference">
-									<span>Référence de suivi · Exemple</span>
-									<strong ref={codeRef}>{SAMPLE_CODE}</strong>
-									<p>La référence permet de retrouver le dossier dans un service réel.</p>
-								</div>
-								<div className="pv-receipt__actions">
-									<button className="pv-button pv-button--secondary" type="button" onClick={copyCode}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</button>
-									<button className="pv-button pv-button--quiet" type="button" onClick={() => window.print()}>Imprimer</button>
-								</div>
-								<ol className="pv-history" aria-label="Exemple de suivi">
-									<li data-status="complete"><span /><div><strong>Demande enregistrée</strong><time>Reçue · 13 sept. 05:42</time></div></li>
-									<li data-status="active"><span /><div><strong>Orientation vers le service compétent</strong><time>En cours · 13 sept. 09:10</time></div></li>
-									<li><span /><div><strong>Réponse</strong><time>En attente</time></div></li>
-								</ol>
-							</article>
-						</div>
-					</section>
-				)}
-			</main>
+			<main id="main-content">{children}</main>
 			<footer className="pv-footer">
 				<div className="pv-container pv-footer__inner">
 					<div>
@@ -327,11 +92,564 @@ export function Preview() {
 					</div>
 					<nav aria-label="Liens de pied de page">
 						<a href="https://justice.sec.gouv.sn/">Ministère de la Justice</a>
+						<a href="https://e-senegal.sn/">Obtenir un acte</a>
 						<a href="https://public.e-service.sn/">e-Services Justice</a>
 						<a href="https://e-senegal.sn/">e-Sénégal</a>
 					</nav>
 				</div>
 			</footer>
 		</div>
+	);
+}
+
+function HeroSlides() {
+	const [active, setActive] = useState(0);
+
+	return (
+		<div className="pv-slides" role="region" aria-roledescription="carrousel" aria-label="Illustrations du service">
+			<div className="pv-slides__stage" aria-live="off">
+				{SLIDES.map(([id, , alt], i) => (
+					<img
+						key={id}
+						src={`/images/hero/${id}-1280.webp`}
+						srcSet={`/images/hero/${id}-1280.webp 1280w, /images/hero/${id}-2560.webp 2560w`}
+						sizes="(max-width: 1240px) 100vw, 1240px"
+						width={2720}
+						height={1536}
+						alt={alt}
+						decoding="async"
+						fetchPriority={i === 0 ? "high" : undefined}
+						data-active={i === active || undefined}
+						aria-hidden={i !== active || undefined}
+					/>
+				))}
+			</div>
+			<div className="pv-frise">
+				<ol>
+					{SLIDES.map(([id, label], i) => {
+						const last = i === SLIDES.length - 1;
+						return (
+							<li key={id} data-state={i < active ? "done" : i === active ? "current" : undefined}>
+								<button type="button" aria-label={`Illustration ${i + 1} sur ${SLIDES.length} : ${label}`} aria-pressed={i === active} onClick={() => setActive(i)}>
+									<span className="pv-frise__dot" />
+									<span className="pv-frise__label">{label}</span>
+								</button>
+								<span className={last ? "pv-frise__track pv-frise__track--end" : "pv-frise__track"}>
+									{i === active && <span key={active} className="pv-frise__fill" onAnimationEnd={() => setActive((i + 1) % SLIDES.length)} />}
+								</span>
+							</li>
+						);
+					})}
+				</ol>
+			</div>
+		</div>
+	);
+}
+
+const KEEP_NOTE = "L'enregistrement reste sur cet appareil. Il n'est jamais envoyé.";
+
+/** Records a voice message in the browser. The clip lives in a blob URL and is never uploaded. */
+function useRecorder() {
+	const [source, setSource] = useState<WaveSource>("idle");
+	const [stream, setStream] = useState<MediaStream | null>(null);
+	const [clip, setClip] = useState<{ url: string; seconds: number } | null>(null);
+	const [note, setNote] = useState(KEEP_NOTE);
+	const [elapsed, setElapsed] = useState(0);
+	const [pending, setPending] = useState(false);
+	const mounted = useRef(true);
+	const recorderRef = useRef<MediaRecorder | null>(null);
+	const elapsedRef = useRef(0);
+	elapsedRef.current = elapsed;
+
+	useEffect(() => {
+		mounted.current = true;
+		return () => { mounted.current = false; };
+	}, []);
+	useEffect(() => {
+		if (source === "idle") return;
+		const id = window.setInterval(() => setElapsed((n) => n + 1), 1000);
+		return () => window.clearInterval(id);
+	}, [source]);
+	useEffect(() => { if (source !== "idle" && elapsed >= VOICE_LIMIT) stop(); });
+	useEffect(() => () => { stream?.getTracks().forEach((track) => track.stop()); }, [stream]);
+	useEffect(() => () => { if (clip) URL.revokeObjectURL(clip.url); }, [clip]);
+
+	function stop() {
+		if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+		stream?.getTracks().forEach((track) => track.stop());
+		setStream(null);
+		setSource("idle");
+	}
+
+	async function toggle() {
+		if (pending) return;
+		if (source !== "idle") return stop();
+		setPending(true);
+		try {
+			const live = await navigator.mediaDevices.getUserMedia({ audio: true });
+			if (!mounted.current) { live.getTracks().forEach((track) => track.stop()); return; }
+			if (typeof MediaRecorder === "undefined") {
+				live.getTracks().forEach((track) => track.stop());
+				setNote("Ce navigateur ne permet pas l'enregistrement. Continuez avec le texte.");
+				return;
+			}
+			const chunks: Blob[] = [];
+			const recorder = new MediaRecorder(live);
+			recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+			recorder.onstop = () => {
+				if (!mounted.current || !chunks.length) return;
+				setClip({ url: URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType })), seconds: elapsedRef.current });
+				setNote(`Enregistrement prêt. ${KEEP_NOTE}`);
+			};
+			recorderRef.current = recorder;
+			setClip(null);
+			setElapsed(0);
+			recorder.start();
+			setStream(live);
+			setSource("live");
+			setNote("Enregistrement en cours. Parlez normalement.");
+		} catch {
+			if (mounted.current) setNote("Micro indisponible. Autorisez le microphone ou continuez avec le texte.");
+		} finally {
+			if (mounted.current) setPending(false);
+		}
+	}
+
+	function discard() {
+		setClip(null);
+		setElapsed(0);
+		setNote(KEEP_NOTE);
+	}
+
+	return { source, stream, clip, note, elapsed, pending, toggle, discard };
+}
+
+type IntakeStage = "write" | "review" | "done";
+
+export function Preview() {
+	const recorder = useRecorder();
+	const [text, setText] = useState("");
+	const [stage, setStage] = useState<IntakeStage>("write");
+	const [taskMode, setTaskMode] = useState(false);
+	const [requestType, setRequestType] = useState<(typeof TYPES)[number][0] | null>(null);
+	const [place, setPlace] = useState("");
+	const [demoOk, setDemoOk] = useState(false);
+	const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+	const [writeAttempted, setWriteAttempted] = useState(false);
+	const [reviewAttempted, setReviewAttempted] = useState(false);
+	const summaryRef = useRef<HTMLDivElement>(null);
+	const reviewSummaryRef = useRef<HTMLDivElement>(null);
+	const messageRef = useRef<HTMLTextAreaElement>(null);
+	const reviewTitleRef = useRef<HTMLHeadingElement>(null);
+	const codeRef = useRef<HTMLElement>(null);
+	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+	const count = text.trim().length;
+	const ready = count >= MIN && count <= MAX;
+	const recording = recorder.pending || recorder.source !== "idle";
+	const writeError = count < MIN ? "Écrivez au moins 12 caractères." : "Raccourcissez le message à 4 000 caractères maximum.";
+	const showWriteError = writeAttempted && stage === "write" && !ready;
+	const reviewReady = requestType !== null && demoOk;
+	const showReviewError = reviewAttempted && stage === "review" && !reviewReady;
+	const tone = count > MAX ? "over" : count > MAX * 0.9 ? "near" : ready ? "ok" : undefined;
+
+	useEffect(() => () => clearTimeout(copyTimer.current), []);
+
+	function beginTask() {
+		setTaskMode(true);
+		requestAnimationFrame(() => {
+			document.getElementById("workspace")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+			messageRef.current?.focus();
+		});
+	}
+
+	function proceedWrite() {
+		if (recording) return;
+		setWriteAttempted(true);
+		if (!ready) {
+			requestAnimationFrame(() => summaryRef.current?.focus());
+			return;
+		}
+		setTaskMode(true);
+		setStage("review");
+		setReviewAttempted(false);
+		requestAnimationFrame(() => reviewTitleRef.current?.focus());
+	}
+
+	function backToWrite() {
+		setStage("write");
+		setReviewAttempted(false);
+		requestAnimationFrame(() => messageRef.current?.focus());
+	}
+
+	function confirmDeposit() {
+		setReviewAttempted(true);
+		if (!reviewReady) {
+			requestAnimationFrame(() => reviewSummaryRef.current?.focus());
+			return;
+		}
+		setStage("done");
+		requestAnimationFrame(() => document.getElementById("receipt")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+	}
+
+	async function copyCode() {
+		clearTimeout(copyTimer.current);
+		try {
+			await navigator.clipboard.writeText(SAMPLE_CODE);
+			setCopyState("copied");
+			copyTimer.current = setTimeout(() => setCopyState("idle"), 3000);
+		} catch {
+			setCopyState("error");
+			const range = document.createRange();
+			if (codeRef.current) range.selectNodeContents(codeRef.current);
+			window.getSelection()?.removeAllRanges();
+			window.getSelection()?.addRange(range);
+		}
+	}
+
+	const step1Current = stage === "write";
+	const step2Current = stage === "review";
+	const step2Done = stage === "done";
+
+	return (
+		<Frame current="deposer" taskMode={taskMode}>
+			{!taskMode && (
+				<>
+					<section className="pv-hero" aria-labelledby="hero-title">
+						<div className="pv-container pv-hero__copy">
+							<h1 id="hero-title">Adressez une demande à la justice</h1>
+							<p className="pv-lede">Essayez le parcours avec une situation fictive&nbsp;: écrivez, relisez, suivez votre demande.</p>
+							<div className="pv-hero__action">
+								<button className="pv-button pv-button--primary" type="button" onClick={beginTask}>Commencer <Arrow /></button>
+							</div>
+						</div>
+						<HeroSlides />
+					</section>
+
+					<section className="pv-type-band" aria-label="Types de demandes">
+						<div className="pv-container pv-types">
+							<ul>
+								{TYPES.map(([name]) => <li key={name}>{name}</li>)}
+							</ul>
+						</div>
+					</section>
+				</>
+			)}
+
+			{(stage === "write" || stage === "review") && (
+			<section className="pv-workspace" id="workspace" aria-labelledby={stage === "review" ? "review-title" : "form-title"}>
+				<div className="pv-container pv-workspace__layout">
+					<div className="pv-rail">
+						<aside className="pv-progress" aria-label="Progression du dépôt">
+							<p>Votre demande, en deux étapes</p>
+							<ol>
+								<li aria-current={step1Current ? "step" : undefined} data-complete={!step1Current ? "true" : undefined}><span>1</span><div><strong>Votre message</strong><small>{step1Current ? "En cours" : "Terminé"}</small></div></li>
+								<li aria-current={step2Current ? "step" : undefined} data-complete={step2Done ? "true" : undefined}><span>2</span><div><strong>Relire et confirmer</strong><small>{step2Done ? "Terminé" : step2Current ? "En cours" : "À venir"}</small></div></li>
+							</ol>
+						</aside>
+						<aside className="pv-guidance" aria-labelledby="guidance-title">
+							<h2 id="guidance-title">À retenir</h2>
+							<ul>
+								<li>Données fictives uniquement.</li>
+								<li>Aucun conseil juridique.</li>
+							</ul>
+						</aside>
+					</div>
+
+					<div className="pv-form">
+						{stage === "write" && (
+							<>
+								<div className="pv-form__heading">
+									<p>Étape 1 sur 2</p>
+									<h2 id="form-title">Que souhaitez-vous nous dire ?</h2>
+									<span>Décrivez une situation fictive, avec vos mots.</span>
+								</div>
+								{showWriteError && (
+									<div className="pv-error-summary" ref={summaryRef} id="message-errors" role="alert" tabIndex={-1}>
+										<strong>Corrigez le message avant de continuer</strong>
+										<ul><li><a href="#message" onClick={(event) => { event.preventDefault(); messageRef.current?.focus(); }}>{writeError}</a></li></ul>
+									</div>
+								)}
+								<div className="pv-field">
+									<label htmlFor="message">Votre message <span className="pv-optional">(obligatoire)</span></label>
+									<textarea id="message" ref={messageRef} value={text} maxLength={MAX + 200} required aria-invalid={showWriteError || undefined} aria-describedby={showWriteError ? "message-help message-errors" : "message-help"} placeholder="Exemple : je souhaite comprendre le déroulement d'une audience." onChange={(event) => setText(event.target.value)} />
+									<div className="pv-field__meta" id="message-help">
+										<span>{MIN} caractères minimum</span>
+										<span data-tone={tone}>{count.toLocaleString("fr-FR")} / 4 000</span>
+									</div>
+								</div>
+								<div className="pv-audio" data-state={recorder.source !== "idle" ? "live" : recorder.clip ? "clip" : "idle"}>
+									<div className="pv-audio__bar">
+										<strong>Message vocal <span className="pv-optional">(facultatif)</span></strong>
+										<button className="pv-button pv-button--secondary" type="button" onClick={recorder.toggle} disabled={recorder.pending} aria-pressed={recorder.source !== "idle"} data-recording={recorder.source !== "idle" ? "true" : undefined}>
+											<span className="pv-record-dot" />
+											{recorder.pending ? "Autorisation…" : recorder.source !== "idle" ? "Arrêter" : recorder.clip ? "Réenregistrer" : "Enregistrer"}
+										</button>
+									</div>
+									{recorder.source !== "idle" && <Waveform source={recorder.source} stream={recorder.stream} height={40} />}
+									{recorder.clip && recorder.source === "idle" && (
+										<div className="pv-clip">
+											<audio controls src={recorder.clip.url} aria-label="Réécouter le message vocal" />
+											<button className="pv-button pv-button--quiet" type="button" onClick={recorder.discard}>Supprimer</button>
+										</div>
+									)}
+									{(recorder.source !== "idle" || recorder.clip || recorder.note !== KEEP_NOTE) && (
+										<div className="pv-audio__status">
+											<span role="status">{recorder.note}</span>
+											<time>{clock(recorder.source !== "idle" ? recorder.elapsed : recorder.clip?.seconds ?? 0)} / 03:00</time>
+										</div>
+									)}
+								</div>
+								<div className="pv-form__footer">
+									<button className="pv-button pv-button--primary" type="button" disabled={recording} onClick={proceedWrite}>Continuer <Arrow /></button>
+									{recording && <p>Arrêtez l'enregistrement pour continuer.</p>}
+								</div>
+							</>
+						)}
+
+						{stage === "review" && (
+							<>
+								<div className="pv-form__heading">
+									<p>Étape 2 sur 2</p>
+									<h2 id="review-title" ref={reviewTitleRef} tabIndex={-1}>Relisez avant de confirmer</h2>
+									<span>Vérifiez le message, choisissez le type de demande, puis confirmez la démonstration.</span>
+								</div>
+								{showReviewError && (
+									<div className="pv-error-summary" ref={reviewSummaryRef} id="review-errors" role="alert" tabIndex={-1}>
+										<strong>Complétez les éléments manquants</strong>
+										<ul>
+											{!requestType && <li><a href="#type-pick" onClick={(event) => { event.preventDefault(); document.getElementById("type-pick")?.focus(); }}>Choisissez un type de demande.</a></li>}
+											{!demoOk && <li><a href="#demo-confirm" onClick={(event) => { event.preventDefault(); document.getElementById("demo-confirm")?.focus(); }}>Cochez la confirmation de démonstration.</a></li>}
+										</ul>
+									</div>
+								)}
+								<div className="pv-review-block" aria-labelledby="review-message-label">
+									<p className="pv-review-block__label" id="review-message-label">Votre message</p>
+									<p className="pv-review-block__body">{text.trim()}</p>
+									{recorder.clip && (
+										<div className="pv-review-block__audio">
+											<span>Message vocal joint</span>
+											<audio controls src={recorder.clip.url} aria-label="Réécouter le message vocal" />
+										</div>
+									)}
+									<button className="pv-button pv-button--quiet" type="button" onClick={backToWrite}>Modifier le message</button>
+								</div>
+								<fieldset className="pv-type-pick" id="type-pick">
+									<legend>Type de demande <span className="pv-optional">(obligatoire)</span></legend>
+									<div className="pv-type-pick__grid">
+										{TYPES.map(([name, description]) => (
+											<label key={name} className="pv-type-pick__option" data-selected={requestType === name || undefined}>
+												<input type="radio" name="request-type" value={name} checked={requestType === name} onChange={() => setRequestType(name)} />
+												<strong>{name}</strong>
+												<span>{description}</span>
+											</label>
+										))}
+									</div>
+								</fieldset>
+								<div className="pv-field pv-field--compact">
+									<label htmlFor="place">Lieu concerné <span className="pv-optional">(facultatif)</span></label>
+									<input id="place" type="text" value={place} maxLength={120} placeholder="Exemple : tribunal d'instance de Pikine" onChange={(event) => setPlace(event.target.value)} />
+									<p className="pv-field__hint">Tribunal, cour ou lieu des faits. Donnée fictive dans cet aperçu.</p>
+								</div>
+								<div className="pv-confirm">
+									<input id="demo-confirm" type="checkbox" checked={demoOk} onChange={(event) => setDemoOk(event.target.checked)} />
+									<label htmlFor="demo-confirm">Je comprends qu'aucune demande n'est transmise au Ministère ni à un service judiciaire. Ceci est une démonstration.</label>
+								</div>
+								<div className="pv-form__footer">
+									<button className="pv-button pv-button--primary" type="button" onClick={confirmDeposit}>Confirmer le dépôt fictif <Arrow /></button>
+									<button className="pv-button pv-button--secondary" type="button" onClick={backToWrite}>Retour</button>
+								</div>
+							</>
+						)}
+					</div>
+				</div>
+			</section>
+			)}
+
+			{stage === "done" && (
+				<section className="pv-outcome-band" id="receipt">
+					<div className="pv-container pv-outcome">
+						<div className="pv-outcome__intro">
+							<h2>Une référence à conserver.<br />Un suivi à retrouver.</h2>
+							<span>Le récépissé rassemble la référence et les étapes du suivi. Cet exemple montre un parcours fictif.</span>
+						</div>
+						<article className="pv-receipt" aria-label="Exemple de récépissé de dépôt">
+							<header>
+								<div>
+									<p>Exemple de confirmation</p>
+									<time>Aucune demande transmise</time>
+								</div>
+								<span>Données fictives</span>
+							</header>
+							<div className="pv-receipt__reference">
+								<span>Référence de suivi · Exemple</span>
+								<strong ref={codeRef}>{SAMPLE_CODE}</strong>
+								<p>Ce n'est pas un numéro d'ordre&nbsp;: la référence ne permet pas de deviner d'autres dossiers.</p>
+								{requestType && (
+									<dl className="pv-receipt__meta">
+										<div><dt>Type</dt><dd>{requestType}</dd></div>
+										{place.trim() && <div><dt>Lieu</dt><dd>{place.trim()}</dd></div>}
+									</dl>
+								)}
+								{recorder.clip && <p>Message vocal joint&nbsp;: {clock(recorder.clip.seconds)}, conservé sur cet appareil.</p>}
+							</div>
+							<div className="pv-receipt__actions">
+								<a className="pv-button pv-button--primary" href={`/preview/suivre?ref=${SAMPLE_CODE}${requestType ? `&type=${encodeURIComponent(requestType)}` : ""}`}>Suivre ce dossier <Arrow /></a>
+								<button className="pv-button pv-button--secondary" type="button" onClick={copyCode}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</button>
+								<button className="pv-button pv-button--quiet" type="button" onClick={() => window.print()}>Imprimer</button>
+							</div>
+							<ol className="pv-history" aria-label="Étapes du suivi">
+								<li data-status="complete"><span /><div><strong>Reçue</strong><time>13 sept. 05:42</time></div></li>
+								<li data-status="active"><span /><div><strong>Assignée à un agent</strong><time>En cours</time></div></li>
+								<li><span /><div><strong>En attente d'informations</strong><time>Si besoin</time></div></li>
+								<li><span /><div><strong>Résolue ou rejetée</strong><time>À venir</time></div></li>
+							</ol>
+						</article>
+					</div>
+				</section>
+			)}
+		</Frame>
+	);
+}
+
+export function PreviewSuivre() {
+	const params = typeof window === "undefined" ? new URLSearchParams() : new URLSearchParams(window.location.search);
+	const initial = params.get("ref") ?? "";
+	const dossierType = params.get("type")?.trim() || "Réclamation";
+	const [query, setQuery] = useState(initial);
+	const [error, setError] = useState<string | null>(null);
+	const [found, setFound] = useState(() => normalizeReference(initial) === SAMPLE_CODE);
+	const [reply, setReply] = useState("");
+	const [replyError, setReplyError] = useState(false);
+	const [replied, setReplied] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const replyRef = useRef<HTMLTextAreaElement>(null);
+
+	function search(event: FormEvent) {
+		event.preventDefault();
+		const code = normalizeReference(query);
+		const problem = !query.trim()
+			? "Saisissez la référence reçue au dépôt."
+			: !REFERENCE.test(code)
+				? "La référence compte 12 caractères, par exemple PALJ-7K4M-2QX9."
+				: code !== SAMPLE_CODE
+					? "Aucun dossier fictif ne correspond. Dans cet aperçu, seul PALJ-7K4M-2QX9 existe."
+					: null;
+		setError(problem);
+		if (problem) {
+			setFound(false);
+			inputRef.current?.focus();
+			return;
+		}
+		setQuery(code);
+		setFound(true);
+		requestAnimationFrame(() => document.getElementById("dossier")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
+	}
+
+	function sendReply() {
+		if (reply.trim().length < MIN) {
+			setReplyError(true);
+			replyRef.current?.focus();
+			return;
+		}
+		setReplyError(false);
+		setReplied(true);
+	}
+
+	return (
+		<Frame current="suivre">
+			<section className="pv-track" aria-labelledby="track-title">
+				<div className="pv-container pv-track__layout">
+					<div>
+						<h1 id="track-title">Suivre un dossier</h1>
+						<p className="pv-lede">Saisissez la référence reçue au dépôt. Cet aperçu contient un seul dossier fictif.</p>
+						<form className="pv-lookup" onSubmit={search} noValidate>
+							<label htmlFor="reference">Référence de suivi</label>
+							<div className="pv-lookup__row">
+								<input
+									id="reference"
+									ref={inputRef}
+									value={query}
+									onChange={(event) => setQuery(event.target.value)}
+									placeholder="PALJ-XXXX-XXXX"
+									autoComplete="off"
+									autoCapitalize="characters"
+									spellCheck={false}
+									aria-invalid={error ? true : undefined}
+									aria-describedby={error ? "reference-help reference-error" : "reference-help"}
+								/>
+								<button className="pv-button pv-button--primary" type="submit">Rechercher</button>
+							</div>
+							<p className="pv-lookup__help" id="reference-help">
+								Format&nbsp;: 12 caractères. Essayez <button className="pv-link" type="button" onClick={() => { setQuery(SAMPLE_CODE); setError(null); }}>{SAMPLE_CODE}</button>.
+							</p>
+							{error && <p className="pv-lookup__error" id="reference-error" role="alert">{error}</p>}
+						</form>
+					</div>
+					<img className="pv-track__art" src="/images/hero/noter-1280.webp" srcSet="/images/hero/noter-1280.webp 1280w, /images/hero/noter-2560.webp 2560w" sizes="(max-width: 1184px) 50vw, 560px" width={2720} height={1536} alt="Illustration décorative : une personne note une référence dans un carnet." decoding="async" />
+				</div>
+			</section>
+
+			{found && (
+				<section className="pv-outcome-band" id="dossier" aria-labelledby="dossier-title">
+					<div className="pv-container pv-dossier">
+						<article className="pv-dossier__card">
+							<header>
+								<div>
+									<p>Dossier fictif</p>
+									<strong className="pv-code">{SAMPLE_CODE}</strong>
+								</div>
+								<dl className="pv-dossier__meta">
+									<dt>Type</dt><dd>{dossierType}</dd>
+									<dt>Déposé le</dt><dd>13 sept. 2026</dd>
+									<dt>Délai indicatif</dt><dd>15 jours (fictif)</dd>
+								</dl>
+							</header>
+							<div className="pv-dossier__status" data-state={replied ? "progress" : "waiting"}>
+								<p>Statut actuel</p>
+								<h2 id="dossier-title">{replied ? "En cours de traitement" : "En attente d'informations"}</h2>
+								{replied ? (
+									<p className="pv-dossier__ask">Précision envoyée. L'agent reprend l'examen du dossier.</p>
+								) : (
+									<>
+										<p className="pv-dossier__ask"><strong>Question de l'agent, 14 sept. 11:25</strong> Indiquez le tribunal concerné et la date approximative des faits.</p>
+										<div className="pv-reply">
+											<label htmlFor="reply">Votre précision</label>
+											<textarea id="reply" ref={replyRef} value={reply} onChange={(event) => setReply(event.target.value)} aria-invalid={replyError || undefined} aria-describedby={replyError ? "reply-error" : undefined} placeholder="Exemple : tribunal d'instance de Pikine, audience prévue en août." />
+											{replyError && <p className="pv-lookup__error" id="reply-error" role="alert">Écrivez au moins 12 caractères.</p>}
+											<div className="pv-reply__footer">
+												<button className="pv-button pv-button--primary" type="button" onClick={sendReply}>Envoyer la précision <Arrow /></button>
+												<p>Dans cet aperçu, rien n'est envoyé.</p>
+											</div>
+										</div>
+									</>
+								)}
+							</div>
+							<ol className="pv-history" aria-label="Historique du dossier">
+								<li data-status="complete"><span /><div><strong>Reçue</strong><time>13 sept. 05:42</time></div></li>
+								<li data-status="complete"><span /><div><strong>Assignée à un agent</strong><time>13 sept. 09:10</time></div></li>
+								<li data-status={replied ? "complete" : "active"}><span /><div><strong>En attente d'informations</strong><time>14 sept. 11:25</time></div></li>
+								{replied && <li data-status="active"><span /><div><strong>En cours de traitement</strong><time>À l'instant</time></div></li>}
+								<li><span /><div><strong>Résolue ou rejetée</strong><time>À venir</time></div></li>
+							</ol>
+						</article>
+						<aside className="pv-statuses" aria-labelledby="statuses-title">
+							<h2 id="statuses-title">Statuts</h2>
+							<dl>
+								{STATUSES.map(([name, meaning]) => {
+									const current = name === (replied ? "En cours de traitement" : "En attente d'informations");
+									const kind = name === "Rejetée" ? "stop" : name === "En attente d'informations" ? "wait" : undefined;
+									return (
+										<div key={name} data-current={current || undefined} data-kind={kind}>
+											<dt>{name}</dt>
+											<dd>{meaning}</dd>
+										</div>
+									);
+								})}
+							</dl>
+						</aside>
+					</div>
+				</section>
+			)}
+		</Frame>
 	);
 }

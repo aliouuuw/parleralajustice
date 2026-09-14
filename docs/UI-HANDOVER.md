@@ -18,8 +18,12 @@ citizen-dialogue platform the Senegalese Ministry of Justice launched on
 A citizen writes or records a message. The system returns a tracking code. The
 citizen returns to that code to follow the file. That is the whole service.
 
-The real platform accepts six request types, named in the APS dispatch:
-information, réclamation, signalement, suggestion, observation, contestation.
+The live site at `jokkooakyoon.sn` (title « Justice Accessible Sénégal »)
+accepts six request types that **differ from the APS dispatch**: Demande
+d'information, Réclamation, Difficulté rencontrée, Signalement, Suggestion ou
+observation, Autre. There is no Contestation on the live form. The demo shadows
+that live list (research §J.3), not the APS list.
+
 It explicitly does **not** deliver administrative or judicial acts; those live on
 separate e-Service and e-Sénégal platforms. All of that is documented in the
 research file with sources.
@@ -333,3 +337,17 @@ rhythm) was restored. Treat the visual direction as **still unsolved**.
 8. **Keep the receipt honest.** No simulated government document, no
    official seal, no real tracking. The "Données fictives" badge is
    load-bearing for the independence claim.
+
+## 14. Pass 5 state (14 Sep 2026)
+
+- `/preview`: full-screen illustrated hero on desktop (3 scenes, soft-focus crossfade, progress line with pause), illustration palette across the page (white, green-black, flag green, flag yellow, red as signal only), print grain on colour fields, yellow focus halo.
+- `/preview/suivre`: new tracking page in the same system. One fictive dossier `PALJ-7K4M-2QX9` in « En attente d'informations »; the reply form moves it to « En cours de traitement ». Status glossary beside it.
+- Voice: real in-browser recording with playback and delete. Nothing uploaded.
+- Source illustrations and prompts: `design/illustrations/` (PNG originals, `atelier.png` unused). Web copies in `web/public/images/hero/`.
+- Reference product is now the live « Justice Accessible Sénégal » at `jokkooakyoon.sn`. See research §J and `docs/product.md`.
+
+## 15. Pass 6 (14 Sep 2026) — preview is north star
+
+- Owner chose **A**: `docs/DESIGN.md` documents `/preview` as authority; HeroUI app follows later.
+- Two-stage intake is implemented: write → review (type, optional lieu, demo checkbox) → receipt. « Commencer » or step 1 continue enters **task mode** (hero and yellow band hidden).
+- Live-platform content: channel honesty line, footer « Obtenir un acte », suivi délai indicatif fictif, collapsible status glossary, type passed to suivi via query string.

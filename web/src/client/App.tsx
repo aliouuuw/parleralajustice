@@ -9,7 +9,7 @@ import { Guichet } from "./pages/Guichet";
 import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { Suivre } from "./pages/Suivre";
-import { Preview } from "./preview/Preview";
+import { Preview, PreviewSuivre } from "./preview/Preview";
 
 function Routes() {
 	const { path } = useRoute();
@@ -48,6 +48,7 @@ function Layout() {
 function Shell() {
 	const { path } = useRoute();
 	if (path === "/preview") return <Preview />;
+	if (path === "/preview/suivre") return <PreviewSuivre />;
 	return <Layout />;
 }
 

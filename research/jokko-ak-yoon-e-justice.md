@@ -294,3 +294,69 @@ Abdoulaye Ba (Seneweb) praised Justice « propres infrastructures d’hébergeme
 - https://justice.sec.gouv.sn/
 - https://www.un.org/fr/information-center-dakar/le-projet-pilote-d%E2%80%99e-justice-dans-la-banlieue-de-dakar-progresse-avec-l
 - https://www.jointsdgfund.org/article/digital-justice-senegal-e-justice-pilot-brings-courts-online-dakar-suburbs
+
+## J. Live platform, second check (14 Sep 2026)
+
+Checked: 14 Sep 2026, about 00:50 local. Method: public page load and public static assets only (HTML, JS bundle, CSS, manifest), as any browser downloads them. No form submitted, no API called, no admin route opened. Screenshots in `research/jokko-live-2026-09-14/` (headless Chromium, English browser locale, so the home hero rendered in English).
+
+**Private material.** Sections J.5 and J.6 describe defects. Keep them out of public copy (see UI-HANDOVER, open item 5).
+
+### J.1 Identity
+
+- `https://jokkooakyoon.sn/` returns 200. Title « Justice Accessible Sénégal ». PWA short name « Justice Alert ».
+- Meta description: « Plateforme d'alerte judiciaire pour améliorer l'accès à la justice au Sénégal ». Author meta: Ministère de la Justice du Sénégal.
+- The name « Jokko Ak Yoon » does not appear in the title or hero.
+- Header: Ministry logo plus « République du Sénégal ». Footer © 2025. Contact `contact@justice.sn`.
+- Stack visible in assets: Vite, React, Tailwind with shadcn-style components, Lucide icons, TanStack Query. Theme colour `#1e40af` (Tailwind blue-800) while the UI is green and amber.
+- Inbound route string `/api/v1/zammad/inbound`: requests appear to become tickets in Zammad (open-source helpdesk).
+
+### J.2 Channels as the site presents them
+
+| Channel | Site label | Detail in UI |
+|---|---|---|
+| Web, text | live | form at `/signaler` |
+| Web, voice | « Nouveau » | auto transcription, title and description generated from the recording, « Français & Wolof supportés » |
+| Web, video | « Nouveau » | camera plus microphone, « Preuves visuelles » |
+| SMS | « Bientôt disponible » | « ALERTE » to 3737 |
+| USSD | « Prochainement » | `*711#` |
+| Phone | « Prochainement » | « 800-JUSTICE (800-587-8423) », Lun-Ven 8h-18h in one card, « 24h/24, 7j/7 » in the guide; menu 1 Français, 2 Wolof, 3 Pulaar, 4 Serer; voice message max 3 minutes |
+
+Language selector: Français, English, Wolof, Pulaar, Serer. Wolof strings exist in two spellings.
+
+### J.3 Request form (`/signaler`)
+
+1. Mode: Saisie texte, Demande vocale, Demande vidéo. Progress bar starts at 25 %.
+2. Titre de la demande *, Description détaillée *.
+3. Catégorie *: Demande d'information, Réclamation, Difficulté rencontrée, Signalement, Suggestion / Observation, Autre.
+4. Priorité * chosen by the citizen: Faible, Moyenne (default), Élevée, Urgente.
+5. Lieu du problème *: free text or autocomplete over a bundled list of courts (Cour suprême, cours d'appel, TGI, tribunaux d'instance) and prisons (maisons d'arrêt, camps pénaux).
+6. Nom complet *, Téléphone * (Senegalese format, SMS code verification), Email optional.
+7. « Faire une demande sans créer de compte »: help text says contact details stay required and identity is not hidden from agents.
+8. Security check step before creation. Then « Demande créée avec succès ! » and redirect to tracking.
+
+**Categories differ from the APS list.** APS: information, réclamation, signalement, suggestion, observation, contestation. Site: no « contestation »; adds « Difficulté rencontrée » and « Autre »; merges suggestion and observation.
+
+### J.4 Tracking (`/suivi`)
+
+- Lookup by number only. Placeholder `ALJ-2025-0001`, help « format: ALJ-2025-XXXX ». A second string says « ex. JA-XXXXXX ».
+- Statuses in code: Nouveau / Reçu, Assigné, En cours de traitement, En attente d'informations, Résolu, Rejeté, Clôturé / Fermé.
+- « Délai indicatif de traitement : {{days}} jours ». Print and share actions.
+- Agent side exists (`/agent`, `/agent/voice`, admin analytics with « Patterns potentiels (corruption systémique) », duplicate detection, audit log).
+
+### J.5 UX and content defects observed (private)
+
+1. Home stats show placeholders « - - - - » and « --% » next to « 24h » average response time.
+2. « Rejoignez des milliers de citoyens » four days after launch.
+3. Home claims « Anonymat possible » and « Chiffrement end-to-end »; the form says identity is not hidden from agents.
+4. Legal pages contain « Ceci est un texte par défaut … avant la mise en production ».
+5. Password reset: « pas encore disponible », contact an administrator. 2FA « Bientôt disponible ».
+6. Hero language follows the browser: English visitors see « Report a failure of the justice system » above French sections.
+7. The citizen sets the priority; the form asks for a title before the description.
+8. Three of the five channels are announced but not available.
+9. Phone number written as a US-style vanity number (« 800-JUSTICE »).
+
+### J.6 Design observations (private)
+
+- Template patterns: pill badge above the headline, gradient green-to-amber buttons, blurred glow blobs, cards that scale on hover, icon-in-circle cards, placeholder stat tiles.
+- Mixed palette (blue theme colour, green, amber, navy) with no flag logic.
+- Tracking codes look sequential (`ALJ-2025-0001`). Design note only: guessable references are a privacy concern for a public lookup page. Not tested.
