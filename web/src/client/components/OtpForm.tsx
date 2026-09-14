@@ -1,7 +1,8 @@
-import { Button, Input, Label, TextField } from "@heroui/react";
 import { useState } from "react";
 import { sendOtp, verifyOtp } from "../lib/api";
 import { navigate } from "../lib/router";
+import { Button } from "../preview/Button";
+import { InlineError } from "../preview/Alert";
 
 export function OtpForm() {
 	const [email, setEmail] = useState("");
@@ -60,40 +61,51 @@ export function OtpForm() {
 	}
 
 	return (
-		<form className="form-stack" onSubmit={onSubmit} aria-busy={busy}>
-			<TextField name="email" type="email" isRequired isDisabled={busy}>
-				<Label className="field-label">Adresse e-mail fictive</Label>
-				<Input
+		<form className="pv-lookup pv-lookup--stack" onSubmit={onSubmit} aria-busy={busy} noValidate>
+			<div className="pv-lookup__group">
+				<label htmlFor="demo-email">
+					Adresse e-mail fictive <span className="pv-optional">(obligatoire)</span>
+				</label>
+				<input
+					id="demo-email"
+					type="email"
+					required
 					value={email}
-					onChange={(e) => setEmail(e.target.value)}
+					onChange={(event) => setEmail(event.target.value)}
 					placeholder="demo@exemple.sn"
 					autoComplete="off"
 					autoCapitalize="none"
 					spellCheck={false}
-					aria-describedby="email-help"
+					disabled={busy}
 				/>
-				<p className="field-help" id="email-help">Demandez un code pour cette adresse de démonstration.</p>
-			</TextField>
-			<TextField name="otp" isRequired isDisabled={busy}>
-				<Label className="field-label">Code de connexion</Label>
-				<Input
+				<p className="pv-lookup__help">Demandez un code pour cette adresse de démonstration.</p>
+			</div>
+			<div className="pv-lookup__group">
+				<label htmlFor="demo-otp">
+					Code de connexion <span className="pv-optional">(obligatoire)</span>
+				</label>
+				<input
+					id="demo-otp"
+					className="pv-input--data"
+					type="text"
+					required
 					value={otp}
-					onChange={(e) => setOtp(e.target.value)}
+					onChange={(event) => setOtp(event.target.value)}
 					inputMode="numeric"
 					autoComplete="one-time-code"
 					placeholder="6 chiffres"
-					aria-describedby="otp-help"
+					disabled={busy}
 				/>
-				<p className="field-help" id="otp-help">Dans cette démo, le code est affiché ici et prérempli lorsqu'il est disponible.</p>
-			</TextField>
-			{hint && <p className="notice" role="status">{hint}</p>}
-			{busy && <p className="field-help" role="status">{sending ? "Préparation du code…" : "Vérification du code…"}</p>}
-			{error && <p className="form-error" role="alert">{error}</p>}
-			<div className="action-row">
-				<Button className="button-secondary" type="button" variant="secondary" onPress={onSend} isDisabled={busy}>
+				<p className="pv-lookup__help">Dans cette démo, le code est affiché ici et prérempli lorsqu'il est disponible.</p>
+			</div>
+			{hint && <p className="pv-lookup__hint" role="status">{hint}</p>}
+			{busy && <p className="pv-lookup__help" role="status">{sending ? "Préparation du code…" : "Vérification du code…"}</p>}
+			{error && <InlineError id="otp-error">{error}</InlineError>}
+			<div className="pv-form__footer">
+				<Button variant="secondary" type="button" disabled={busy} onClick={onSend}>
 					{sending ? "Code en préparation…" : "Obtenir le code de démo"}
 				</Button>
-				<Button className="button-primary" type="submit" isDisabled={busy}>
+				<Button variant="primary" type="submit" disabled={busy}>
 					{verifying ? "Connexion en cours…" : "Se connecter"}
 				</Button>
 			</div>

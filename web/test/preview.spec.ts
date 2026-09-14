@@ -11,8 +11,9 @@ describe("preview intake", () => {
 		expect(markup).toContain("Que souhaitez");
 		expect(markup).toContain("Continuer");
 		expect(markup).toContain("Prototype indépendant");
+		expect(markup).toContain('href="/acte"');
 		expect(markup).toContain("Obtenir un acte");
-		expect(markup).not.toMatch(/href="\/acte"/);
+		expect(markup).toContain("Connexion démo");
 		expect(markup).not.toContain("Service aux citoyens");
 		expect(markup).not.toContain("Exemple de confirmation");
 		expect(markup).not.toMatch(/PALJ-[A-Z0-9]{4}-[A-Z0-9]{4}/);

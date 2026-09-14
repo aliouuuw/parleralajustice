@@ -1,9 +1,20 @@
 import { type ReactNode } from "react";
+import { IconSignOut, IconUser } from "./icons";
 
 export type NavItem = {
 	href: string;
 	label: string;
+	shortLabel?: string;
 	current?: boolean;
+};
+
+export type AccountAction = {
+	label: string;
+	shortLabel?: string;
+	href?: string;
+	current?: boolean;
+	busy?: boolean;
+	onClick?: () => void;
 };
 
 type ServiceHeaderProps = {
@@ -13,9 +24,18 @@ type ServiceHeaderProps = {
 	brandMark?: ReactNode;
 	nav: NavItem[];
 	navLabel?: string;
-	/** Visible language tag for the civic service bar. Not a switcher yet. */
-	localeLabel?: string;
+	account?: AccountAction;
 };
+
+function NavLabel({ label, shortLabel }: { label: string; shortLabel?: string }) {
+	if (!shortLabel || shortLabel === label) return <>{label}</>;
+	return (
+		<>
+			<span className="pv-nav__long">{label}</span>
+			<span className="pv-nav__short">{shortLabel}</span>
+		</>
+	);
+}
 
 export function ServiceHeader({
 	brandHref,
@@ -24,7 +44,7 @@ export function ServiceHeader({
 	brandMark,
 	nav,
 	navLabel = "Navigation principale",
-	localeLabel = "FR",
+	account,
 }: ServiceHeaderProps) {
 	return (
 		<header className="pv-header">
@@ -40,14 +60,37 @@ export function ServiceHeader({
 					<nav className="pv-nav" aria-label={navLabel}>
 						{nav.map((item) => (
 							<a key={item.href} href={item.href} aria-current={item.current ? "page" : undefined}>
-								{item.label}
+								<NavLabel label={item.label} shortLabel={item.shortLabel} />
 							</a>
 						))}
 					</nav>
-					{localeLabel && (
-						<span className="pv-header__meta" title="Langue de l’interface">
-							{localeLabel}
-						</span>
+					{account && (
+						account.href ? (
+							<a
+								className="pv-header__account"
+								href={account.href}
+								aria-label={account.label}
+								aria-current={account.current ? "page" : undefined}
+							>
+								<IconUser className="pv-header__account-icon" size={20} />
+								<span className="pv-header__account-label">
+									<NavLabel label={account.label} shortLabel={account.shortLabel} />
+								</span>
+							</a>
+						) : (
+							<button
+								className="pv-header__account"
+								type="button"
+								aria-label={account.label}
+								disabled={account.busy}
+								onClick={account.onClick}
+							>
+								<IconSignOut className="pv-header__account-icon" size={20} />
+								<span className="pv-header__account-label">
+									<NavLabel label={account.label} shortLabel={account.shortLabel} />
+								</span>
+							</button>
+						)
 					)}
 				</div>
 			</div>

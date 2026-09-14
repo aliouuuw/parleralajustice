@@ -3,7 +3,7 @@ import { Waveform, type WaveSource } from "./Waveform";
 import { Button } from "./Button";
 import { Field } from "./Field";
 import { ErrorSummary, InlineError } from "./Alert";
-import { ServiceHeader } from "./ServiceHeader";
+import { SiteChrome } from "./SiteChrome";
 import { RequestTypeSelect } from "./RequestTypeSelect";
 import { TurnstileField, type TurnstileHandle } from "../components/TurnstileField";
 import { createCase, getCase, getSession, uploadAudio, type CaseDossier } from "../lib/api";
@@ -282,47 +282,9 @@ function Frame({ current, children, taskMode }: { current: "deposer" | "suivre";
 	useEffect(() => { window.scrollTo(0, 0); }, [current]);
 
 	return (
-		<div className={taskMode ? "pv pv--task" : "pv"}>
-			<a className="pv-skip" href="#main-content">Aller au contenu principal</a>
-			<div className="pv-notice">
-				<div className="pv-container pv-notice__inner">
-					<strong>Prototype indépendant</strong>
-					<span>Ce site ne dépend pas du Ministère de la Justice. Aucune demande n'est transmise.</span>
-				</div>
-			</div>
-			<ServiceHeader
-				brandHref="/"
-				brandLabel="Parler à la justice"
-				brandSublabel="Démo"
-				brandMark={
-					<svg width="34" height="30" viewBox="0 0 34 30">
-						<defs><clipPath id="pv-mark-bubble"><path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" /></clipPath></defs>
-						<path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" fill="var(--color-brand)" />
-						<circle cx="27" cy="7" r="7" fill="var(--color-gold)" />
-						<circle cx="27" cy="7" r="7" fill="var(--color-brand-lit)" clipPath="url(#pv-mark-bubble)" />
-					</svg>
-				}
-				nav={[
-					{ href: "/", label: "Déposer une demande", current: current === "deposer" },
-					{ href: "/suivre", label: "Suivre un dossier", current: current === "suivre" },
-				]}
-			/>
+		<SiteChrome current={current} taskMode={taskMode}>
 			<main id="main-content">{children}</main>
-			<footer className="pv-footer">
-				<div className="pv-container pv-footer__inner">
-					<div>
-						<strong>Parler à la justice</strong>
-						<p>Prototype indépendant utilisant uniquement des données fictives.</p>
-					</div>
-					<nav aria-label="Liens de pied de page">
-						<a href="https://justice.sec.gouv.sn/">Ministère de la Justice</a>
-						<a href="https://e-senegal.sn/">Obtenir un acte</a>
-						<a href="https://public.e-service.sn/">e-Services Justice</a>
-						<a href="https://e-senegal.sn/">e-Sénégal</a>
-					</nav>
-				</div>
-			</footer>
-		</div>
+		</SiteChrome>
 	);
 }
 
@@ -917,7 +879,7 @@ export function PreviewSuivre() {
 		<Frame current="suivre">
 			<section className="pv-track" aria-labelledby="track-title">
 				<div className="pv-container pv-track__layout">
-					<div>
+					<div className="pv-track__copy">
 						<h1 id="track-title">Suivre un dossier</h1>
 						<p className="pv-lede">Saisissez la référence reçue au dépôt. Aucun compte n'est nécessaire.</p>
 						<form className="pv-lookup" onSubmit={search} noValidate>
@@ -925,6 +887,7 @@ export function PreviewSuivre() {
 							<div className="pv-lookup__row">
 								<input
 									id="reference"
+									className="pv-input--data"
 									ref={inputRef}
 									value={query}
 									onChange={(event) => setQuery(event.target.value)}

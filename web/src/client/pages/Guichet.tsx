@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GuichetTable } from "../components/GuichetTable";
 import { getGuichetCases, type GuichetRow } from "../lib/api";
+import { InlineError } from "../preview/Alert";
 
 export function Guichet() {
 	const [rows, setRows] = useState<GuichetRow[] | null>(null);
@@ -13,21 +14,36 @@ export function Guichet() {
 	}, []);
 
 	return (
-		<section className="service-page">
-			<header className="page-intro">
-				<h1 className="page-title">Registre des demandes</h1>
-				<p className="page-description">Demandes fictives, accessibles sans contrôle d'accès.</p>
-			</header>
-			<div className="register-section">
-				<h2 className="register-heading">Demandes récentes</h2>
-				{error ? (
-					<p className="form-error" role="alert">{error}</p>
-				) : rows ? (
-					<GuichetTable rows={rows} />
-				) : (
-					<p role="status">Chargement du registre…</p>
-				)}
-			</div>
-		</section>
+		<>
+			<section className="pv-track" aria-labelledby="guichet-title">
+				<div className="pv-container pv-track__layout">
+					<div className="pv-track__copy">
+						<h1 id="guichet-title">Registre des demandes</h1>
+						<p className="pv-lede">Demandes fictives, accessibles sans contrôle d'accès. Ouvrez un code pour voir le dossier.</p>
+					</div>
+					<img
+						className="pv-track__art"
+						src="/images/hero/noter-1280.webp"
+						srcSet="/images/hero/noter-1280.webp 1280w, /images/hero/noter-2560.webp 2560w"
+						sizes="(max-width: 1184px) 50vw, 560px"
+						width={2720}
+						height={1536}
+						alt="Illustration décorative : une personne note une référence dans un carnet."
+						decoding="async"
+					/>
+				</div>
+			</section>
+			<section className="pv-register-band">
+				<div className="pv-container">
+					{error ? (
+						<InlineError id="guichet-error">{error}</InlineError>
+					) : rows ? (
+						<GuichetTable rows={rows} />
+					) : (
+						<p className="pv-field__hint" role="status">Chargement du registre…</p>
+					)}
+				</div>
+			</section>
+		</>
 	);
 }

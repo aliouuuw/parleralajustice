@@ -4,7 +4,7 @@ Last updated: 14 September 2026.
 
 ## Authority
 
-**`/` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. Connexion, guichet, and acte keep the previous HeroUI chrome for now.
+**`/` is the visual north star.** Tokens, typography, colour roles, and composition live in `web/src/client/preview/preview.css` and `Preview.tsx`. Connexion, acte, guichet, and 404 reuse the suivi split (`pv-track` + illustration) and the gold helper band. They do not use a nested mint form card.
 
 ## Direction
 
@@ -33,7 +33,7 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Corners: 16px fields (HeroUI form extra-large), pill buttons, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
 - Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, `--border-channel`, `--border-on-dark`, `--radius-control`, `--radius-button`, `--radius-panel`, `--radius-track`, `--radius-tile`, and a full `--text-*` scale (`--text-display`, `--text-title`, `--text-heading`, `--text-heading-sm`, `--text-lede`, `--text-body`, `--text-brand`, `--text-ui`, `--text-label`, `--text-caption`, `--text-meta`, `--text-micro`, `--text-data`, `--text-code`). New modules must consume semantic roles instead of palette literals or raw px values.
 - **Field vs panel:** fields are white (`--surface-field`) with a visible `--border-control`. Panels stay brand-soft (`--surface-panel`) for grouping and guidance. Records and claim blocks use white `--surface-record` with `--border-divider` when they need an edge. Do not paint inputs and cards the same pale green.
-- **Service header:** sticky civic bar with brand lockup, primary nav tabs (current page underline at the bar edge), and a FR locale tag. Structural bottom border only.
+- **Service header:** sticky civic bar with brand lockup, primary jobs (déposer, suivre, acte), and demo account action. Short labels on phones. Structural bottom border only. Guichet stays in the footer.
 
 ## Next pass (queued)
 

@@ -1,12 +1,10 @@
-import { DisclaimerBanner } from "./components/DisclaimerBanner";
-import { Footer } from "./components/Footer";
-import { Header } from "./components/Header";
 import { RouterProvider, useRoute } from "./lib/router";
 import { Acte } from "./pages/Acte";
 import { Connexion } from "./pages/Connexion";
 import { Guichet } from "./pages/Guichet";
 import { NotFound } from "./pages/NotFound";
 import { Preview, PreviewSuivre } from "./preview/Preview";
+import { SiteChrome, type SiteSection } from "./preview/SiteChrome";
 
 function Routes() {
 	const { path } = useRoute();
@@ -17,22 +15,21 @@ function Routes() {
 	return <NotFound />;
 }
 
+function sectionFromPath(path: string): SiteSection {
+	if (path === "/acte") return "acte";
+	if (path === "/connexion") return "connexion";
+	if (path === "/guichet") return "guichet";
+	return "other";
+}
+
 function Layout() {
+	const { path } = useRoute();
 	return (
-		<div className="app-shell flex min-h-dvh flex-col bg-background">
-			<a
-				className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-10 focus:bg-warning focus:px-3 focus:py-2"
-				href="#app"
-			>
-				Aller au contenu
-			</a>
-			<DisclaimerBanner />
-			<Header />
-			<main id="app" tabIndex={-1} className="site-container main-content main-service">
+		<SiteChrome current={sectionFromPath(path)}>
+			<main id="main-content" tabIndex={-1}>
 				<Routes />
 			</main>
-			<Footer />
-		</div>
+		</SiteChrome>
 	);
 }
 
