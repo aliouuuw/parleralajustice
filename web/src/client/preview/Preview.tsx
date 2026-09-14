@@ -3,6 +3,7 @@ import { Waveform, type WaveSource } from "./Waveform";
 import { Button, Arrow } from "./Button";
 import { Field } from "./Field";
 import { ErrorSummary, InlineError } from "./Alert";
+import { ServiceHeader } from "./ServiceHeader";
 import "./preview.css";
 
 const MAX = 4000;
@@ -224,23 +225,23 @@ function Frame({ current, children, taskMode }: { current: "deposer" | "suivre";
 					<span>Ce site ne dépend pas du Ministère de la Justice. Aucune demande n'est transmise.</span>
 				</div>
 			</div>
-			<header className="pv-header">
-				<div className="pv-container pv-header__inner">
-					<a className="pv-brand" href="/preview" aria-label="Parler à la justice, accueil">
-						<svg className="pv-brand__mark" width="34" height="30" viewBox="0 0 34 30" aria-hidden="true">
-							<defs><clipPath id="pv-mark-bubble"><path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" /></clipPath></defs>
-							<path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" fill="var(--color-brand)" />
-							<circle cx="27" cy="7" r="7" fill="var(--color-gold)" />
-							<circle cx="27" cy="7" r="7" fill="var(--color-brand-lit)" clipPath="url(#pv-mark-bubble)" />
-						</svg>
-						<span><strong>Parler à la justice</strong><small>Service de démonstration</small></span>
-					</a>
-					<nav className="pv-nav" aria-label="Navigation principale">
-						<a href="/preview" aria-current={current === "deposer" ? "page" : undefined}>Déposer une demande</a>
-						<a href="/preview/suivre" aria-current={current === "suivre" ? "page" : undefined}>Suivre un dossier</a>
-					</nav>
-				</div>
-			</header>
+			<ServiceHeader
+				brandHref="/preview"
+				brandLabel="Parler à la justice"
+				brandSublabel="Service de démonstration"
+				brandMark={
+					<svg width="34" height="30" viewBox="0 0 34 30">
+						<defs><clipPath id="pv-mark-bubble"><path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" /></clipPath></defs>
+						<path d="M0 30V13a7 7 0 0 1 7-7h15a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7Z" fill="var(--color-brand)" />
+						<circle cx="27" cy="7" r="7" fill="var(--color-gold)" />
+						<circle cx="27" cy="7" r="7" fill="var(--color-brand-lit)" clipPath="url(#pv-mark-bubble)" />
+					</svg>
+				}
+				nav={[
+					{ href: "/preview", label: "Déposer une demande", current: current === "deposer" },
+					{ href: "/preview/suivre", label: "Suivre un dossier", current: current === "suivre" },
+				]}
+			/>
 			<main id="main-content">{children}</main>
 			<footer className="pv-footer">
 				<div className="pv-container pv-footer__inner">

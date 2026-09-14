@@ -19,7 +19,7 @@ pushed and not deployed. Turnstile on case create is live (T006a).
 
 Do not treat a `/preview` sign-off as a deploy of the HeroUI app.
 
-## Next: extract ServiceHeader and Record modules (not started)
+## Next: extract Record module (not started)
 
 Pass 8 (§17) shipped: illustration-led `pv-channels` / flag-green
 `pv-impact`. The owner rejected the subsequent route-map channels design as
@@ -28,9 +28,10 @@ uses text and optional voice actions, a broad illustrative waveform, and a
 secondary strip of announced channels. The owner accepted this direction on
 14 Sep. Foundation pass shipped 15 Sep: semantic surface, border, radius,
 spacing, and full text-size tokens now exist in `preview.css` and major
-preview modules consume them. Button, Field, and Alert modules extracted as
-the first reusable components. Two mobile display overrides and `50%` circle
-radii remain raw by design. Next: extract ServiceHeader and Record modules.
+preview modules consume them. Button, Field, Alert, and ServiceHeader
+modules extracted as the first reusable components. Two mobile display
+overrides and `50%` circle radii remain raw by design. Next: extract Record
+module.
 
 ## In progress: T009 visual direction
 
@@ -78,6 +79,9 @@ See `docs/UI-HANDOVER.md`.
   label with required marker, hint, meta with id) and `Alert.tsx`
   (`ErrorSummary` with title + link list, `InlineError`). All field and
   error usages in `Preview.tsx` migrated to them (15 Sep).
+- **ServiceHeader module extracted:** `ServiceHeader.tsx` (brand mark,
+  label, sublabel, nav items with current state). Header in `Frame`
+  migrated to it (15 Sep).
 
 ## Tests
 
@@ -101,8 +105,9 @@ checked 14 Sep 2026.
 
 ## Not done
 
-- **Extract ServiceHeader and Record modules** from
-  `preview.css` / `Preview.tsx`. Button, Field, and Alert are done.
+- **Extract Record module** (receipt, history, dossier) from
+  `preview.css` / `Preview.tsx`. Button, Field, Alert, and
+  ServiceHeader are done.
 - `web/index.html` still loads Public Sans from Google Fonts on every route,
   including `/preview`. Owner decision: move the product app to Mona Sans, or
   scope the link to the product app

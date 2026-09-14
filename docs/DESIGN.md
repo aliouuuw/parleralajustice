@@ -43,13 +43,14 @@ roles unchanged.
 Foundation pass shipped (15 Sep 2026): semantic surface, border, radius,
 spacing, and text-size tokens added; major preview modules migrated to
 those roles. Two mobile display overrides (`34px`, `32px`) and `50%` circle
-radii remain raw by design. Button, Field, and Alert modules extracted as
-the first reusable components (`Button.tsx`, `Field.tsx`, `Alert.tsx`).
-Button: `primary` / `secondary` / `quiet` variants, polymorphic
-button/anchor, optional arrow, ref forwarding. Field: textarea/input,
-label with required marker, hint, meta with id. Alert: `ErrorSummary`
-(title + link list) and `InlineError`. Next: extract ServiceHeader and
-Record modules.
+radii remain raw by design. Button, Field, Alert, and ServiceHeader
+modules extracted as the first reusable components (`Button.tsx`,
+`Field.tsx`, `Alert.tsx`, `ServiceHeader.tsx`). Button: `primary` /
+`secondary` / `quiet` variants, polymorphic button/anchor, optional arrow,
+ref forwarding. Field: textarea/input, label with required marker, hint,
+meta with id. Alert: `ErrorSummary` (title + link list) and `InlineError`.
+ServiceHeader: brand mark, label, sublabel, nav items with current state.
+Next: extract Record module.
 
 ## Interaction contract (preview)
 
