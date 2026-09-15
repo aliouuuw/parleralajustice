@@ -52,8 +52,11 @@ export function SiteChrome({
 		setSigningOut(false);
 	}
 
+	const portal = current === "guichet";
+	const shellClass = `pv${taskMode ? " pv--task" : ""}${portal ? " pv--portal" : ""}`;
+
 	return (
-		<div className={taskMode ? "pv pv--task" : "pv"}>
+		<div className={shellClass}>
 			<a className="pv-skip" href="#main-content">Aller au contenu principal</a>
 			<div className="pv-notice">
 				<div className="pv-container pv-notice__inner">
@@ -66,16 +69,25 @@ export function SiteChrome({
 				</div>
 			</div>
 			<ServiceHeader
-				brandHref="/"
+				brandHref={portal ? "/guichet" : "/"}
 				brandLabel="Parler à la Justice"
-				brandSublabel="démo"
+				brandSublabel={portal ? "greffe" : "démo"}
 				brandMark={BRAND_MARK}
-				nav={[
+				navLabel={portal ? "Navigation du greffe" : "Navigation principale"}
+				nav={portal ? [
+					{ href: "/", label: "Espace citoyen", shortLabel: "Citoyen" },
+				] : [
 					{ href: "/", label: "Déposer une demande", shortLabel: "Déposer", current: current === "deposer" },
 					{ href: "/suivre", label: "Suivre un dossier", shortLabel: "Suivre", current: current === "suivre" },
 					{ href: "/acte", label: "Obtenir un acte", shortLabel: "Acte", current: current === "acte" },
 				]}
-				account={user ? {
+				session={portal ? { label: "Awa Ndiaye, agent", shortLabel: "Agent" } : undefined}
+				account={portal ? {
+					href: "/",
+					label: "Quitter le greffe",
+					shortLabel: "Quitter",
+					leave: true,
+				} : user ? {
 					label: signingOut ? "Déconnexion…" : "Se déconnecter",
 					shortLabel: signingOut ? "…" : "Sortir",
 					busy: signingOut,
@@ -91,16 +103,30 @@ export function SiteChrome({
 			{children}
 			<footer className="pv-footer">
 				<div className="pv-container pv-footer__inner">
-					<div>
-						<strong>Parler à la justice</strong>
-						<p>Service citoyen au Sénégal.</p>
-					</div>
-					<nav aria-label="Liens de pied de page">
-						<a href="https://justice.sec.gouv.sn/">Ministère de la Justice</a>
-						<a href="/acte">Obtenir un acte</a>
-						<a href="/guichet">Registre</a>
-						<a href="https://public.e-service.sn/">e-Services Justice</a>
-					</nav>
+					{portal ? (
+						<>
+							<div>
+								<strong>Session greffe</strong>
+								<p>Awa Ndiaye est connectée sur cet appareil.</p>
+							</div>
+							<nav aria-label="Session">
+								<a href="/">Quitter vers l'espace citoyen</a>
+							</nav>
+						</>
+					) : (
+						<>
+							<div>
+								<strong>Parler à la justice</strong>
+								<p>Service citoyen au Sénégal.</p>
+							</div>
+							<nav aria-label="Liens de pied de page">
+								<a href="https://justice.sec.gouv.sn/">Ministère de la Justice</a>
+								<a href="/acte">Obtenir un acte</a>
+								<a href="/guichet">Greffe</a>
+								<a href="https://public.e-service.sn/">e-Services Justice</a>
+							</nav>
+						</>
+					)}
 				</div>
 			</footer>
 		</div>

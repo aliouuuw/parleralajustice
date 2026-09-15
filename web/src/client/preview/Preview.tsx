@@ -5,14 +5,14 @@ import { Field } from "./Field";
 import { ErrorSummary, InlineError } from "./Alert";
 import { SiteChrome } from "./SiteChrome";
 import { RequestTypeSelect } from "./RequestTypeSelect";
-import { TurnstileField, type TurnstileHandle } from "../components/TurnstileField";
-import { createCase, getCase, getSession, uploadAudio, type CaseDossier } from "../lib/api";
+import { getSession, type CaseDossier } from "../lib/api";
+import { SAMPLE_CODE, createDossier, getDossier, toCaseDossier, MOCK_CHANGE } from "../lib/mock-store";
 import "./preview.css";
 
+export { SAMPLE_CODE };
 const MAX = 4000;
 const MIN = 12;
 const VOICE_LIMIT = 180;
-export const SAMPLE_CODE = "PALJ-7K4M-2QX9";
 
 // Categories as the live « Justice Accessible Sénégal » form lists them (research §J.3).
 const TYPES = [
@@ -231,14 +231,25 @@ function ImpactStats() {
 		if (prefersReducedMotion()) return;
 		setFromZero(true);
 		const el = ref.current;
+		const band = el?.closest(".pv-impact__band");
 		if (!el || typeof IntersectionObserver === "undefined") return;
+		let started = false;
 		const io = new IntersectionObserver(([entry]) => {
-			if (!entry.isIntersecting) return;
-			setPlay(true);
-			io.disconnect();
-		}, { threshold: 0.3 });
+			if (entry.isIntersecting) {
+				if (!started) {
+					started = true;
+					setPlay(true);
+				}
+				band?.setAttribute("data-live", "");
+				return;
+			}
+			band?.removeAttribute("data-live");
+		}, { threshold: 0.25 });
 		io.observe(el);
-		return () => io.disconnect();
+		return () => {
+			io.disconnect();
+			band?.removeAttribute("data-live");
+		};
 	}, []);
 
 	return (
@@ -275,7 +286,12 @@ function ImpactNumber({ value, suffix, play, fromZero }: { value: number; suffix
 		return () => cancelAnimationFrame(raf);
 	}, [play, value]);
 
-	return <strong>{n.toLocaleString("fr-FR")}{suffix}</strong>;
+	return (
+		<strong>
+			{n.toLocaleString("fr-FR")}
+			{suffix ? <em>{suffix}</em> : null}
+		</strong>
+	);
 }
 
 function Frame({ current, children, taskMode }: { current: "deposer" | "suivre"; children: ReactNode; taskMode?: boolean }) {
@@ -434,7 +450,6 @@ export function Preview() {
 	const recordRef = useRef<HTMLButtonElement>(null);
 	const reviewTitleRef = useRef<HTMLHeadingElement>(null);
 	const codeRef = useRef<HTMLElement>(null);
-	const turnstileRef = useRef<TurnstileHandle>(null);
 	const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const count = text.trim().length;
 	const messageReady = count >= MIN && count <= MAX;
@@ -479,50 +494,28 @@ export function Preview() {
 		requestAnimationFrame(() => messageRef.current?.focus());
 	}
 
-	async function confirmDeposit() {
+	function confirmDeposit() {
 		setReviewAttempted(true);
 		setSubmitError(null);
 		if (!reviewReady || !requestType || submitting) {
 			requestAnimationFrame(() => reviewSummaryRef.current?.focus());
 			return;
 		}
-		const turnstileToken = turnstileRef.current?.getToken() ?? "";
-		if (!turnstileToken) {
-			setSubmitError("Terminez la vérification anti-robot avant le dépôt.");
-			return;
-		}
 		setSubmitting(true);
 		try {
-			let audioKey: string | null = null;
-			if (recorder.clip) {
-				const uploaded = await uploadAudio(recorder.clip.blob);
-				if (!uploaded.ok) {
-					setSubmitError(uploaded.error);
-					turnstileRef.current?.reset();
-					return;
-				}
-				audioKey = uploaded.key;
-			}
-			const body = place.trim() ? `${text.trim()}\n\nLieu : ${place.trim()}` : text.trim();
-			const result = await createCase({
+			const row = createDossier({
 				kind: KIND_FROM_TYPE[requestType],
+				typeLabel: requestType,
+				body: text.trim(),
+				place: place.trim(),
 				channel: identified ? "identified" : "anonymous",
-				body,
-				demoConfirmed: demoOk,
-				audioKey,
-				turnstileToken,
+				hasVoice: Boolean(recorder.clip),
 			});
-			if (!result.ok) {
-				setSubmitError(result.error);
-				turnstileRef.current?.reset();
-				return;
-			}
-			setTrackingCode(result.trackingCode);
+			setTrackingCode(row.trackingCode);
 			setStage("done");
 			requestAnimationFrame(() => document.getElementById("receipt")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
 		} catch {
-			setSubmitError("Connexion interrompue. Votre message est conservé sur cette page. Réessayez.");
-			turnstileRef.current?.reset();
+			setSubmitError("Impossible d'enregistrer le dépôt sur cet appareil. Réessayez.");
 		} finally {
 			setSubmitting(false);
 		}
@@ -757,7 +750,6 @@ export function Preview() {
 									<input id="demo-confirm" type="checkbox" checked={demoOk} onChange={(event) => setDemoOk(event.target.checked)} />
 									<label htmlFor="demo-confirm">Je confirme les informations de ce dépôt.</label>
 								</div>
-								<TurnstileField ref={turnstileRef} />
 								{submitError && <InlineError id="submit-error">{submitError}</InlineError>}
 								<div className="pv-form__footer">
 									<Button variant="primary" type="button" disabled={submitting} onClick={confirmDeposit} arrow>{submitting ? "Dépôt en cours…" : "Confirmer le dépôt"}</Button>
@@ -800,6 +792,7 @@ export function Preview() {
 							<div className="pv-receipt__actions">
 								<Button variant="primary" href={`/suivre?ref=${encodeURIComponent(trackingCode)}`} arrow>Suivre ce dossier</Button>
 								<Button variant="secondary" type="button" onClick={copyCode} aria-describedby={copyState === "error" ? "copy-error" : undefined}>{copyState === "copied" ? "Référence copiée" : "Copier la référence"}</Button>
+								<Button variant="quiet" href="/guichet">Ouvrir au greffe</Button>
 								<Button variant="quiet" type="button" onClick={() => window.print()}>Imprimer</Button>
 								{copyState === "error" && <InlineError id="copy-error" className="pv-receipt__actions-error">Copie automatique impossible. La référence est sélectionnée&nbsp;: copiez-la avec Ctrl+C ou &#8984;C.</InlineError>}
 							</div>
@@ -831,7 +824,7 @@ export function PreviewSuivre() {
 	const [loading, setLoading] = useState(Boolean(initial.trim()));
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	async function lookup(raw: string) {
+	function lookup(raw: string) {
 		const code = raw.trim().toUpperCase();
 		if (!code) {
 			setError("Saisissez la référence reçue au dépôt.");
@@ -841,29 +834,34 @@ export function PreviewSuivre() {
 		}
 		setLoading(true);
 		setError(null);
-		try {
-			const result = await getCase(code);
-			if (!result) {
-				setDossier(null);
-				setError("Aucun dossier ne correspond à cette référence.");
-				inputRef.current?.focus();
-				return;
-			}
-			setQuery(result.trackingCode);
-			setDossier(result);
-			requestAnimationFrame(() => document.getElementById("dossier")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
-		} catch {
+		const row = getDossier(normalizeReference(code));
+		if (!row) {
 			setDossier(null);
-			setError("Impossible de charger le dossier. Réessayez.");
-		} finally {
+			setError("Aucun dossier ne correspond à cette référence.");
 			setLoading(false);
+			inputRef.current?.focus();
+			return;
 		}
+		setQuery(row.trackingCode);
+		setDossier(toCaseDossier(row));
+		setLoading(false);
+		requestAnimationFrame(() => document.getElementById("dossier")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" }));
 	}
 
 	useEffect(() => {
 		if (!initial.trim()) return;
-		void lookup(initial);
+		lookup(initial);
 	}, []);
+
+	useEffect(() => {
+		const refresh = () => {
+			if (!query.trim()) return;
+			const row = getDossier(normalizeReference(query));
+			if (row) setDossier(toCaseDossier(row));
+		};
+		window.addEventListener(MOCK_CHANGE, refresh);
+		return () => window.removeEventListener(MOCK_CHANGE, refresh);
+	}, [query]);
 
 	function search(event: FormEvent) {
 		event.preventDefault();
@@ -935,7 +933,7 @@ export function PreviewSuivre() {
 									<dt>Mode</dt><dd>{dossier.channel === "identified" ? "Compte" : "Sans compte"}</dd>
 								</dl>
 							</header>
-							<div className="pv-dossier__status" data-state={dossier.status === "repondu" ? "progress" : "waiting"}>
+							<div className="pv-dossier__status" data-state={statusName === "Reçue" || statusName === "En attente d'informations" ? "waiting" : "progress"}>
 								<p>Statut actuel</p>
 								<h2 id="dossier-title">{statusName}</h2>
 								<p className="pv-dossier__ask">{dossier.body}</p>
@@ -952,6 +950,9 @@ export function PreviewSuivre() {
 									</li>
 								))}
 							</ol>
+							<div className="pv-greffe__actions">
+								<Button variant="quiet" href="/guichet">Voir au greffe</Button>
+							</div>
 						</article>
 						<aside className="pv-statuses" aria-labelledby="statuses-title">
 							<h2 id="statuses-title">Statuts</h2>

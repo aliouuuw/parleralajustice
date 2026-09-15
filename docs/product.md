@@ -1,6 +1,6 @@
 # Product
 
-Last updated: 14 September 2026.
+Last updated: 15 September 2026.
 
 ## Who
 
@@ -24,11 +24,35 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 
 ## Name and host
 
-- Product name: **Parler a la justice** (`parleralajustice`).
-- Current host: `https://parleralajustice.aliouuuw.workers.dev`
+- Product name in the UI: **Parler à la Justice** (`parleralajustice` Worker).
+- Live Worker today: `https://parleralajustice.aliouuuw.workers.dev`
 - Account `workers.dev` subdomain is `aliouuuw` (shared by every Worker on this Cloudflare account).
-- Later: `.com` if traction, `.sn` if official interest.
+- **Owned domain (15 Sep 2026):** `sunujustice.chat`. Bought. Not yet attached to the Worker.
+- Do not rename this demo to **Jokko Ak Yoon**. That name is the official dialogue product at `jokkooakyoon.sn`. Copying it impersonates the live service and breaks the independent-demo rule.
+- A later product name can sit on `sunujustice.chat` without that collision. **Sunu Justice** matches the host. Keep the French UI until a rename is decided.
 - Do not use a lookalike of `jokkooakyoon.sn`.
+
+### Attach `sunujustice.chat` (Cloudflare)
+
+The domain must sit on the **same Cloudflare account** as Worker `parleralajustice`. A Cloudflare Registrar purchase already creates that zone.
+
+1. Open Workers & Pages → `parleralajustice` → Settings → Domains & Routes.
+2. Add Custom Domain `sunujustice.chat`. Add `www.sunujustice.chat` if you want it.
+3. Wait until the domain status is Active. Cloudflare writes the DNS and the certificate.
+4. In Turnstile, add `sunujustice.chat` to the widget hostnames (case-create widget).
+5. Deploy the current UI when you are ready: `bun run deploy` from the repo root.
+6. Keep `workers.dev` as a fallback. Auth already derives `baseURL` from the request origin.
+
+Optional Wrangler form (only after the zone exists on the account):
+
+```jsonc
+"routes": [
+  { "pattern": "sunujustice.chat", "custom_domain": true },
+  { "pattern": "www.sunujustice.chat", "custom_domain": true }
+]
+```
+
+Do not add that block until you are ready to attach. A missing zone fails `wrangler deploy`.
 
 ## Legal
 
@@ -42,7 +66,7 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
   - Signed-in path for named complaints
   - Guest must be explicit. No silent guest session.
 - Voice: MediaRecorder in the browser, then R2. No file-upload fake. Cut video and chat for v0.
-- Dual UI: citizen + `/guichet` clerk view with seeded fake cases.
+- Dual UI: citizen dépôt and `/guichet` share a session mock store for the public tour. D1 case APIs remain; the preview deposit no longer calls them.
 
 ## Stack (frozen)
 

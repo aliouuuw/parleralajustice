@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-14",
+  "updated": "2026-09-15",
   "phases": [
     {
       "id": "P0",
@@ -77,11 +77,20 @@
         {
           "id": "T009",
           "title": "Rebuild UI on HeroUI v3 with professional civic design",
-          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. Public routes share the preview chrome. Body copy reads as a live service; the banner carries demo disclosure. Owner accepted channels composition A on 14 Sep. Token scale, Button/Field/Alert/ServiceHeader extracts, secondary-page alignment, and copy pass are local on main. Not pushed; not deployed. Live Worker still serves the old vanilla JS UI. Do not deploy until visual sign-off. Existing case/auth APIs unchanged.",
+          "desc": "React + Vite + Tailwind v4 + HeroUI v3, still one Worker. Public routes share the preview chrome. Body copy reads as a live service; the banner carries demo disclosure. Mock dual portal (citizen + greffe session store) and impact light rake are on main. Do not deploy until visual sign-off. Existing case/auth APIs unchanged.",
           "status": "pending",
           "deps": ["T003", "T005"],
           "files": ["web/src/client/", "web/vite.config.mts", "web/index.html", "web/wrangler.jsonc", "web/tsconfig.client.json"],
           "verify": "bun run test && bun run build"
+        },
+        {
+          "id": "T010",
+          "title": "Attach sunujustice.chat to the Worker",
+          "desc": "Domain bought 15 Sep 2026. Add a Workers custom domain on the same Cloudflare account as parleralajustice. Add the hostname to the Turnstile widget. Do not rename the product to Jokko Ak Yoon. Optional later name: Sunu Justice.",
+          "status": "pending",
+          "deps": ["T009"],
+          "files": ["web/wrangler.jsonc", "docs/product.md"],
+          "verify": "curl -sI https://sunujustice.chat"
         }
       ]
     },

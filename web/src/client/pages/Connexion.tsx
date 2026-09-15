@@ -1,4 +1,5 @@
 import { OtpForm } from "../components/OtpForm";
+import { Button } from "../preview/Button";
 
 export function Connexion() {
 	return (
@@ -9,6 +10,10 @@ export function Connexion() {
 						<h1 id="connexion-title">Connexion</h1>
 						<p className="pv-lede">Saisissez votre e-mail. Un code s'affiche sur cette page pour confirmer l'accès.</p>
 						<OtpForm />
+						<p className="pv-lookup__help">Le greffe s'ouvre comme une session agent, séparée du compte citoyen.</p>
+						<div className="pv-hero__action">
+							<Button variant="secondary" href="/guichet" arrow>Entrer au greffe</Button>
+						</div>
 					</div>
 					<img
 						className="pv-track__art"

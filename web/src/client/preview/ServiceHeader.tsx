@@ -14,7 +14,13 @@ export type AccountAction = {
 	href?: string;
 	current?: boolean;
 	busy?: boolean;
+	leave?: boolean;
 	onClick?: () => void;
+};
+
+export type SessionBadge = {
+	label: string;
+	shortLabel?: string;
 };
 
 type ServiceHeaderProps = {
@@ -24,6 +30,7 @@ type ServiceHeaderProps = {
 	brandMark?: ReactNode;
 	nav: NavItem[];
 	navLabel?: string;
+	session?: SessionBadge;
 	account?: AccountAction;
 };
 
@@ -37,6 +44,41 @@ function NavLabel({ label, shortLabel }: { label: string; shortLabel?: string })
 	);
 }
 
+function AccountControl({ account }: { account: AccountAction }) {
+	const Icon = account.leave || !account.href ? IconSignOut : IconUser;
+	const inner = (
+		<>
+			<Icon className="pv-header__account-icon" size={20} />
+			<span className="pv-header__account-label">
+				<NavLabel label={account.label} shortLabel={account.shortLabel} />
+			</span>
+		</>
+	);
+	if (account.href) {
+		return (
+			<a
+				className="pv-header__account"
+				href={account.href}
+				aria-label={account.label}
+				aria-current={account.current ? "page" : undefined}
+			>
+				{inner}
+			</a>
+		);
+	}
+	return (
+		<button
+			className="pv-header__account"
+			type="button"
+			aria-label={account.label}
+			disabled={account.busy}
+			onClick={account.onClick}
+		>
+			{inner}
+		</button>
+	);
+}
+
 export function ServiceHeader({
 	brandHref,
 	brandLabel,
@@ -44,6 +86,7 @@ export function ServiceHeader({
 	brandMark,
 	nav,
 	navLabel = "Navigation principale",
+	session,
 	account,
 }: ServiceHeaderProps) {
 	return (
@@ -64,34 +107,15 @@ export function ServiceHeader({
 							</a>
 						))}
 					</nav>
-					{account && (
-						account.href ? (
-							<a
-								className="pv-header__account"
-								href={account.href}
-								aria-label={account.label}
-								aria-current={account.current ? "page" : undefined}
-							>
-								<IconUser className="pv-header__account-icon" size={20} />
-								<span className="pv-header__account-label">
-									<NavLabel label={account.label} shortLabel={account.shortLabel} />
-								</span>
-							</a>
-						) : (
-							<button
-								className="pv-header__account"
-								type="button"
-								aria-label={account.label}
-								disabled={account.busy}
-								onClick={account.onClick}
-							>
-								<IconSignOut className="pv-header__account-icon" size={20} />
-								<span className="pv-header__account-label">
-									<NavLabel label={account.label} shortLabel={account.shortLabel} />
-								</span>
-							</button>
-						)
+					{session && (
+						<span className="pv-header__account pv-header__account--session">
+							<IconUser className="pv-header__account-icon" size={20} />
+							<span className="pv-header__account-label">
+								<NavLabel label={session.label} shortLabel={session.shortLabel} />
+							</span>
+						</span>
 					)}
+					{account && <AccountControl account={account} />}
 				</div>
 			</div>
 		</header>

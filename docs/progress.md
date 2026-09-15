@@ -1,13 +1,14 @@
 # Progress
 
-Checked: 14 September 2026, 23:50 UTC.
+Checked: 15 September 2026.
 
 ## Live
 
-https://parleralajustice.aliouuuw.workers.dev still serves the old vanilla JS UI.
+https://parleralajustice.aliouuuw.workers.dev still serves the old vanilla JS UI until the next deploy.
 
-The HeroUI rebuild (T009) and the preview work are committed on `main` but not
-pushed and not deployed. Turnstile on case create is live (T006a).
+Owned domain **`sunujustice.chat`** (15 Sep). Bought. Not attached to the Worker yet. Steps: `docs/product.md` (Name and host).
+
+Do not rename the demo to Jokko Ak Yoon. That is the official product.
 
 ## One UI in this repo
 
@@ -15,26 +16,31 @@ All public routes use the illustrated preview system in
 `web/src/client/preview/`: `/`, `/parler`, `/suivre`, `/d/:code`,
 `/connexion`, `/guichet`, `/acte`, and 404. There is no `/preview` route.
 
+Citizen dépôt and greffe share `web/src/client/lib/mock-store.ts` for the
+public tour. `/guichet` reads as a connected clerk session (agent name,
+sublabel greffe, exit to the citizen space). Horizontal File / En cours /
+Clos tabs. Notre impact uses a brand-lit light rake on the flag-green band.
+
 Body copy reads as a live civic service. The independent-demo banner, brand
-« démo », and deposit checkbox remain the disclosure.
+« démo » / « greffe », and deposit checkbox remain the disclosure.
 
 ## Next (queued)
 
-Visual sign-off, then push and deploy. After that: Record module extract,
-T006b (real email OTP), and auth on `/guichet`.
+Attach `sunujustice.chat` on Cloudflare when ready. Visual sign-off, then
+deploy. After that: Record module extract, T006b (real email OTP), and auth
+on the live `/api/guichet/cases` route.
 
 ## In progress: T009 visual direction
 
 Pass 6 (two-stage intake, task mode, north star A, live-platform categories)
-and the HeroUI control mapping on `/preview` (16px fields, pill buttons, filled
-fields) are committed.
+and the HeroUI control mapping are committed.
 
 Pass 5 baseline:
 
 - Full-screen illustrated hero (3 scenes; hover pauses the fill;
   `--slide-ms: 3.5s`)
-- `/preview/suivre` with one fictive dossier `PALJ-7K4M-2QX9`
-- In-browser voice (3 min cap, playback, delete, no upload)
+- `/suivre` with mock dossiers including `PALJ-7K4M-2QX9`
+- In-browser voice (3 min cap, playback, delete, no upload in the preview)
 - Categories and statuses from the live site (research §J)
 
 Visual sign-off is still pending. The owner rejected four earlier visual passes.
@@ -50,7 +56,7 @@ See `docs/UI-HANDOVER.md`.
 - Connexion: e-mail must include a domain (`demo@exemple.sn`)
 - Turnstile on case create (T006a), live and verified
 - GitHub remote (T007)
-- T009 code: HeroUI v3 and Vite client, preview north star, HeroUI control mapping (local only)
+- T009 code: HeroUI v3 and Vite client, preview north star, HeroUI control mapping
 - **Pass 7 shipped:** type tokens, Mona Sans (Karrik removed), control states,
   first `pv-channels` / `pv-impact` sections. Cash App foundations and font
   coverage researched first (14 Sep).
@@ -79,26 +85,25 @@ See `docs/UI-HANDOVER.md`.
   + « démo »; pill fields aligned to buttons; mobile hero tighter.
 - **Copy pass (14 Sep):** body copy no longer repeats « fictif » / « démo ».
   Banner remains « Prototype indépendant ».
+- **Mock dual portal (15 Sep):** session store, greffe files, connected
+  session chrome, Connexion **Entrer au greffe**.
+- **Impact rake (15 Sep):** brand-lit light pool on the green band. No gold
+  point on the title.
 
 ## Tests
 
-`bun run test`: 21 of 21 pass in 4 files (8 in `web/test/preview.spec.ts`),
-checked 14 Sep 2026, 23:47 UTC.
+`bun run test`: 27 of 27 pass in 5 files, checked 15 Sep 2026.
 
 ## Git
 
-- Branch: `main`, **ahead of `origin/main` by 24**, not pushed
-  - `f2340b3` `copy(site): let the banner carry the demo disclosure`
-  - `776e905` `style(site): align controls, brand, and mobile hero`
-  - `64be24b` `feat(site): align secondary pages with landing chrome`
-  - plus earlier preview, HeroUI, and token commits
-- `origin/main` is `6fba040` (T006a docs)
-- Working tree is clean. No pull request. No GitHub issues. Working directly
-  on `main`. Do not auto-commit. Do not push unless the owner asks.
+- Branch: `main`. Owner asked to push this checkpoint.
+- Working directly on `main`. No pull request. No GitHub issues.
 
 ## Not done
 
-- Visual sign-off, then push and production deploy of the new UI
+- Attach `sunujustice.chat` to Worker `parleralajustice`
+- Product rename (not Jokko Ak Yoon). Candidate: Sunu Justice
+- Visual sign-off, then production deploy of the new UI
 - **Extract Record module** (receipt, history, dossier) from
   `preview.css` / `Preview.tsx`. Button, Field, Alert, and
   ServiceHeader are done.

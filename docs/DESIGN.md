@@ -1,6 +1,6 @@
 # Design
 
-Last updated: 14 September 2026.
+Last updated: 15 September 2026.
 
 ## Authority
 
@@ -18,7 +18,8 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - **Deposit:** optional full-viewport hero (three illustrated scenes, progress frise; hover pauses the fill). On desktop, notice + header + hero equal `100dvh`. After « Commencer », enter **task mode**: hero and taxonomy band hide; workspace fills the viewport.
 - Yellow **taxonomy band** educates before the task; **type selection** is a HeroUI select on step 1 (required).
 - **Channels** (`pv-channels`): owner-selected open composition A, accepted 14 Sep. No repeated hero art, route lines, numbered stops, or nested cards. One centered heading introduces a shared pale-green choice surface with writing and optional voice columns. Familiar pill buttons enter task mode and focus the textarea or Enregistrer; never auto-start recording. A broad Waveform `sim` sits on a pale-green field, explicitly labelled illustrative with the microphone inactive; IntersectionObserver and reduced-motion preference gate animation. Copy states text remains necessary; the voice completes it. A secondary strip below lists Vidéo, SMS, USSD, Téléphone with published codes from research §J.2 (`3737`, `*711#`, phone language menu). These channels remain informational and unavailable here. The columns stack on phones.
-- **Impact** (`pv-impact`): example stats on a full flag-green `--grain` band (Sligoil, white on brand, subtle count-up on enter; reduced motion keeps final values). Labels have no « fictif » suffix. Disclosure sits in the site banner.
+- **Impact** (`pv-impact`): example stats on a full flag-green band. Depth from a second tone (`--color-brand-lit` light rake) plus print grain and an ink floor. Sligoil figures, white labels, gold units and rules. Count-up on enter; the rake runs only while the band is on screen. Reduced motion keeps final values and a still rake. No gold point above the title. Labels have no « fictif » suffix. Disclosure sits in the site banner.
+- **Greffe** (`/guichet`): connected clerk session. Brand sublabel « greffe », agent name, one exit to the citizen space. Horizontal File / En cours / Clos tabs. No left app rail.
 - **Two-stage intake:** (1) choose type, write message + optional voice, (2) review, optional lieu, deposit confirmation checkbox, Turnstile → receipt with a stored tracking code.
 - **Tracking:** lookup, dossier card, agent reply loop, status glossary (always open, current status in gold).
 - Footer links: Ministry, e-Services, e-Sénégal, and **Obtenir un acte** (outbound only).
@@ -33,7 +34,7 @@ Shadow the live « Justice Accessible Sénégal » platform for **categories and
 - Corners: pill single-line fields and buttons (48px, `--radius-button`), 24px textarea, 16px panels. Yellow focus ring: ink outline + gold halo. Flag green accent, not the HeroUI playground purple.
 - Foundation roles now include `--surface-page`, `--surface-field`, `--surface-panel`, `--surface-record`, `--surface-selected`, `--border-control`, `--border-divider`, `--border-focus`, `--border-channel`, `--border-on-dark`, `--radius-control`, `--radius-button`, `--radius-panel`, `--radius-track`, `--radius-tile`, and a full `--text-*` scale (`--text-display`, `--text-title`, `--text-heading`, `--text-heading-sm`, `--text-lede`, `--text-body`, `--text-brand`, `--text-ui`, `--text-label`, `--text-caption`, `--text-meta`, `--text-micro`, `--text-data`, `--text-code`). New modules must consume semantic roles instead of palette literals or raw px values.
 - **Field vs panel:** fields are white (`--surface-field`) with a visible `--border-control`. Panels stay brand-soft (`--surface-panel`) for grouping and guidance. Records and claim blocks use white `--surface-record` with `--border-divider` when they need an edge. Do not paint inputs and cards the same pale green.
-- **Service header:** sticky civic bar. Brand is « Parler à la Justice » plus a small « démo ». Primary jobs: déposer, suivre, acte. Account action is « Connexion ». Short labels on phones. Structural bottom border only. Guichet stays in the footer as « Registre ».
+- **Service header:** sticky civic bar. Brand is « Parler à la Justice » plus a small « démo » on citizen routes, « greffe » on `/guichet`. Citizen jobs: déposer, suivre, acte. On greffe: Espace citoyen, agent session, Quitter. Account action is « Connexion » on the citizen site.
 
 ## Next pass (queued)
 
@@ -68,4 +69,4 @@ Independent-demo banner on every screen: not the Ministry; no request is transmi
 
 ## Verification
 
-`bun run test` includes `web/test/preview.spec.ts` (server-render regressions). Manual browser pass on write → review → back → confirm → receipt → suivi, 320px and 390px, microphone permission paths.
+`bun run test` includes `web/test/preview.spec.ts` and `web/test/mock-store.spec.ts` (server-render regressions). Manual browser pass on write → review → back → confirm → receipt → suivi → greffe, 320px and 390px, microphone permission paths.

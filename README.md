@@ -4,6 +4,8 @@ Indie civic demo of a clearer citizen justice intake for Senegal. Not a Ministry
 
 Live Worker: https://parleralajustice.aliouuuw.workers.dev
 
+Owned domain: `sunujustice.chat` (bought 15 Sep 2026). Not attached yet. See [docs/product.md](docs/product.md).
+
 ## What this is
 
 A public proof after the 10 September 2026 launch of Jokko Ak Yoon and e-Justice. Goal: show a better intake on X. Not a procurement pitch.
@@ -60,9 +62,11 @@ bun run deploy
 
 Remote D1: `bun run db:migrate` from `web/` after a new SQL file.
 
+Custom domain: attach `sunujustice.chat` in the Worker Domains & Routes settings (same Cloudflare account). Then add the hostname to the Turnstile widget. Auth already follows the request origin.
+
 ## Rules
 
-- Distinct name and domain. Do not copy `jokkooakyoon.sn`.
+- Distinct name and domain. Do not copy `jokkooakyoon.sn`. Do not name this demo Jokko Ak Yoon.
 - Banner: not the Ministry.
 - Guest path must be explicit. Named complaints need sign-in.
 - Do not store real judicial complaints (loi 2008-12).
