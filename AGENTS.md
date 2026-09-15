@@ -8,7 +8,7 @@ Indie civic demo of citizen justice intake in Senegal. Not affiliated with the M
 - **Framework**: Cloudflare Worker + Vite/React (HeroUI v3) via `@cloudflare/vite-plugin`
 - **Database**: Cloudflare D1
 - **Auth**: Better Auth 1.7, email OTP, native `database: env.DB`
-- **Host**: `parleralajustice.aliouuuw.workers.dev`. Domain `sunujustice.chat` is owned, not attached.
+- **Host**: `sunujustice.chat`. Fallback: `parleralajustice.aliouuuw.workers.dev`.
 - **Object storage**: R2 bucket `parleralajustice-audio` (binding `AUDIO`)
 - **Test runner**: Vitest + `@cloudflare/vitest-plugin`
 - **CI**: GitHub Actions deploy on push to `main` (tests + `wrangler deploy`). Secret: `CLOUDFLARE_API_TOKEN`.

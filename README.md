@@ -2,9 +2,9 @@
 
 Indie civic demo of a clearer citizen justice intake for Senegal. Not a Ministry product.
 
-Live Worker: https://parleralajustice.aliouuuw.workers.dev
+Live: https://sunujustice.chat
 
-Owned domain: `sunujustice.chat` (bought 15 Sep 2026). Not attached yet. See [docs/product.md](docs/product.md).
+Worker fallback: https://parleralajustice.aliouuuw.workers.dev
 
 ## What this is
 
@@ -74,7 +74,7 @@ Worker secrets (`BETTER_AUTH_SECRET`, `TURNSTILE_SECRET_KEY`) stay on the Worker
 
 Remote D1: `bun run db:migrate` from `web/` after a new SQL file. Migrations are not run in the deploy workflow.
 
-Custom domain: attach `sunujustice.chat` in the Worker Domains & Routes settings (same Cloudflare account). Then add the hostname to the Turnstile widget. Auth already follows the request origin.
+Custom domain: `sunujustice.chat` is attached (`custom_domain` in `web/wrangler.jsonc`). Add the hostname to the Turnstile widget. Auth already follows the request origin.
 
 ## Rules
 

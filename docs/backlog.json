@@ -86,8 +86,8 @@
         {
           "id": "T010",
           "title": "Attach sunujustice.chat to the Worker",
-          "desc": "Domain bought 15 Sep 2026. Add a Workers custom domain on the same Cloudflare account as parleralajustice. Add the hostname to the Turnstile widget. Do not rename the product to Jokko Ak Yoon. Optional later name: Sunu Justice.",
-          "status": "pending",
+          "desc": "Domain bought 15 Sep 2026. Apex attached as Worker custom domain. Add sunujustice.chat to the Turnstile widget hostnames. Do not rename the product to Jokko Ak Yoon.",
+          "status": "done",
           "deps": ["T009"],
           "files": ["web/wrangler.jsonc", "docs/product.md"],
           "verify": "curl -sI https://sunujustice.chat"

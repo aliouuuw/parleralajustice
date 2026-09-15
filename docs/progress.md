@@ -4,9 +4,7 @@ Checked: 15 September 2026.
 
 ## Live
 
-https://parleralajustice.aliouuuw.workers.dev still serves the old vanilla JS UI until the next deploy.
-
-Owned domain **`sunujustice.chat`** (15 Sep). Bought. Not attached to the Worker yet. Steps: `docs/product.md` (Name and host).
+https://sunujustice.chat serves the Worker (attached 15 Sep). Fallback: https://parleralajustice.aliouuuw.workers.dev
 
 Do not rename the demo to Jokko Ak Yoon. That is the official product.
 

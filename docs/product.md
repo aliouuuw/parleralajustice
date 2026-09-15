@@ -25,34 +25,24 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 ## Name and host
 
 - Product name in the UI: **Parler à la Justice** (`parleralajustice` Worker).
-- Live Worker today: `https://parleralajustice.aliouuuw.workers.dev`
+- Live Worker today: `https://parleralajustice.aliouuuw.workers.dev` (fallback).
 - Account `workers.dev` subdomain is `aliouuuw` (shared by every Worker on this Cloudflare account).
-- **Owned domain (15 Sep 2026):** `sunujustice.chat`. Bought. Not yet attached to the Worker.
+- **Public host (15 Sep 2026):** `https://sunujustice.chat` (Worker custom domain). `workers.dev` stays as fallback.
 - Do not rename this demo to **Jokko Ak Yoon**. That name is the official dialogue product at `jokkooakyoon.sn`. Copying it impersonates the live service and breaks the independent-demo rule.
 - A later product name can sit on `sunujustice.chat` without that collision. **Sunu Justice** matches the host. Keep the French UI until a rename is decided.
 - Do not use a lookalike of `jokkooakyoon.sn`.
 
-### Attach `sunujustice.chat` (Cloudflare)
+### Host `sunujustice.chat`
 
-The domain must sit on the **same Cloudflare account** as Worker `parleralajustice`. A Cloudflare Registrar purchase already creates that zone.
-
-1. Open Workers & Pages → `parleralajustice` → Settings → Domains & Routes.
-2. Add Custom Domain `sunujustice.chat`. Add `www.sunujustice.chat` if you want it.
-3. Wait until the domain status is Active. Cloudflare writes the DNS and the certificate.
-4. In Turnstile, add `sunujustice.chat` to the widget hostnames (case-create widget).
-5. Deploy the current UI when you are ready: `bun run deploy` from the repo root.
-6. Keep `workers.dev` as a fallback. Auth already derives `baseURL` from the request origin.
-
-Optional Wrangler form (only after the zone exists on the account):
+Attached as a Worker custom domain (15 Sep 2026). `web/wrangler.jsonc` keeps:
 
 ```jsonc
 "routes": [
-  { "pattern": "sunujustice.chat", "custom_domain": true },
-  { "pattern": "www.sunujustice.chat", "custom_domain": true }
+  { "pattern": "sunujustice.chat", "custom_domain": true }
 ]
 ```
 
-Do not add that block until you are ready to attach. A missing zone fails `wrangler deploy`.
+Add `sunujustice.chat` to the Turnstile widget hostnames. Auth already derives `baseURL` from the request origin.
 
 ## Legal
 
