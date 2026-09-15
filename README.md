@@ -56,11 +56,23 @@ Connexion demo: use an e-mail with a domain (`demo@exemple.sn`). The code prints
 
 ## Deploy
 
+Manual:
+
 ```bash
 bun run deploy
 ```
 
-Remote D1: `bun run db:migrate` from `web/` after a new SQL file.
+**Auto deploy:** every push to `main` runs `.github/workflows/deploy.yml` (tests, then `wrangler deploy`).
+
+One-time GitHub setup:
+
+1. Cloudflare dashboard → My Profile → API Tokens → Create Token → **Edit Cloudflare Workers** template (account: Wadealiou00@gmail.com's Account).
+2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret: `CLOUDFLARE_API_TOKEN`.
+3. Push to `main` or run the **Deploy Worker** workflow manually (Actions tab).
+
+Worker secrets (`BETTER_AUTH_SECRET`, `TURNSTILE_SECRET_KEY`) stay on the Worker. CI does not read `.dev.vars`.
+
+Remote D1: `bun run db:migrate` from `web/` after a new SQL file. Migrations are not run in the deploy workflow.
 
 Custom domain: attach `sunujustice.chat` in the Worker Domains & Routes settings (same Cloudflare account). Then add the hostname to the Turnstile widget. Auth already follows the request origin.
 

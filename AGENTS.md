@@ -11,7 +11,7 @@ Indie civic demo of citizen justice intake in Senegal. Not affiliated with the M
 - **Host**: `parleralajustice.aliouuuw.workers.dev`. Domain `sunujustice.chat` is owned, not attached.
 - **Object storage**: R2 bucket `parleralajustice-audio` (binding `AUDIO`)
 - **Test runner**: Vitest + `@cloudflare/vitest-plugin`
-- **CI**: none yet
+- **CI**: GitHub Actions deploy on push to `main` (tests + `wrangler deploy`). Secret: `CLOUDFLARE_API_TOKEN`.
 - **Package manager**: Bun only. Do not add npm, yarn, or pnpm lockfiles.
 
 ## Structure

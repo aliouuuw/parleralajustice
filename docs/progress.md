@@ -96,7 +96,8 @@ See `docs/UI-HANDOVER.md`.
 
 ## Git
 
-- Branch: `main`. Owner asked to push this checkpoint.
+- Branch: `main`, tracks `origin/main`.
+- **CI:** `.github/workflows/deploy.yml` deploys the Worker on every push to `main` after tests. Requires GitHub secret `CLOUDFLARE_API_TOKEN`.
 - Working directly on `main`. No pull request. No GitHub issues.
 
 ## Not done

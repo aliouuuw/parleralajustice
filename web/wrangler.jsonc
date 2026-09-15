@@ -1,6 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "parleralajustice",
+	"account_id": "08ebc991e328514c16b5593aaf2b6bdd",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-10",
 	"compatibility_flags": [
