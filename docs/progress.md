@@ -95,7 +95,7 @@ See `docs/UI-HANDOVER.md`.
 ## Git
 
 - Branch: `main`, tracks `origin/main`.
-- **CI:** `.github/workflows/deploy.yml` deploys the Worker on every push to `main` after tests. Requires GitHub secret `CLOUDFLARE_API_TOKEN`.
+- **CI:** Cloudflare Workers Builds. GitHub Actions deploy is disabled. Set Worker Build root to `web` and deploy command to `bun run deploy` before the next push.
 - Working directly on `main`. No pull request. No GitHub issues.
 
 ## Not done

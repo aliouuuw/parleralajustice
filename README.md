@@ -62,13 +62,21 @@ Manual:
 bun run deploy
 ```
 
-**Auto deploy:** every push to `main` runs `.github/workflows/deploy.yml` (tests, then `wrangler deploy`).
+**Auto deploy:** Cloudflare Workers Builds (GitHub connection on Worker `parleralajustice`). Do not also run GitHub Actions deploy.
 
-One-time GitHub setup:
+Build settings (Worker → Settings → Build):
 
-1. Cloudflare dashboard → My Profile → API Tokens → Create Token → **Edit Cloudflare Workers** template (account: Wadealiou00@gmail.com's Account).
-2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret: `CLOUDFLARE_API_TOKEN`.
-3. Push to `main` or run the **Deploy Worker** workflow manually (Actions tab).
+1. Root directory: `web`
+2. Build command: `bun install --frozen-lockfile`
+3. Deploy command: `bun run deploy`
+
+Do not use `npx wrangler deploy` from the repo root. That uploads `web/` as static files and replaces the Worker.
+
+Manual:
+
+```bash
+bun run deploy
+```
 
 Worker secrets (`BETTER_AUTH_SECRET`, `TURNSTILE_SECRET_KEY`) stay on the Worker. CI does not read `.dev.vars`.
 
