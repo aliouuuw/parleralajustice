@@ -36,8 +36,8 @@ export function Header() {
 	return (
 		<header className="site-header">
 			<div className="site-container header-inner">
-				<a href="/" className="brand-mark" aria-label="Parler à la justice, accueil">
-					<span className="brand-name">Parler à la justice<span>Démo citoyenne</span></span>
+				<a href="/" className="brand-mark" aria-label="Sunu Justice, accueil">
+					<span className="brand-name">Sunu Justice<span>Démo citoyenne</span></span>
 				</a>
 				<nav className="site-nav" aria-label="Navigation principale">
 					<a href="/" aria-current={path === "/" || path === "/parler" ? "page" : undefined}>Déposer</a>

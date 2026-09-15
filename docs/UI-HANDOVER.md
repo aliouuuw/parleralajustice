@@ -1,7 +1,7 @@
 # UI handover
 
 Written 13 September 2026, updated 15 September 2026. For the next agent
-working on the visual design of Parler à la justice.
+working on the visual design of Sunu Justice.
 
 **Current assignment is §18 (foundation pass and component extraction).**
  The semantic token scale is complete. Button, Field, Alert, and

@@ -24,12 +24,12 @@ Cited briefing: [research/jokko-ak-yoon-e-justice.md](../research/jokko-ak-yoon-
 
 ## Name and host
 
-- Product name in the UI: **Parler à la Justice** (`parleralajustice` Worker).
+- Product name in the UI: **Sunu Justice**. Worker id stays `parleralajustice`.
 - Live Worker today: `https://parleralajustice.aliouuuw.workers.dev` (fallback).
 - Account `workers.dev` subdomain is `aliouuuw` (shared by every Worker on this Cloudflare account).
 - **Public host (15 Sep 2026):** `https://sunujustice.chat` (Worker custom domain). `workers.dev` stays as fallback.
 - Do not rename this demo to **Jokko Ak Yoon**. That name is the official dialogue product at `jokkooakyoon.sn`. Copying it impersonates the live service and breaks the independent-demo rule.
-- A later product name can sit on `sunujustice.chat` without that collision. **Sunu Justice** matches the host. Keep the French UI until a rename is decided.
+- The host `sunujustice.chat` matches the product name. French UI. Do not rename this demo to Jokko Ak Yoon.
 - Do not use a lookalike of `jokkooakyoon.sn`.
 
 ### Host `sunujustice.chat`

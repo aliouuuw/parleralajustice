@@ -70,7 +70,7 @@ export function SiteChrome({
 			</div>
 			<ServiceHeader
 				brandHref={portal ? "/guichet" : "/"}
-				brandLabel="Parler à la Justice"
+				brandLabel="Sunu Justice"
 				brandSublabel={portal ? "greffe" : "démo"}
 				brandMark={BRAND_MARK}
 				navLabel={portal ? "Navigation du greffe" : "Navigation principale"}
@@ -116,7 +116,7 @@ export function SiteChrome({
 					) : (
 						<>
 							<div>
-								<strong>Parler à la justice</strong>
+								<strong>Sunu Justice</strong>
 								<p>Service citoyen au Sénégal.</p>
 							</div>
 							<nav aria-label="Liens de pied de page">

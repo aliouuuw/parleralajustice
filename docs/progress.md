@@ -79,7 +79,7 @@ See `docs/UI-HANDOVER.md`.
 - **Field prop leak fixed:** `kind`, `meta`, and `metaId` no longer reach
   the DOM control; React warning gone (14 Sep).
 - **Secondary pages share landing chrome** (14 Sep): connexion, acte,
-  guichet, 404 use `pv-track` + illustration; brand « Parler à la Justice »
+  guichet, 404 use `pv-track` + illustration; brand « Sunu Justice »
   + « démo »; pill fields aligned to buttons; mobile hero tighter.
 - **Copy pass (14 Sep):** body copy no longer repeats « fictif » / « démo ».
   Banner remains « Prototype indépendant ».
@@ -101,7 +101,7 @@ See `docs/UI-HANDOVER.md`.
 ## Not done
 
 - Attach `sunujustice.chat` to Worker `parleralajustice`
-- Product rename (not Jokko Ak Yoon). Candidate: Sunu Justice
+- Product rename to **Sunu Justice** (shipped 15 Sep). Worker id stays `parleralajustice`.
 - Visual sign-off, then production deploy of the new UI
 - **Extract Record module** (receipt, history, dossier) from
   `preview.css` / `Preview.tsx`. Button, Field, Alert, and

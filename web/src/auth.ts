@@ -4,7 +4,7 @@ import { emailOTP } from "better-auth/plugins";
 export function createAuth(env: Env, request: Request) {
 	const origin = new URL(request.url).origin;
 	return betterAuth({
-		appName: "Parler a la justice",
+		appName: "Sunu Justice",
 		secret: env.BETTER_AUTH_SECRET,
 		baseURL: origin,
 		basePath: "/api/auth",

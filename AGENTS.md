@@ -1,4 +1,4 @@
-# AGENTS.md — Parler a la justice AI Conventions
+# AGENTS.md — Sunu Justice AI Conventions
 
 ## Project overview
 

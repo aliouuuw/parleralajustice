@@ -47,6 +47,7 @@ describe("greffe desk", () => {
 
 	it("shows a connected greffe session, not a citizen footer", () => {
 		const markup = renderToStaticMarkup(createElement(SiteChrome, { current: "guichet" }, createElement("main", null, "desk")));
+		expect(markup).toContain("Sunu Justice");
 		expect(markup).toContain("Awa Ndiaye, agent");
 		expect(markup).toContain("Session greffe");
 		expect(markup).toContain("Quitter le greffe");

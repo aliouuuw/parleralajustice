@@ -1,4 +1,4 @@
-# Parler a la justice
+# Sunu Justice
 
 Indie civic demo of a clearer citizen justice intake for Senegal. Not a Ministry product.
 
